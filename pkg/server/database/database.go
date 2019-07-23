@@ -70,6 +70,8 @@ func InitDB() {
 
 	connStr := getPGConnectionString()
 
+	fmt.Print("connStr", connStr)
+
 	DBConn, err = gorm.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
