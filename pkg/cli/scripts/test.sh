@@ -4,7 +4,8 @@
 
 set -eux
 
-basePath="$GOPATH/src/github.com/dnote/dnote/pkg/cli"
+projectPath="$GOPATH/src/github.com/dnote/dnote"
+basePath="$projectPath/pkg/cli"
 
 # clear tmp dir in case not properly torn down
 rm -rf "$basePath/tmp"
@@ -13,7 +14,8 @@ rm -rf "$basePath/tmp"
 pushd "$basePath"
 
 go test -a ./... \
-  -p 1\
+  -p 1 \
+  --coverprofile="$projectPath/coverage.out" \
   --tags "fts5"
 
 popd

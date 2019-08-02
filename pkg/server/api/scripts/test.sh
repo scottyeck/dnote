@@ -3,6 +3,8 @@
 # appropriate env vars.
 set -eux
 
-pushd "$GOPATH"/src/github.com/dnote/dnote/pkg/server/api
-go test ./handlers/... ./operations/...  -cover -p 1
+projectPath="$GOPATH/src/github.com/dnote/dnote"
+
+pushd "$projectPath/pkg/server/api"
+go test ./handlers/... ./operations/...  -cover -p 1 --coverprofile="$projectPath/coverage.out"
 popd
