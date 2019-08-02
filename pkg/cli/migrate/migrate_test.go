@@ -689,7 +689,7 @@ func TestLocalMigration6(t *testing.T) {
 
 	// Test
 	var count int
-	database.MustScan(t, "counting actions table", db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name = ?;", "actions"), &count)
+	database.MustScan(t, "counting actions table", db.QueryRow("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = ?;", "actions"), &count)
 	assert.Equal(t, count, 0, "actions table should have been deleted")
 }
 
