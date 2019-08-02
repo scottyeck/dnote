@@ -15,7 +15,7 @@ pushd "$basePath"
 
 go test -a ./... \
   -p 1 \
-  --coverprofile="$projectPath/coverage.out" \
+  --coverprofile="$projectPath/coverage-cli.out" \
   --tags "fts5"
 
 popd

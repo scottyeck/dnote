@@ -30,4 +30,4 @@ script:
   - make test-api
   - make test-web
 
-  - $GOPATH/bin/goveralls -service=travis-ci -coverprofile=coverage.out
+  - $GOPATH/bin/goveralls -service=travis-ci -coverprofile=coverage-cli.out,coverage-api.out

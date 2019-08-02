@@ -6,5 +6,5 @@ set -eux
 projectPath="$GOPATH/src/github.com/dnote/dnote"
 
 pushd "$projectPath/pkg/server/api"
-go test ./handlers/... ./operations/...  -cover -p 1 --coverprofile="$projectPath/coverage.out"
+go test ./handlers/... ./operations/...  -cover -p 1 --coverprofile="$projectPath/coverage-api.out"
 popd
