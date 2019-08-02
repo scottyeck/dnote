@@ -3,6 +3,7 @@ PACKR2 := $(shell command -v packr2 2> /dev/null)
 NPM := $(shell command -v npm 2> /dev/null)
 HUB := $(shell command -v hub 2> /dev/null)
 COMPILEDAEMON := $(shell command -v CompileDaemon 2> /dev/null)
+SRCDIRS := ./pkg
 
 serverOutputDir = ${GOPATH}/src/github.com/dnote/dnote/build/server
 cliOutputDir = ${GOPATH}/src/github.com/dnote/dnote/build/cli
@@ -146,6 +147,11 @@ endif
 
 	@(cd ${GOPATH}/src/github.com/dnote/dnote/pkg/server/database && ./scripts/create-migration.sh $(filename))
 .PHONY: create-migration
+
+lint:
+	@echo "==> checking gofmt"
+	@test -z "$(shell gofmt -s -l $(SRCDIRS) | tee /dev/stderr)"
+.PHONY: lint
 
 clean:
 	@git clean -f
