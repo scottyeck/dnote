@@ -672,6 +672,7 @@ func TestLocalMigration6(t *testing.T) {
 	a1UUID := utils.GenerateUUID()
 	database.MustExec(t, "inserting action", db,
 		"INSERT INTO actions (uuid, schema, type, data, timestamp) VALUES (?, ?, ?, ?, ?)", a1UUID, 1, "add_book", string(data), 1537829463)
+	database.MustExec(t, "inserting book", db, "INSERT INTO books (uuid, label, dirty) VALUES (?, ?, ?)", "js-book-uuid", "js", false)
 
 	// Execute
 	tx, err := db.Begin()
@@ -688,9 +689,9 @@ func TestLocalMigration6(t *testing.T) {
 	tx.Commit()
 
 	// Test
-	var count int
-	database.MustScan(t, "counting actions table", db.QueryRow("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = ?;", "actions"), &count)
-	assert.Equal(t, count, 0, "actions table should have been deleted")
+	var dirty bool
+	database.MustScan(t, "querying book column", db.QueryRow("SELECT dirty FROM books WHERE label = ?;", "js"), &dirty)
+	assert.Equal(t, dirty, true, "book should have bene marked dirty")
 }
 
 func TestLocalMigration7_trash(t *testing.T) {
