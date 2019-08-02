@@ -131,25 +131,25 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "ab<dnotehl>c</dnotehl>",
 			tokens: []token{
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'a',
 				},
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'b',
 				},
-				token{
+				{
 					Kind: tokenKindHLBegin,
 				},
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'c',
 				},
-				token{
+				{
 					Kind: tokenKindHLEnd,
 				},
-				token{
+				{
 					Kind: tokenKindEOL,
 				},
 			},
@@ -157,29 +157,29 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "ab<dnotehl>c</dnotehl>d",
 			tokens: []token{
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'a',
 				},
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'b',
 				},
-				token{
+				{
 					Kind: tokenKindHLBegin,
 				},
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'c',
 				},
-				token{
+				{
 					Kind: tokenKindHLEnd,
 				},
-				token{
+				{
 					Kind:  tokenKindChar,
 					Value: 'd',
 				},
-				token{
+				{
 					Kind: tokenKindEOL,
 				},
 			},
@@ -188,16 +188,16 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "<dnotehl><dnotehl></dnotehl>",
 			tokens: []token{
-				token{
+				{
 					Kind: tokenKindHLBegin,
 				},
-				token{
+				{
 					Kind: tokenKindHLBegin,
 				},
-				token{
+				{
 					Kind: tokenKindHLEnd,
 				},
-				token{
+				{
 					Kind: tokenKindEOL,
 				},
 			},
@@ -205,16 +205,16 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "<dnotehl></dnotehl></dnotehl>",
 			tokens: []token{
-				token{
+				{
 					Kind: tokenKindHLBegin,
 				},
-				token{
+				{
 					Kind: tokenKindHLEnd,
 				},
-				token{
+				{
 					Kind: tokenKindHLEnd,
 				},
-				token{
+				{
 					Kind: tokenKindEOL,
 				},
 			},

@@ -38,7 +38,7 @@ import (
 // ErrInvalidLogin is an error for invalid credentials for login
 var ErrInvalidLogin = errors.New("wrong credentials")
 
-// requestOptions contians options for requests
+// requestOptions contains options for requests
 type requestOptions struct {
 	HTTPClient *http.Client
 }
@@ -191,6 +191,9 @@ func GetSyncFragment(ctx context.DnoteCtx, afterUSN int) (GetSyncFragmentResp, e
 
 	path := fmt.Sprintf("/v1/sync/fragment?%s", queryStr)
 	res, err := doAuthorizedReq(ctx, "GET", path, "", nil)
+	if err != nil {
+		return GetSyncFragmentResp{}, errors.Wrap(err, "making HTTP request")
+	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -461,7 +464,7 @@ func GetBooks(ctx context.DnoteCtx, sessionKey string) (GetBooksResp, error) {
 	return resp, nil
 }
 
-// PresigninResponse is a reponse from /v1/presignin endpoint
+// PresigninResponse is a response from /v1/presignin endpoint
 type PresigninResponse struct {
 	Iteration int `json:"iteration"`
 }

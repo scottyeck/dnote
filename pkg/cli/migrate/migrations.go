@@ -74,7 +74,7 @@ var lm1 = migration{
 
 			b, err := json.Marshal(newData)
 			if err != nil {
-				return errors.Wrap(err, "marshalling new data")
+				return errors.Wrap(err, "marshaling new data")
 			}
 
 			_, err = tx.Exec("UPDATE actions SET data = ?, schema = ? WHERE uuid = ?", string(b), 3, uuid)
@@ -119,7 +119,7 @@ var lm2 = migration{
 
 			b, err := json.Marshal(newData)
 			if err != nil {
-				return errors.Wrap(err, "marshalling new data")
+				return errors.Wrap(err, "marshaling new data")
 			}
 
 			_, err = tx.Exec("UPDATE actions SET data = ?, schema = ? WHERE uuid = ?", string(b), 3, uuid)
@@ -161,7 +161,7 @@ var lm3 = migration{
 
 			b, err := json.Marshal(newData)
 			if err != nil {
-				return errors.Wrap(err, "marshalling new data")
+				return errors.Wrap(err, "marshaling new data")
 			}
 
 			_, err = tx.Exec("UPDATE actions SET data = ?, schema = ? WHERE uuid = ?", string(b), 2, uuid)
@@ -452,7 +452,7 @@ var lm10 = migration{
 			var label string
 			err := rows.Scan(&label)
 			if err != nil {
-				return errors.Wrap(err, "scannign row")
+				return errors.Wrap(err, "scanning row")
 			}
 
 			if regexNumber.MatchString(label) {

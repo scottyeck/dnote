@@ -695,7 +695,7 @@ func migrateToV5(ctx context.DnoteCtx) error {
 			}
 			b, err = json.Marshal(migratedData)
 			if err != nil {
-				return errors.Wrap(err, "marshalling data")
+				return errors.Wrap(err, "marshaling data")
 			}
 
 			data = b
@@ -716,7 +716,7 @@ func migrateToV5(ctx context.DnoteCtx) error {
 
 	a, err := json.Marshal(result)
 	if err != nil {
-		return errors.Wrap(err, "marshalling result into JSON")
+		return errors.Wrap(err, "marshaling result into JSON")
 	}
 	err = ioutil.WriteFile(actionsPath, a, 0644)
 	if err != nil {
@@ -815,7 +815,7 @@ func migrateToV7(ctx context.DnoteCtx) error {
 			}
 			d, e := json.Marshal(newData)
 			if e != nil {
-				return errors.Wrapf(e, "marshalling new data of action with uuid %s", action.Data)
+				return errors.Wrapf(e, "marshaling new data of action with uuid %s", action.Data)
 			}
 
 			newAction = migrateToV7Action{
@@ -834,7 +834,7 @@ func migrateToV7(ctx context.DnoteCtx) error {
 
 	d, err := json.Marshal(postActions)
 	if err != nil {
-		return errors.Wrap(err, "marshalling new actions")
+		return errors.Wrap(err, "marshaling new actions")
 	}
 
 	err = ioutil.WriteFile(actionPath, d, 0644)

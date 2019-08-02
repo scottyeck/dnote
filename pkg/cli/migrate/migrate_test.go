@@ -120,28 +120,28 @@ func TestRun_nonfresh(t *testing.T) {
 				"CREATE TABLE migrate_run_test ( name string )")
 
 			sequence := []migration{
-				migration{
+				{
 					name: "v1",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v1 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v1")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v2",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v2 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v2")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v3",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v3 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v3")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v4",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v4 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v4")
@@ -200,21 +200,21 @@ func TestRun_fresh(t *testing.T) {
 				"CREATE TABLE migrate_run_test ( name string )")
 
 			sequence := []migration{
-				migration{
+				{
 					name: "v1",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v1 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v1")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v2",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v2 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v2")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v3",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v3 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v3")
@@ -276,21 +276,21 @@ func TestRun_up_to_date(t *testing.T) {
 			database.MustExec(t, "inserting a schema", db, "INSERT INTO system (key, value) VALUES (?, ?)", tc.schemaKey, 3)
 
 			sequence := []migration{
-				migration{
+				{
 					name: "v1",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v1 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v1")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v2",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v2 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v2")
 						return nil
 					},
 				},
-				migration{
+				{
 					name: "v3",
 					run: func(ctx context.DnoteCtx, db *database.DB) error {
 						database.MustExec(t, "marking v3 completed", db, "INSERT INTO migrate_run_test (name) VALUES (?)", "v3")
@@ -689,7 +689,7 @@ func TestLocalMigration6(t *testing.T) {
 
 	// Test
 	var count int
-	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name = ?;", "actions").Scan(&count)
+	database.MustScan(t, "counting actions table", db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name = ?;", "actions"), &count)
 	assert.Equal(t, count, 0, "actions table should have been deleted")
 }
 

@@ -21,10 +21,10 @@ package operations
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"github.com/dnote/dnote/pkg/server/api/crypt"
 	"github.com/dnote/dnote/pkg/server/database"
+	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 )
 
 // CreateSession returns a new session for the user of the given id

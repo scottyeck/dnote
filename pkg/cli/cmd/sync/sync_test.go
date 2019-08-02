@@ -43,26 +43,26 @@ var dbPath = "../../tmp/.dnote.db"
 
 func TestProcessFragments(t *testing.T) {
 	fragments := []client.SyncFragment{
-		client.SyncFragment{
+		{
 			FragMaxUSN:  10,
 			UserMaxUSN:  10,
 			CurrentTime: 1550436136,
 			Notes: []client.SyncFragNote{
-				client.SyncFragNote{
+				{
 					UUID: "45546de0-40ed-45cf-9bfc-62ce729a7d3d",
 					Body: "7GgIppDdxDn+4DUoVoLXbncZDRqXGwbDVNF/eCssu+1BXMdq+HAziJHGgK7drdcIBtYDDXj0OwHz9dQDDOyWeNqkLWEIQ2Roygs229dRxdO3Z6ST+qSOr/9TTjDlFxydF5Ps7nAXdN9KVxH8FKIZDsxJ45qeLKpQK/6poAM39BCOiysqAXJQz9ngOJiqImAuftS6d/XhwX77QvnM91VCKK0tFmsMdDDw0J9QMwnlYU1CViHy1Hdhhcf9Ea38Mj4SCrWMPscXyP2fpAu5ukbIK3vS2pvbnH5vC8ZuvihrQif1BsiwfYmN981mLYs069Dn4B72qcXPwU7qrN3V0k57JGcAlTiEoOD5QowyraensQlR1doorLb43SjTiJLItougn5K5QPRiHuNxfv39pa7A0gKA1n/3UhG/SBuCpDuPYjwmBkvkzCKJNgpbLQ8p29JXMQcWrm4e9GfnVjMhAEtxttIta3MN6EcYG7cB1dJ04OLYVcJuRA==",
 				},
-				client.SyncFragNote{
+				{
 					UUID: "a25a5336-afe9-46c4-b881-acab911c0bc3",
 					Body: "WGzcYA6kLuUFEU7HLTDJt7UWF7fEmbCPHfC16VBrAyfT2wDejXbIuFpU5L7g0aU=",
 				},
 			},
 			Books: []client.SyncFragBook{
-				client.SyncFragBook{
+				{
 					UUID:  "e8ac6f25-d95b-435a-9fae-094f7506a5ac",
 					Label: "qBrSrAcnTUHu51bIrv6jSA/dNffr/kRlIg+MklxeQQ==",
 				},
-				client.SyncFragBook{
+				{
 					UUID:  "05fd8b95-ddcd-4071-9380-4358ffb8a436",
 					Label: "uHWoBFdKT78gTkFR7qhyzZkrn59c8ktEa8idrLkksKzIQ3VVAXxq0QZp7Uc=",
 				},
@@ -80,21 +80,21 @@ func TestProcessFragments(t *testing.T) {
 
 	expected := syncList{
 		Notes: map[string]client.SyncFragNote{
-			"45546de0-40ed-45cf-9bfc-62ce729a7d3d": client.SyncFragNote{
+			"45546de0-40ed-45cf-9bfc-62ce729a7d3d": {
 				UUID: "45546de0-40ed-45cf-9bfc-62ce729a7d3d",
 				Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n Donec ac libero efficitur, posuere dui non, egestas lectus.\n Aliquam urna ligula, sagittis eu volutpat vel, consequat et augue.\n\n Ut mi urna, dignissim a ex eget, venenatis accumsan sem. Praesent facilisis, ligula hendrerit auctor varius, mauris metus hendrerit dolor, sit amet pulvinar.",
 			},
-			"a25a5336-afe9-46c4-b881-acab911c0bc3": client.SyncFragNote{
+			"a25a5336-afe9-46c4-b881-acab911c0bc3": {
 				UUID: "a25a5336-afe9-46c4-b881-acab911c0bc3",
 				Body: "foo bar baz quz\nqux",
 			},
 		},
 		Books: map[string]client.SyncFragBook{
-			"e8ac6f25-d95b-435a-9fae-094f7506a5ac": client.SyncFragBook{
+			"e8ac6f25-d95b-435a-9fae-094f7506a5ac": {
 				UUID:  "e8ac6f25-d95b-435a-9fae-094f7506a5ac",
 				Label: "foo",
 			},
-			"05fd8b95-ddcd-4071-9380-4358ffb8a436": client.SyncFragBook{
+			"05fd8b95-ddcd-4071-9380-4358ffb8a436": {
 				UUID:  "05fd8b95-ddcd-4071-9380-4358ffb8a436",
 				Label: "foo-bar-baz-1000",
 			},
@@ -2928,18 +2928,18 @@ func TestCheckBookPristine(t *testing.T) {
 func TestCheckNoteInList(t *testing.T) {
 	list := syncList{
 		Notes: map[string]client.SyncFragNote{
-			"n1-uuid": client.SyncFragNote{
+			"n1-uuid": {
 				UUID: "n1-uuid",
 			},
-			"n2-uuid": client.SyncFragNote{
+			"n2-uuid": {
 				UUID: "n2-uuid",
 			},
 		},
 		Books: map[string]client.SyncFragBook{
-			"b1-uuid": client.SyncFragBook{
+			"b1-uuid": {
 				UUID: "b1-uuid",
 			},
-			"b2-uuid": client.SyncFragBook{
+			"b2-uuid": {
 				UUID: "b2-uuid",
 			},
 		},
@@ -2990,18 +2990,18 @@ func TestCheckNoteInList(t *testing.T) {
 func TestCheckBookInList(t *testing.T) {
 	list := syncList{
 		Notes: map[string]client.SyncFragNote{
-			"n1-uuid": client.SyncFragNote{
+			"n1-uuid": {
 				UUID: "n1-uuid",
 			},
-			"n2-uuid": client.SyncFragNote{
+			"n2-uuid": {
 				UUID: "n2-uuid",
 			},
 		},
 		Books: map[string]client.SyncFragBook{
-			"b1-uuid": client.SyncFragBook{
+			"b1-uuid": {
 				UUID: "b1-uuid",
 			},
-			"b2-uuid": client.SyncFragBook{
+			"b2-uuid": {
 				UUID: "b2-uuid",
 			},
 		},
@@ -3056,18 +3056,18 @@ func TestCleanLocalNotes(t *testing.T) {
 
 	list := syncList{
 		Notes: map[string]client.SyncFragNote{
-			"n1-uuid": client.SyncFragNote{
+			"n1-uuid": {
 				UUID: "n1-uuid",
 			},
-			"n2-uuid": client.SyncFragNote{
+			"n2-uuid": {
 				UUID: "n2-uuid",
 			},
 		},
 		Books: map[string]client.SyncFragBook{
-			"b1-uuid": client.SyncFragBook{
+			"b1-uuid": {
 				UUID: "b1-uuid",
 			},
-			"b2-uuid": client.SyncFragBook{
+			"b2-uuid": {
 				UUID: "b2-uuid",
 			},
 		},
@@ -3128,18 +3128,18 @@ func TestCleanLocalBooks(t *testing.T) {
 
 	list := syncList{
 		Notes: map[string]client.SyncFragNote{
-			"n1-uuid": client.SyncFragNote{
+			"n1-uuid": {
 				UUID: "n1-uuid",
 			},
-			"n2-uuid": client.SyncFragNote{
+			"n2-uuid": {
 				UUID: "n2-uuid",
 			},
 		},
 		Books: map[string]client.SyncFragBook{
-			"b1-uuid": client.SyncFragBook{
+			"b1-uuid": {
 				UUID: "b1-uuid",
 			},
-			"b2-uuid": client.SyncFragBook{
+			"b2-uuid": {
 				UUID: "b2-uuid",
 			},
 		},

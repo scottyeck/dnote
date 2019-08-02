@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup.sh installs programs and depedencies necessary to run the project locally
+# setup.sh installs programs and dependencies necessary to run the project locally
 # usage: ./setup.sh
 set -eux
 

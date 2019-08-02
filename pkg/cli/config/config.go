@@ -63,7 +63,7 @@ func Write(ctx context.DnoteCtx, cf Config) error {
 
 	b, err := yaml.Marshal(cf)
 	if err != nil {
-		return errors.Wrap(err, "marshalling config into YAML")
+		return errors.Wrap(err, "marshaling config into YAML")
 	}
 
 	err = ioutil.WriteFile(path, b, 0644)

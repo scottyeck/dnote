@@ -853,6 +853,9 @@ func sendChanges(ctx context.DnoteCtx, tx *database.DB) (bool, error) {
 
 	var delta int
 	err := tx.QueryRow("SELECT (SELECT count(*) FROM notes WHERE dirty) + (SELECT count(*) FROM books WHERE dirty)").Scan(&delta)
+	if err != nil {
+		return false, errors.Wrap(err, "counting delta")
+	}
 
 	fmt.Printf(" (total %d).", delta)
 

@@ -156,7 +156,7 @@ func runNote(ctx context.DnoteCtx, rowIDArg string) error {
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
-		return errors.Wrap(err, "comitting transaction")
+		return errors.Wrap(err, "committing transaction")
 	}
 
 	log.Successf("removed from %s\n", noteInfo.BookLabel)

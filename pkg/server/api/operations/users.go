@@ -110,7 +110,7 @@ func CreateUser(tx *gorm.DB, email, authKey, cipherKeyEnc string, iteration int)
 	}
 
 	if err := createEmailVerificaitonToken(user, tx); err != nil {
-		return database.User{}, errors.Wrap(err, "creating email verificaiton token")
+		return database.User{}, errors.Wrap(err, "creating email verification token")
 	}
 	if err := createEmailPreference(user, tx); err != nil {
 		return database.User{}, errors.Wrap(err, "creating email preference")

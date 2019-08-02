@@ -37,7 +37,7 @@ import (
 )
 
 // InitTestDB establishes connection pool with the test database specified by
-// the environment variable configuration and initalizes a new schema
+// the environment variable configuration and initializes a new schema
 func InitTestDB() {
 	c := database.Config{
 		Host:     os.Getenv("DBHost"),

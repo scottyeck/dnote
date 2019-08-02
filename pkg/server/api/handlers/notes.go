@@ -99,7 +99,7 @@ func (a *App) getNote(w http.ResponseWriter, r *http.Request) {
 
 /**** getNotesHandler */
 
-// GetNotesResponse is a reponse by getNotesHandler
+// GetNotesResponse is a response by getNotesHandler
 type GetNotesResponse struct {
 	Notes    []presenters.Note `json:"notes"`
 	Total    int               `json:"total"`
