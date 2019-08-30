@@ -33,8 +33,8 @@ let scrollbarWidth = 0;
 interface Props extends RouteComponentProps {
   isOpen: boolean;
   onDismiss: () => void;
-  modalId: string;
   ariaLabelledBy: string;
+  modalId?: string;
   ariaDescribedBy?: string;
   size?: string;
   overlayClassName?: string;

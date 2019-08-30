@@ -24,9 +24,7 @@ import Account from './Account';
 import Sidebar from './Sidebar';
 import { SettingSections } from '../../libs/paths';
 import Notification from './Notification';
-// import Billing from './Billing';
-
-// import styles from './Settings.scss';
+import Billing from './Billing';
 
 function renderContent(section: string): React.ReactNode {
   if (section === SettingSections.account) {
@@ -35,9 +33,9 @@ function renderContent(section: string): React.ReactNode {
   if (section === SettingSections.notification) {
     return <Notification />;
   }
-  //  if (section === Sections.billing) {
-  //    return <Billing />;
-  //  }
+  if (section === SettingSections.billing) {
+    return <Billing />;
+  }
 
   return <div>Not found</div>;
 }
