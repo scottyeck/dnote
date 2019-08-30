@@ -21,19 +21,15 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Account from './Account';
-import Notification from './Notification';
-import Billing from './Billing';
+import Sidebar from './Sidebar';
+import { SettingSections } from '../../libs/paths';
+// import Notification from './Notification';
+// import Billing from './Billing';
 
-import './Settings.scss';
-
-enum Sections {
-  account = 'account',
-  email = 'email',
-  billing = 'billing'
-}
+import styles from './Settings.scss';
 
 function renderContent(section: string): React.ReactNode {
-  if (section === Sections.account) {
+  if (section === SettingSections.account) {
     return <Account />;
   }
   //  if (section === Sections.email) {
@@ -59,11 +55,20 @@ const Settings: React.SFC<Props> = ({ match }) => {
   return (
     <Fragment>
       <Helmet>
-        <title>Settings</title>
         <meta name="description" content="Dnote settings" />
       </Helmet>
 
-      {renderContent(section)}
+      <div className="container">
+        <div className="row">
+          <div className="col-12 col-md-12 col-lg-3">
+            <Sidebar />
+          </div>
+
+          <div className="col-12 col-md-12 col-lg-9">
+            <div className={styles.wrapper}>{renderContent(section)}</div>
+          </div>
+        </div>
+      </div>
     </Fragment>
   );
 };

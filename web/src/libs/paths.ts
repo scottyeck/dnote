@@ -128,7 +128,13 @@ export function getSubscriptionCheckoutPath(searchObj = {}): Location {
   return getLocation({ pathname: '/subscriptions/checkout', searchObj });
 }
 
-export function getSettingsPath(section: string) {
+export enum SettingSections {
+  account = 'account',
+  email = 'email',
+  billing = 'billing'
+}
+
+export function getSettingsPath(section: SettingSections) {
   return `/settings/${section}`;
 }
 

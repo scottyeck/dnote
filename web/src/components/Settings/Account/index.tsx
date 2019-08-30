@@ -46,82 +46,74 @@ const Account: React.SFC<Props> = () => {
   return (
     <div id="T-account-page">
       <Helmet>
-        <title>Account</title>
+        <title>Account Settings</title>
       </Helmet>
 
-      <div className="container-wide">
-        <div className="row">
-          <div className="col-12 col-md-12 col-lg-10">
-            <Flash
-              when={successMsg !== ''}
-              id="T-success-flash"
-              kind="success"
-              wrapperClassName={settingsStyles.flash}
-              onDismiss={() => {
-                setSuccessMsg('');
+      <Flash
+        when={successMsg !== ''}
+        id="T-success-flash"
+        kind="success"
+        wrapperClassName={settingsStyles.flash}
+        onDismiss={() => {
+          setSuccessMsg('');
+        }}
+      >
+        {successMsg}
+      </Flash>
+      <Flash
+        when={failureMsg !== ''}
+        kind="danger"
+        wrapperClassName={settingsStyles.flash}
+        onDismiss={() => {
+          setFailureMsg('');
+        }}
+      >
+        {failureMsg}
+      </Flash>
+
+      <section className={settingsStyles.section}>
+        <h2 className={settingsStyles['section-heading']}>Profile</h2>
+
+        <SettingRow
+          name="Email"
+          value={user.email}
+          actionContent={
+            <button
+              id="T-change-email-button"
+              className={classnames('button-no-ui', settingsStyles.edit)}
+              type="button"
+              onClick={() => {
+                setEmailModalOpen(true);
               }}
             >
-              {successMsg}
-            </Flash>
-            <Flash
-              when={failureMsg !== ''}
-              kind="danger"
-              wrapperClassName={settingsStyles.flash}
-              onDismiss={() => {
-                setFailureMsg('');
+              Edit
+            </button>
+          }
+        />
+
+        <EmailVerificationRow
+          verified={user.emailVerified}
+          setSuccessMsg={setSuccessMsg}
+          setFailureMsg={setFailureMsg}
+        />
+
+        <SettingRow
+          name="Password"
+          desc=" Set a unique password to protect your data."
+          actionContent={
+            <button
+              id="T-change-password-button"
+              className={classnames('button-no-ui', settingsStyles.edit)}
+              type="button"
+              onClick={() => {
+                setPasswordModalOpen(true);
               }}
             >
-              {failureMsg}
-            </Flash>
-          </div>
-
-          <div className="col-12 col-md-12 col-lg-10">
-            <section className={settingsStyles.section}>
-              <h2 className={settingsStyles['section-heading']}>Profile</h2>
-
-              <SettingRow
-                name="Email"
-                value={user.email}
-                actionContent={
-                  <button
-                    id="T-change-email-button"
-                    className={classnames('button-no-ui', settingsStyles.edit)}
-                    type="button"
-                    onClick={() => {
-                      setEmailModalOpen(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                }
-              />
-
-              <EmailVerificationRow
-                verified={user.emailVerified}
-                setSuccessMsg={setSuccessMsg}
-                setFailureMsg={setFailureMsg}
-              />
-
-              <SettingRow
-                name="Password"
-                desc=" Set a unique password to protect your data."
-                actionContent={
-                  <button
-                    id="T-change-password-button"
-                    className={classnames('button-no-ui', settingsStyles.edit)}
-                    type="button"
-                    onClick={() => {
-                      setPasswordModalOpen(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                }
-              />
-            </section>
-          </div>
-        </div>
-      </div>
+              Edit
+            </button>
+          }
+        />
+      </section>
 
       <EmailModal
         isOpen={emailModalOpen}
