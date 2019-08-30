@@ -24,33 +24,30 @@ export function updateUser({ name }) {
   return apiClient.patch('/account/profile', payload);
 }
 
-export function updateEmail({
-  oldAuthKey,
-  newAuthKey,
-  newEmail,
-  newCipherKeyEnc
-}) {
+interface UpdateEmailParams {
+  email: string;
+}
+
+export function updateEmail({ email }: UpdateEmailParams) {
   const payload = {
-    old_auth_key: oldAuthKey,
-    new_auth_key: newAuthKey,
-    new_email: newEmail,
-    new_cipher_key_enc: newCipherKeyEnc
+    email
   };
 
   return apiClient.patch('/account/email', payload);
 }
 
+interface UpdatePasswordParams {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export function updatePassword({
-  oldAuthKey,
-  newAuthKey,
-  newCipherKeyEnc,
-  newKdfIteration
-}) {
+  oldPassword,
+  newPassword
+}: UpdatePasswordParams) {
   const payload = {
-    old_auth_key: oldAuthKey,
-    new_auth_key: newAuthKey,
-    new_cipher_key_enc: newCipherKeyEnc,
-    new_kdf_iteration: newKdfIteration
+    old_password: oldPassword,
+    new_password: newPassword
   };
 
   return apiClient.patch('/account/password', payload);
@@ -127,12 +124,6 @@ export function getMe() {
   return apiClient.get('/me').then(res => {
     return res.user;
   });
-}
-
-export function fetchCalendar() {
-  const endpoint = '/calendar';
-
-  return apiClient.get(endpoint);
 }
 
 export function legacySignin({ email, password }) {

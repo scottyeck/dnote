@@ -16,46 +16,56 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import Helmet from 'react-helmet';
+import { RouteComponentProps } from 'react-router-dom';
 
 import Account from './Account';
 import Notification from './Notification';
 import Billing from './Billing';
 
-import './module.scss';
+import './Settings.scss';
 
-const SectionAccount = 'account';
-const SectionEmail = 'notification';
-const SectionBilling = 'billing';
+enum Sections {
+  account = 'account',
+  email = 'email',
+  billing = 'billing'
+}
 
-function renderContent(section) {
-  if (section === SectionAccount) {
+function renderContent(section: string): React.ReactNode {
+  if (section === Sections.account) {
     return <Account />;
   }
-  if (section === SectionEmail) {
-    return <Notification />;
-  }
-  if (section === SectionBilling) {
-    return <Billing />;
-  }
+  //  if (section === Sections.email) {
+  //    return <Notification />;
+  //  }
+  //  if (section === Sections.billing) {
+  //    return <Billing />;
+  //  }
 
   return <div>Not found</div>;
 }
 
-function Settings({ match }) {
+interface Match {
+  section: string;
+}
+
+interface Props extends RouteComponentProps<Match> {}
+
+const Settings: React.SFC<Props> = ({ match }) => {
   const { params } = match;
   const { section } = params;
 
   return (
-    <div className="page">
+    <Fragment>
       <Helmet>
+        <title>Settings</title>
         <meta name="description" content="Dnote settings" />
       </Helmet>
 
       {renderContent(section)}
-    </div>
+    </Fragment>
   );
-}
+};
 
 export default Settings;

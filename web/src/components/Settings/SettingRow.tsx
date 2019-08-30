@@ -19,9 +19,23 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import styles from './SettingRow.module.scss';
+import styles from './SettingRow.scss';
 
-function SettingRow({ name, desc, value, actionContent, id }) {
+interface Props {
+  name: string;
+  actionContent: React.ReactNode;
+  id?: string;
+  desc?: string;
+  value?: string;
+}
+
+const SettingRow: React.SFC<Props> = ({
+  name,
+  desc,
+  value,
+  actionContent,
+  id
+}) => {
   return (
     <div className={classnames(styles.wrapper, styles.row)} id={id}>
       <div>
@@ -35,6 +49,6 @@ function SettingRow({ name, desc, value, actionContent, id }) {
       </div>
     </div>
   );
-}
+};
 
 export default SettingRow;
