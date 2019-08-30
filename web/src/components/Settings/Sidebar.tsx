@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import classnames from 'classnames';
+import { NavLink } from 'react-router-dom';
 
 import { SettingSections, getSettingsPath } from '../../libs/paths';
 import styles from './Sidebar.scss';
@@ -9,15 +10,33 @@ interface Props {}
 const Sidebar: React.SFC<Props> = () => {
   return (
     <nav className={styles.wrapper}>
-      <ul>
+      <ul className={classnames('list-unstyled')}>
         <li>
-          <Link to={getSettingsPath(SettingSections.account)}>Account</Link>
+          <NavLink
+            className={styles.item}
+            activeClassName={styles.active}
+            to={getSettingsPath(SettingSections.account)}
+          >
+            Account
+          </NavLink>
         </li>
         <li>
-          <Link to={getSettingsPath(SettingSections.notification)}>Email</Link>
+          <NavLink
+            className={styles.item}
+            activeClassName={styles.active}
+            to={getSettingsPath(SettingSections.notification)}
+          >
+            Notification
+          </NavLink>
         </li>
         <li>
-          <Link to={getSettingsPath(SettingSections.billing)}>Billing</Link>
+          <NavLink
+            className={styles.item}
+            activeClassName={styles.active}
+            to={getSettingsPath(SettingSections.billing)}
+          >
+            Billing
+          </NavLink>
         </li>
       </ul>
     </nav>

@@ -49,6 +49,8 @@ const Account: React.SFC<Props> = () => {
         <title>Account Settings</title>
       </Helmet>
 
+      <h1 className="sr-only">Account settings</h1>
+
       <Flash
         when={successMsg !== ''}
         id="T-success-flash"

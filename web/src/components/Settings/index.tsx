@@ -56,7 +56,7 @@ const Settings: React.SFC<Props> = ({ match }) => {
         <meta name="description" content="Dnote settings" />
       </Helmet>
 
-      <div className="container">
+      <div className="container page">
         <div className="row">
           <div className="col-12 col-md-12 col-lg-3">
             <Sidebar />

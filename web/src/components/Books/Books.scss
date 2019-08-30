@@ -16,17 +16,14 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import '../App/theme';
-@import '../App/responsive';
 @import '../App/rem';
+@import '../App/responsive';
+@import '../App/theme';
 
 .wrapper {
-  background: $light-gray;
-  min-height: calc(100vh - #{$header-height} - #{$footer-height});
-  margin-bottom: $footer-height;
+  margin-top: rem(-10px);
 
   @include breakpoint(lg) {
-    margin-bottom: 0;
-    min-height: calc(100vh - #{$header-height});
+    margin-top: 0;
   }
 }

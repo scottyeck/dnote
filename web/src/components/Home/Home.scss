@@ -17,15 +17,12 @@
  */
 
 @import '../App/responsive';
-
-.note-sidebar-toggle {
-  display: inline-block;
-
-  @include breakpoint(lg) {
-    display: none;
-  }
-}
+@import '../App/rem';
 
 .wrapper {
-  height: 100%;
+  margin-top: rem(-20px);
+
+  @include breakpoint(lg) {
+    margin-top: 0;
+  }
 }

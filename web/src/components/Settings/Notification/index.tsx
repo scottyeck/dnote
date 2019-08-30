@@ -118,7 +118,7 @@ const Email: React.SFC<Props> = () => {
 
       <div className={styles.wrapper}>
         <section className={styles.section}>
-          <h2 className={styles['section-heading']}>Digest</h2>
+          <h2 className={styles['section-heading']}>Email digest</h2>
 
           <SettingRow
             name="Frequency"
