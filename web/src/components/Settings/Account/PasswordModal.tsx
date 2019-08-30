@@ -22,7 +22,7 @@ import * as usersService from '../../../services/users';
 import Button from '../../Common/Button';
 import Modal, { Header, Body } from '../../Common/Modal';
 import Flash from '../../Common/Flash';
-import settingsStyles from '../Settings.module.scss';
+import settingsStyles from '../Settings.scss';
 
 interface Props {
   isOpen: boolean;

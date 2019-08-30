@@ -14,7 +14,7 @@ const Sidebar: React.SFC<Props> = () => {
           <Link to={getSettingsPath(SettingSections.account)}>Account</Link>
         </li>
         <li>
-          <Link to={getSettingsPath(SettingSections.email)}>Email</Link>
+          <Link to={getSettingsPath(SettingSections.notification)}>Email</Link>
         </li>
         <li>
           <Link to={getSettingsPath(SettingSections.billing)}>Billing</Link>

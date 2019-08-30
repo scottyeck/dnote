@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import SettingRow from '../SettingRow';
 import * as usersService from '../../../services/users';
 
-import settingsStyles from '../Settings.module.scss';
+import settingsStyles from '../Settings.scss';
 
 interface Props {
   verified: boolean;

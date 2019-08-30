@@ -17,6 +17,7 @@
  */
 
 import { apiClient } from '../libs/http';
+import { EmailPrefData } from '../store/auth';
 
 export function updateUser({ name }) {
   const payload = { name };
@@ -111,13 +112,20 @@ export function updateEmailPreference({ token, digestFrequency }) {
   return apiClient.patch(endpoint, payload);
 }
 
-export function getEmailPreference({ token }) {
+interface GetEmailPreferenceParams {
+  // if not logged in, users can optionally make an authenticated request using a token
+  token?: string;
+}
+
+export function getEmailPreference({
+  token
+}: GetEmailPreferenceParams): Promise<EmailPrefData> {
   let endpoint = '/account/email-preference';
   if (token) {
     endpoint = `${endpoint}?token=${token}`;
   }
 
-  return apiClient.get(endpoint);
+  return apiClient.get<EmailPrefData>(endpoint);
 }
 
 export function getMe() {

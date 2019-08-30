@@ -130,7 +130,7 @@ export function getSubscriptionCheckoutPath(searchObj = {}): Location {
 
 export enum SettingSections {
   account = 'account',
-  email = 'email',
+  notification = 'notification',
   billing = 'billing'
 }
 

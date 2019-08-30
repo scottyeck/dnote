@@ -27,7 +27,7 @@ import EmailVerificationRow from './EmailVerificationRow';
 import Flash from '../../Common/Flash';
 import { useSelector } from '../../../store';
 
-import settingsStyles from '../Settings.module.scss';
+import styles from '../Settings.scss';
 
 interface Props {}
 
@@ -53,7 +53,7 @@ const Account: React.SFC<Props> = () => {
         when={successMsg !== ''}
         id="T-success-flash"
         kind="success"
-        wrapperClassName={settingsStyles.flash}
+        wrapperClassName={styles.flash}
         onDismiss={() => {
           setSuccessMsg('');
         }}
@@ -63,7 +63,7 @@ const Account: React.SFC<Props> = () => {
       <Flash
         when={failureMsg !== ''}
         kind="danger"
-        wrapperClassName={settingsStyles.flash}
+        wrapperClassName={styles.flash}
         onDismiss={() => {
           setFailureMsg('');
         }}
@@ -71,49 +71,51 @@ const Account: React.SFC<Props> = () => {
         {failureMsg}
       </Flash>
 
-      <section className={settingsStyles.section}>
-        <h2 className={settingsStyles['section-heading']}>Profile</h2>
+      <div className={styles.wrapper}>
+        <section className={styles.section}>
+          <h2 className={styles['section-heading']}>Profile</h2>
 
-        <SettingRow
-          name="Email"
-          value={user.email}
-          actionContent={
-            <button
-              id="T-change-email-button"
-              className={classnames('button-no-ui', settingsStyles.edit)}
-              type="button"
-              onClick={() => {
-                setEmailModalOpen(true);
-              }}
-            >
-              Edit
-            </button>
-          }
-        />
+          <SettingRow
+            name="Email"
+            value={user.email}
+            actionContent={
+              <button
+                id="T-change-email-button"
+                className={classnames('button-no-ui', styles.edit)}
+                type="button"
+                onClick={() => {
+                  setEmailModalOpen(true);
+                }}
+              >
+                Edit
+              </button>
+            }
+          />
 
-        <EmailVerificationRow
-          verified={user.emailVerified}
-          setSuccessMsg={setSuccessMsg}
-          setFailureMsg={setFailureMsg}
-        />
+          <EmailVerificationRow
+            verified={user.emailVerified}
+            setSuccessMsg={setSuccessMsg}
+            setFailureMsg={setFailureMsg}
+          />
 
-        <SettingRow
-          name="Password"
-          desc=" Set a unique password to protect your data."
-          actionContent={
-            <button
-              id="T-change-password-button"
-              className={classnames('button-no-ui', settingsStyles.edit)}
-              type="button"
-              onClick={() => {
-                setPasswordModalOpen(true);
-              }}
-            >
-              Edit
-            </button>
-          }
-        />
-      </section>
+          <SettingRow
+            name="Password"
+            desc=" Set a unique password to protect your data."
+            actionContent={
+              <button
+                id="T-change-password-button"
+                className={classnames('button-no-ui', styles.edit)}
+                type="button"
+                onClick={() => {
+                  setPasswordModalOpen(true);
+                }}
+              >
+                Edit
+              </button>
+            }
+          />
+        </section>
+      </div>
 
       <EmailModal
         isOpen={emailModalOpen}

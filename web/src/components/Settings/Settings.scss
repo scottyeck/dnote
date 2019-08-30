@@ -16,45 +16,83 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import '../App/rem';
+@import '../App/font';
+@import '../App/theme';
+
 .wrapper {
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.14);
 }
 
-// .form-container {
-//   .actions {
-//     margin-top: 12px;
-//   }
-// }
-//
-// .input-help {
-//   font-size: 1.3rem;
-//   color: gray;
-//   margin-top: 5px;
-// }
-//
-// .input-group {
-//   .copy-button {
-//     border-width: 1px;
-//     background: transparent;
-//     border-color: #ced4da;
-//     color: #333744;
-//     width: 85px;
-//
-//     &:hover {
-//       box-shadow: 0px 0px 4px 2px #eaeaea;
-//       background: #fbfbfb;
-//     }
-//
-//     &.copied {
-//     }
-//   }
-// }
-//
-// .danger-zone {
-//   margin-top: 26px;
-//
-//   .danger-zone-heading {
-//     margin-bottom: 18px;
-//   }
-// }
+.section {
+  margin-top: rem(24px);
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.section-heading {
+  @include font-size('regular');
+  font-weight: 400;
+  padding-bottom: rem(4px);
+  background: $light;
+  padding: rem(4px) rem(12px);
+}
+.section-content {
+  margin-top: rem(20px);
+}
+
+.actions {
+  margin-top: rem(12px);
+  text-align: right;
+}
+
+.input-row {
+  &:not(:first-child) {
+    margin-top: rem(8px);
+  }
+}
+
+.flash {
+  margin-bottom: rem(12px);
+}
+
+button.edit {
+  color: $link;
+  padding: 0;
+
+  &:hover {
+    color: $link-hover;
+  }
+  @include breakpoint(md) {
+    margin-left: rem(16px);
+  }
+}
+
+.input-label {
+  width: 100%;
+}
+
+.verification-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @include breakpoint(lg) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.verification-banner-cta {
+  margin-top: rem(12px);
+  align-self: flex-end;
+
+  @include breakpoint(lg) {
+    margin-top: 0;
+    align-self: initial;
+  }
+}

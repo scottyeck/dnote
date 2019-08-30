@@ -23,18 +23,18 @@ import { RouteComponentProps } from 'react-router-dom';
 import Account from './Account';
 import Sidebar from './Sidebar';
 import { SettingSections } from '../../libs/paths';
-// import Notification from './Notification';
+import Notification from './Notification';
 // import Billing from './Billing';
 
-import styles from './Settings.scss';
+// import styles from './Settings.scss';
 
 function renderContent(section: string): React.ReactNode {
   if (section === SettingSections.account) {
     return <Account />;
   }
-  //  if (section === Sections.email) {
-  //    return <Notification />;
-  //  }
+  if (section === SettingSections.notification) {
+    return <Notification />;
+  }
   //  if (section === Sections.billing) {
   //    return <Billing />;
   //  }
@@ -65,7 +65,7 @@ const Settings: React.SFC<Props> = ({ match }) => {
           </div>
 
           <div className="col-12 col-md-12 col-lg-9">
-            <div className={styles.wrapper}>{renderContent(section)}</div>
+            {renderContent(section)}
           </div>
         </div>
       </div>
