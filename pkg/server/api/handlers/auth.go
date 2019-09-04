@@ -33,12 +33,14 @@ type Session struct {
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	Pro           bool   `json:"pro"`
+	Encrypted     bool   `json:"encrypted"`
 }
 
 func makeSession(user database.User, account database.Account) Session {
 	return Session{
 		UUID:          user.UUID,
 		Pro:           user.Cloud,
+		Encrypted:     user.Encrypted,
 		Email:         account.Email.String,
 		EmailVerified: account.EmailVerified,
 	}

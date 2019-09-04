@@ -35,6 +35,7 @@ import Edit from './components/Edit';
 import Note from './components/Note';
 import Books from './components/Books';
 import Subscription from './components/Subscription';
+import Classic from './components/Classic';
 import Checkout from './components/Subscription/Checkout';
 import {
   notePathDef,
@@ -49,7 +50,8 @@ import {
   subscriptionsCheckoutPathDef,
   getJoinPath,
   emailPrefPathDef,
-  verifyEmailPathDef
+  verifyEmailPathDef,
+  classicMigrationPathDef
 } from './libs/paths';
 
 const AuthenticatedHome = userOnly(Home);
@@ -128,6 +130,11 @@ const routes = [
     path: noteNewPathDef,
     exact: true,
     component: AuthenticatedNew
+  },
+  {
+    path: classicMigrationPathDef,
+    exact: true,
+    component: Classic
   },
   {
     component: NotFound

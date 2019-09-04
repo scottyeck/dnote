@@ -47,7 +47,8 @@ export const initialState: AuthState = {
       uuid: '',
       email: '',
       emailVerified: false,
-      pro: false
+      pro: false,
+      encrypted: false
     },
     errorMessage: ''
   },
@@ -93,7 +94,8 @@ function reduceUsers(
           uuid: user.uuid,
           email: user.email,
           emailVerified: user.emailVerified,
-          pro: user.pro
+          pro: user.pro,
+          encrypted: user.encrypted
         },
         errorMessage: '',
         isFetching: false,

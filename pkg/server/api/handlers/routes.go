@@ -362,7 +362,9 @@ func NewRouter(app *App) *mux.Router {
 		{"GET", "/notes", auth(app.getNotes, &proOnly), false},
 		{"GET", "/notes/{noteUUID}", auth(app.getNote, &proOnly), true},
 		{"GET", "/calendar", auth(app.getCalendar, &proOnly), true},
-		//Route{"GET", "/books/{bookUUID}", cors(auth(app.getBook)), true},
+
+		// migration of classic users
+		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), false},
 
 		// v1
 		{"POST", "/v1/sync", cors(app.Sync), true},

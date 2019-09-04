@@ -33,6 +33,7 @@ export const subscriptionsPathDef = '/subscriptions';
 export const subscriptionsCheckoutPathDef = '/subscriptions/checkout';
 export const emailPrefPathDef = '/email-preference';
 export const verifyEmailPathDef = '/verify-email/:token';
+export const classicMigrationPathDef = '/classic/:step?';
 
 // filterSearchObj filters the given search object and returns a new object
 function filterSearchObj(obj) {
@@ -141,6 +142,20 @@ export enum SettingSections {
 
 export function getSettingsPath(section: SettingSections) {
   return `/settings/${section}`;
+}
+
+export enum ClassicMigrationSteps {
+  login = 'login',
+  setPassword = 'set-password',
+  decrypt = 'decrypt'
+}
+
+export function getClassicMigrationPath(step: ClassicMigrationSteps) {
+  if (step === ClassicMigrationSteps.login) {
+    return '/classic';
+  }
+
+  return `/classic/${step}`;
 }
 
 // checkCurrentPath checks if the current path is the given path
