@@ -42,12 +42,9 @@ import { updateQuery, updatePage } from '../../store/filters';
 import {
   homePathDef,
   notePathDef,
-  joinPathDef,
-  loginPathDef,
-  subscriptionsPathDef,
-  subscriptionsCheckoutPathDef,
-  emailPrefPathDef,
-  verifyEmailPathDef
+  noHeaderPaths,
+  subscriptionPaths,
+  noFooterPaths
 } from '../../libs/paths';
 
 import './App.global.scss';
@@ -135,42 +132,21 @@ const App: React.SFC<Props> = ({ location }) => {
   return (
     <Fragment>
       <HeaderData />
+
       <Switch>
-        <Route
-          path={[
-            loginPathDef,
-            joinPathDef,
-            emailPrefPathDef,
-            verifyEmailPathDef
-          ]}
-          exact
-          component={null}
-        />
-        <Route
-          path={[subscriptionsPathDef, subscriptionsCheckoutPathDef]}
-          exact
-          component={SubscriptionHeader}
-        />
+        <Route path={noHeaderPaths} exact component={null} />
+        <Route path={subscriptionPaths} exact component={SubscriptionHeader} />
         <Route path={notePathDef} exact component={NoteHeader} />
         <Route path={homePathDef} component={NormalHeader} />
       </Switch>
+
       <main className={styles.wrapper}>
         <SystemMessage />
         <Switch>{render()}</Switch>
       </main>
+
       <Switch>
-        <Route
-          path={[
-            loginPathDef,
-            joinPathDef,
-            subscriptionsPathDef,
-            subscriptionsCheckoutPathDef,
-            emailPrefPathDef,
-            verifyEmailPathDef
-          ]}
-          exact
-          component={null}
-        />
+        <Route path={noFooterPaths} exact component={null} />
         <Route
           path="/"
           render={() => {

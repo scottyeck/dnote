@@ -35,6 +35,28 @@ export const emailPrefPathDef = '/email-preference';
 export const verifyEmailPathDef = '/verify-email/:token';
 export const classicMigrationPathDef = '/classic/:step?';
 
+// layout definitions
+export const noHeaderPaths = [
+  loginPathDef,
+  joinPathDef,
+  emailPrefPathDef,
+  verifyEmailPathDef,
+  classicMigrationPathDef
+];
+export const noFooterPaths = [
+  loginPathDef,
+  joinPathDef,
+  subscriptionsPathDef,
+  subscriptionsCheckoutPathDef,
+  emailPrefPathDef,
+  verifyEmailPathDef,
+  classicMigrationPathDef
+];
+export const subscriptionPaths = [
+  subscriptionsPathDef,
+  subscriptionsCheckoutPathDef
+];
+
 // filterSearchObj filters the given search object and returns a new object
 function filterSearchObj(obj) {
   const ret: any = {};

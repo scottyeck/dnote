@@ -18,10 +18,22 @@
 
 import React, { useState } from 'react';
 
-import authStyles from '../Common/Auth.module.scss';
+import authStyles from '../Common/Auth.scss';
 import Button from '../Common/Button';
 
-function LoginForm({ onLogin, submitting, email, onUpdateEmail }) {
+interface Props {
+  email: string;
+  submitting: boolean;
+  onLogin: (email: string, password: string) => void;
+  onUpdateEmail: (string) => void;
+}
+
+const LoginForm: React.SFC<Props> = ({
+  onLogin,
+  submitting,
+  email,
+  onUpdateEmail
+}) => {
   const [password, setPassword] = useState('');
 
   return (
@@ -74,6 +86,7 @@ function LoginForm({ onLogin, submitting, email, onUpdateEmail }) {
 
       <Button
         type="submit"
+        size="normal"
         kind="first"
         stretch
         className={authStyles['auth-button']}
@@ -83,6 +96,6 @@ function LoginForm({ onLogin, submitting, email, onUpdateEmail }) {
       </Button>
     </form>
   );
-}
+};
 
 export default LoginForm;

@@ -365,6 +365,7 @@ func NewRouter(app *App) *mux.Router {
 
 		// migration of classic users
 		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), false},
+		{"GET", "/classic/me", auth(app.classicGetMe, nil), true},
 
 		// v1
 		{"POST", "/v1/sync", cors(app.Sync), true},
@@ -384,10 +385,12 @@ func NewRouter(app *App) *mux.Router {
 		{"PATCH", "/v1/notes/{noteUUID}", auth(app.UpdateNote, &proOnly), false},
 		{"DELETE", "/v1/notes/{noteUUID}", auth(app.DeleteNote, &proOnly), false},
 
-		{"POST", "/v1/register", app.register, true},
-		{"POST", "/v1/signin", cors(app.signin), true},
 		{"OPTIONS", "/v1/signout", cors(app.signoutOptions), true},
 		{"POST", "/v1/signout", cors(app.signout), true},
+
+		// for migrating classic users
+		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
+		{"POST", "/v1/signin", cors(app.classicSignin), true},
 
 		// v2
 		{"OPTIONS", "/v2/notes", cors(app.NotesOptionsV2), true},
@@ -395,6 +398,9 @@ func NewRouter(app *App) *mux.Router {
 
 		{"OPTIONS", "/v2/books", cors(app.BooksOptionsV2), true},
 		{"POST", "/v2/books", cors(auth(app.CreateBookV2, &proOnly)), true},
+
+		{"POST", "/v2/signin", cors(app.signin), true},
+		{"POST", "/v2/register", app.register, true},
 	}
 
 	router := mux.NewRouter().StrictSlash(true)

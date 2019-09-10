@@ -19,7 +19,7 @@
 import React, { useState } from 'react';
 
 import Button from '../Common/Button';
-import authStyles from '../Common/Auth.module.scss';
+import authStyles from '../Common/Auth.scss';
 
 function JoinForm({ onJoin, submitting, email, onUpdateEmail }) {
   const [password, setPassword] = useState('');

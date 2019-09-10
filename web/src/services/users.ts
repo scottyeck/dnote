@@ -65,7 +65,7 @@ export function register(params: RegisterParams) {
     password: params.password
   };
 
-  return apiClient.post('/v1/register', payload);
+  return apiClient.post('/v2/register', payload);
 }
 
 interface SigninParams {
@@ -79,7 +79,7 @@ export function signin(params: SigninParams) {
     password: params.password
   };
 
-  return apiClient.post('/v1/signin', payload);
+  return apiClient.post('/v2/signin', payload);
 }
 
 export function signout() {
@@ -134,29 +134,28 @@ export function getMe() {
   });
 }
 
-export function legacySignin({ email, password }) {
-  const payload = { email, password };
-
-  return apiClient.post('/legacy/signin', payload);
+// classic
+export function classicPresignin({ email }) {
+  return apiClient.get(`/v1/presignin?email=${email}`);
 }
 
-export function legacyGetMe() {
-  return apiClient.get('/legacy/me').then(res => {
-    return res.user;
+interface classicPresigninPayload {
+  key: string;
+  expiresAt: number;
+  cipherKeyEnc: string;
+}
+
+export function classicSignin({
+  email,
+  authKey
+}): Promise<classicPresigninPayload> {
+  const payload = { email, auth_key: authKey };
+
+  return apiClient.post<any>('/v1/signin', payload).then(resp => {
+    return {
+      key: resp.key,
+      expiresAt: resp.expires_at,
+      cipherKeyEnc: resp.cipher_key_enc
+    };
   });
-}
-
-export function legacyRegister({ email, authKey, cipherKeyEnc, iteration }) {
-  const payload = {
-    email,
-    auth_key: authKey,
-    iteration,
-    cipher_key_enc: cipherKeyEnc
-  };
-
-  return apiClient.post('/legacy/register', payload);
-}
-
-export function legacyMigrate() {
-  return apiClient.patch('/legacy/migrate', {});
 }

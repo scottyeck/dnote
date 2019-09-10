@@ -37,12 +37,14 @@ type Session struct {
 }
 
 func makeSession(user database.User, account database.Account) Session {
+	encrypted := account.AuthKeyHash != ""
+
 	return Session{
 		UUID:          user.UUID,
 		Pro:           user.Cloud,
-		Encrypted:     user.Encrypted,
 		Email:         account.Email.String,
 		EmailVerified: account.EmailVerified,
+		Encrypted:     encrypted,
 	}
 }
 
