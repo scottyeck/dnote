@@ -95,8 +95,8 @@ export function fetchOne(
   return apiClient.get<FetchOneResponse>(endpoint, {});
 }
 
-export function legacyFetchNotes() {
-  const endpoint = '/legacy/notes';
+export function classicFetch() {
+  const endpoint = '/classic/notes';
 
   return apiClient.get(endpoint, { credentials: 'include' });
 }

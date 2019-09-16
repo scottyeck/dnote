@@ -171,3 +171,7 @@ export function classicSetPassword({ password }: classicSetPasswordPayload) {
 
   return apiClient.patch<any>('/classic/set-password', payload);
 }
+
+export function classicCompleteMigrate() {
+  return apiClient.patch('/classic/migrate', '');
+}

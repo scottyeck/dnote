@@ -25,6 +25,7 @@ import (
 	"github.com/dnote/dnote/pkg/server/api/crypt"
 	"github.com/dnote/dnote/pkg/server/api/helpers"
 	"github.com/dnote/dnote/pkg/server/api/operations"
+	"github.com/dnote/dnote/pkg/server/api/presenters"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/log"
 	"github.com/pkg/errors"
@@ -241,4 +242,22 @@ func (a *App) classicSetPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (a *App) classicGetNotes(w http.ResponseWriter, r *http.Request) {
+	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
+	if !ok {
+		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
+		return
+	}
+
+	var notes []database.Note
+	db := database.DBConn
+	if err := db.Where("user_id = ? AND encrypted = true", user.ID).Find(&notes).Error; err != nil {
+		handleError(w, "finding notes", err, http.StatusInternalServerError)
+		return
+	}
+
+	presented := presenters.PresentNotes(notes)
+	respondJSON(w, presented)
 }

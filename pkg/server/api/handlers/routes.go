@@ -367,7 +367,7 @@ func NewRouter(app *App) *mux.Router {
 		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
 		{"POST", "/v1/signin", cors(app.classicSignin), true},
 		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), false},
-		// {"GET", "/classic/me", auth(app.classicGetMe, nil), true},
+		{"GET", "/classic/notes", auth(app.classicGetNotes, nil), true},
 		{"PATCH", "/classic/set-password", auth(app.classicSetPassword, nil), false},
 
 		// v1

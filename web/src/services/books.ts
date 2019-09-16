@@ -19,7 +19,12 @@
 import qs from 'qs';
 import { apiClient } from '../libs/http';
 
-export function fetch(queryObj = {}) {
+interface BookFetchParams {
+  name?: string;
+  encrypted?: boolean;
+}
+
+export function fetch(queryObj: BookFetchParams = {}) {
   const baseURL = '/v1/books';
 
   const queryStr = qs.stringify(queryObj);

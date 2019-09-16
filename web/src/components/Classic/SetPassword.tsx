@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import Helmet from 'react-helmet';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import Logo from '../Icons/Logo';
 import authStyles from '../Common/Auth.scss';
 import Flash from '../Common/Flash';
-// import { useDispatch } from '../../store';
-// import { getCurrentUser } from '../../store/auth';
 import JoinForm from '../Join/JoinForm';
 import * as usersService from '../../services/users';
+import {
+  getClassicMigrationPath,
+  ClassicMigrationSteps
+} from '../../libs/paths';
 
-interface Props {}
+interface Props extends RouteComponentProps {}
 
-const SetPassword: React.SFC<Props> = () => {
+const SetPassword: React.SFC<Props> = ({ history }) => {
   const [errMsg, setErrMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  // const dispatch = useDispatch();
 
   async function handleJoin(email, password, passwordConfirmation) {
     if (!password) {
@@ -31,8 +33,9 @@ const SetPassword: React.SFC<Props> = () => {
 
     try {
       await usersService.classicSetPassword({ password });
-      // guestOnly HOC will redirect the user accordingly after the current user is fetched
-      // await dispatch(getCurrentUser());
+
+      const p = getClassicMigrationPath(ClassicMigrationSteps.decrypt);
+      history.push(p);
     } catch (err) {
       console.log(err);
       setErrMsg(err.message);
@@ -45,6 +48,7 @@ const SetPassword: React.SFC<Props> = () => {
       <Helmet>
         <title>Set password (Classic)</title>
       </Helmet>
+
       <div className="container">
         <a href="/">
           <Logo fill="#252833" width={60} height={60} />
@@ -71,4 +75,4 @@ const SetPassword: React.SFC<Props> = () => {
   );
 };
 
-export default SetPassword;
+export default withRouter(SetPassword);

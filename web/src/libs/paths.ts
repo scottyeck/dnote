@@ -189,3 +189,20 @@ export function checkCurrentPath(location: Location, path: string): boolean {
 
   return Boolean(match);
 }
+
+// checkCurrentPathIn checks if the current path is one of the given paths
+export function checkCurrentPathIn(
+  location: Location,
+  paths: string[]
+): boolean {
+  for (let i = 0; i < paths.length; ++i) {
+    const p = paths[i];
+    const match = checkCurrentPath(location, p);
+
+    if (match) {
+      return true;
+    }
+  }
+
+  return false;
+}

@@ -17,6 +17,7 @@
  */
 
 import React, { useState, useEffect, Fragment } from 'react';
+import classnames from 'classnames';
 import { hot } from 'react-hot-loader/root';
 import { Switch, Route } from 'react-router';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -44,7 +45,8 @@ import {
   notePathDef,
   noHeaderPaths,
   subscriptionPaths,
-  noFooterPaths
+  noFooterPaths,
+  checkCurrentPathIn
 } from '../../libs/paths';
 
 import './App.global.scss';
@@ -129,6 +131,9 @@ const App: React.SFC<Props> = ({ location }) => {
     return <Splash />;
   }
 
+  const noHeader = checkCurrentPathIn(location, noHeaderPaths);
+  const noFooter = checkCurrentPathIn(location, noFooterPaths);
+
   return (
     <Fragment>
       <HeaderData />
@@ -140,7 +145,12 @@ const App: React.SFC<Props> = ({ location }) => {
         <Route path={homePathDef} component={NormalHeader} />
       </Switch>
 
-      <main className={styles.wrapper}>
+      <main
+        className={classnames(styles.wrapper, {
+          [styles.noheader]: noHeader,
+          [styles.nofooter]: noFooter
+        })}
+      >
         <SystemMessage />
         <Switch>{render()}</Switch>
       </main>
