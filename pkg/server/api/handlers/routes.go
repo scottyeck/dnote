@@ -364,8 +364,11 @@ func NewRouter(app *App) *mux.Router {
 		{"GET", "/calendar", auth(app.getCalendar, &proOnly), true},
 
 		// migration of classic users
+		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
+		{"POST", "/v1/signin", cors(app.classicSignin), true},
 		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), false},
-		{"GET", "/classic/me", auth(app.classicGetMe, nil), true},
+		// {"GET", "/classic/me", auth(app.classicGetMe, nil), true},
+		{"PATCH", "/classic/set-password", auth(app.classicSetPassword, nil), false},
 
 		// v1
 		{"POST", "/v1/sync", cors(app.Sync), true},
@@ -387,10 +390,6 @@ func NewRouter(app *App) *mux.Router {
 
 		{"OPTIONS", "/v1/signout", cors(app.signoutOptions), true},
 		{"POST", "/v1/signout", cors(app.signout), true},
-
-		// for migrating classic users
-		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
-		{"POST", "/v1/signin", cors(app.classicSignin), true},
 
 		// v2
 		{"OPTIONS", "/v2/notes", cors(app.NotesOptionsV2), true},

@@ -159,3 +159,15 @@ export function classicSignin({
     };
   });
 }
+
+interface classicSetPasswordPayload {
+  password: string;
+}
+
+export function classicSetPassword({ password }: classicSetPasswordPayload) {
+  const payload = {
+    password
+  };
+
+  return apiClient.patch<any>('/classic/set-password', payload);
+}

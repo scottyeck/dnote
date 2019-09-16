@@ -27,6 +27,8 @@ import (
 	"github.com/dnote/dnote/pkg/server/api/operations"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/log"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (a *App) classicMigrate(w http.ResponseWriter, r *http.Request) {
@@ -200,4 +202,43 @@ func (a *App) classicGetMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondJSON(w, response)
+}
+
+type classicSetPasswordPayload struct {
+	Password string
+}
+
+func (a *App) classicSetPassword(w http.ResponseWriter, r *http.Request) {
+	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
+	if !ok {
+		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
+		return
+	}
+
+	db := database.DBConn
+
+	var params classicSetPasswordPayload
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		handleError(w, "decoding payload", err, http.StatusInternalServerError)
+		return
+	}
+
+	var account database.Account
+	if err := db.Where("user_id = ?", user.ID).First(&account).Error; err != nil {
+		handleError(w, "getting user", nil, http.StatusInternalServerError)
+		return
+	}
+
+	hashedNewPassword, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, errors.Wrap(err, "hashing password").Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := db.Model(&account).Update("password", string(hashedNewPassword)).Error; err != nil {
+		http.Error(w, errors.Wrap(err, "updating password").Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
