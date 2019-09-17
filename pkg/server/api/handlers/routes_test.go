@@ -184,6 +184,8 @@ func TestGetCredential(t *testing.T) {
 }
 
 func TestAuthMiddleware(t *testing.T) {
+	defer testutils.ClearData()
+
 	// set up
 	db := database.DBConn
 
@@ -297,6 +299,8 @@ func TestAuthMiddleware(t *testing.T) {
 }
 
 func TestTokenAuthMiddleWare(t *testing.T) {
+	defer testutils.ClearData()
+
 	// set up
 	db := database.DBConn
 
