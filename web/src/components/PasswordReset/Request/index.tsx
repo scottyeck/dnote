@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 
-import styles from '../../Common/Auth.scss';
 import Flash from '../../Common/Flash';
 import Form from './Form';
 import Logo from '../../Icons/Logo';
 import * as usersService from '../../../services/users';
+import authStyles from '../../Common/Auth.scss';
+import styles from './Request.scss';
 
 interface Props {}
 
@@ -37,7 +38,7 @@ const PasswordResetRequest: React.SFC<Props> = () => {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={authStyles.page}>
       <Helmet>
         <title>Reset Password</title>
       </Helmet>
@@ -46,17 +47,17 @@ const PasswordResetRequest: React.SFC<Props> = () => {
         <Link to="/">
           <Logo fill="#252833" width={60} height={60} />
         </Link>
-        <h1 className="heading">Reset Password</h1>
+        <h1 className={authStyles.heading}>Reset Password</h1>
 
-        <div className="auth-body">
-          <div className="auth-panel">
+        <div className={authStyles.body}>
+          <div className={authStyles.panel}>
             <Flash kind="danger" when={errorMsg !== ''}>
               {errorMsg}
             </Flash>
 
             {processed ? (
               <div>
-                <div className="success-msg">
+                <div className={styles['success-msg']}>
                   Check your email for a link to reset your password.
                 </div>
                 <Link
@@ -71,8 +72,8 @@ const PasswordResetRequest: React.SFC<Props> = () => {
             )}
           </div>
 
-          <div className={styles.footer}>
-            <div className={styles.callout}>Remember your password?</div>
+          <div className={authStyles.footer}>
+            <div className={authStyles.callout}>Remember your password?</div>
             <Link to="/login" className="auth-cta">
               Login
             </Link>

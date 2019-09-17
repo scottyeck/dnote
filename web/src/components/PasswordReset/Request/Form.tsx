@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import classnames from 'classnames';
 
 import Button from '../../Common/Button';
-import styles from '../../Common/Auth.scss';
+import authStyles from '../../Common/Auth.scss';
+import styles from './Form.scss';
 
 interface Props {
   onSubmit: (email: string) => void;
@@ -23,14 +25,14 @@ const PasswordResetRequestForm: React.SFC<Props> = ({
       }}
       className="auth-form"
     >
-      <div className={styles['input-row']}>
+      <div className={authStyles['input-row']}>
         <label htmlFor="email-input" className={styles.label}>
           Enter your email and we will send you a link to reset your password
           <input
             id="email-input"
             type="email"
             placeholder="you@example.com"
-            className="form-control"
+            className={classnames('form-control', styles['email-input'])}
             value={email}
             onChange={e => {
               const val = e.target.value;
@@ -46,7 +48,7 @@ const PasswordResetRequestForm: React.SFC<Props> = ({
         size="normal"
         kind="first"
         stretch
-        className={styles['auth-button']}
+        className={authStyles['auth-button']}
         isBusy={submitting}
       >
         Send password reset email
