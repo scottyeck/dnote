@@ -293,8 +293,8 @@ func (w *logResponseWriter) WriteHeader(code int) {
 	w.ResponseWriter.WriteHeader(code)
 }
 
-func logging(inner http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func logging(inner http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
 		lw := logResponseWriter{w, http.StatusOK}
@@ -308,16 +308,16 @@ func logging(inner http.Handler) http.Handler {
 			"duration":   fmt.Sprintf("%dms", time.Since(start)/1000000),
 			"userAgent":  r.Header.Get("User-Agent"),
 		}).Info("incoming request")
-	})
+	}
 }
 
-func applyMiddleware(h http.Handler, rateLimit bool) http.Handler {
+func applyMiddleware(h http.HandlerFunc, rateLimit bool) http.Handler {
 	ret := h
 	ret = logging(ret)
 
-	// if rateLimit && os.Getenv("GO_ENV") != "TEST" {
-	// 	ret = limit(ret)
-	// }
+	if rateLimit && os.Getenv("GO_ENV") != "TEST" {
+		ret = limit(ret)
+	}
 
 	return ret
 }
@@ -368,40 +368,31 @@ func NewRouter(app *App) *mux.Router {
 		// migration of classic users
 		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
 		{"POST", "/v1/signin", cors(app.classicSignin), true},
-		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), false},
+		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), true},
 		{"GET", "/classic/notes", auth(app.classicGetNotes, nil), true},
-		{"PATCH", "/classic/set-password", auth(app.classicSetPassword, nil), false},
+		{"PATCH", "/classic/set-password", auth(app.classicSetPassword, nil), true},
 
-		// v1
-		{"POST", "/v1/sync", cors(app.Sync), true},
-		{"GET", "/v1/sync/fragment", cors(auth(app.GetSyncFragment, &proOnly)), true},
-		{"GET", "/v1/sync/state", cors(auth(app.GetSyncState, &proOnly)), true},
+		// v3
+		{"GET", "/v3/sync/fragment", cors(auth(app.GetSyncFragment, &proOnly)), true},
+		{"GET", "/v3/sync/state", cors(auth(app.GetSyncState, &proOnly)), true},
 
-		{"OPTIONS", "/v1/books", cors(app.BooksOptions), false},
-		{"GET", "/v1/demo/books", app.GetDemoBooks, true},
-		{"GET", "/v1/books", cors(auth(app.GetBooks, &proOnly)), true},
-		{"GET", "/v1/books/{bookUUID}", cors(auth(app.GetBook, &proOnly)), true},
-		{"POST", "/v1/books", cors(app.CreateBook), false},
-		{"PATCH", "/v1/books/{bookUUID}", cors(auth(app.UpdateBook, &proOnly)), false},
-		{"DELETE", "/v1/books/{bookUUID}", cors(auth(app.DeleteBook, &proOnly)), false},
+		{"OPTIONS", "/v3/books", cors(app.BooksOptions), true},
+		{"GET", "/v3/books", cors(auth(app.GetBooks, &proOnly)), true},
+		{"GET", "/v3/books/{bookUUID}", cors(auth(app.GetBook, &proOnly)), true},
+		{"POST", "/v3/books", cors(auth(app.CreateBook, &proOnly)), true},
+		{"PATCH", "/v3/books/{bookUUID}", cors(auth(app.UpdateBook, &proOnly)), false},
+		{"DELETE", "/v3/books/{bookUUID}", cors(auth(app.DeleteBook, &proOnly)), false},
+		{"GET", "/v3/demo/books", app.GetDemoBooks, true},
 
-		{"OPTIONS", "/v1/notes", cors(app.NotesOptions), true},
-		{"POST", "/v1/notes", cors(app.CreateNote), false},
-		{"PATCH", "/v1/notes/{noteUUID}", auth(app.UpdateNote, &proOnly), false},
-		{"DELETE", "/v1/notes/{noteUUID}", auth(app.DeleteNote, &proOnly), false},
+		{"OPTIONS", "/v3/notes", cors(app.NotesOptions), true},
+		{"POST", "/v3/notes", cors(auth(app.CreateNote, &proOnly)), true},
+		{"PATCH", "/v3/notes/{noteUUID}", auth(app.UpdateNote, &proOnly), false},
+		{"DELETE", "/v3/notes/{noteUUID}", auth(app.DeleteNote, &proOnly), false},
 
-		{"OPTIONS", "/v1/signout", cors(app.signoutOptions), true},
-		{"POST", "/v1/signout", cors(app.signout), true},
-
-		// v2
-		{"OPTIONS", "/v2/notes", cors(app.NotesOptionsV2), true},
-		{"POST", "/v2/notes", cors(auth(app.CreateNoteV2, &proOnly)), true},
-
-		{"OPTIONS", "/v2/books", cors(app.BooksOptionsV2), true},
-		{"POST", "/v2/books", cors(auth(app.CreateBookV2, &proOnly)), true},
-
-		{"POST", "/v2/signin", cors(app.signin), true},
-		{"POST", "/v2/register", app.register, true},
+		{"POST", "/v3/signin", cors(app.signin), true},
+		{"OPTIONS", "/v3/signout", cors(app.signoutOptions), true},
+		{"POST", "/v3/signout", cors(app.signout), true},
+		{"POST", "/v3/register", app.register, true},
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -413,6 +404,9 @@ func NewRouter(app *App) *mux.Router {
 			Path(route.Pattern).
 			Handler(applyMiddleware(handler, route.RateLimit))
 	}
+
+	router.PathPrefix("/v1").Handler(applyMiddleware(app.notSupported, true))
+	router.PathPrefix("/v2").Handler(applyMiddleware(app.notSupported, true))
 
 	return router
 }
