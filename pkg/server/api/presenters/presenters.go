@@ -102,6 +102,7 @@ func PresentNote(note database.Note) Note {
 			Label: note.Book.Label,
 		},
 		User: NoteUser{
+			Name: note.User.Name,
 			UUID: note.User.UUID,
 		},
 	}
