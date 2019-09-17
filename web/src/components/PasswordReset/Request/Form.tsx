@@ -23,7 +23,7 @@ const PasswordResetRequestForm: React.SFC<Props> = ({
 
         onSubmit(email);
       }}
-      className="auth-form"
+      className={authStyles.form}
     >
       <div className={authStyles['input-row']}>
         <label htmlFor="email-input" className={styles.label}>

@@ -38,7 +38,7 @@ import Subscription from './components/Subscription';
 import Classic from './components/Classic';
 import Checkout from './components/Subscription/Checkout';
 import PasswordResetRequest from './components/PasswordReset/Request';
-// import PasswordReset from './components/PasswordReset/Confirm';
+import PasswordResetConfirm from './components/PasswordReset/Confirm';
 import {
   notePathDef,
   homePathDef,
@@ -65,7 +65,7 @@ const AuthenticatedBooks = userOnly(Books);
 const GuestJoin = guestOnly(Join);
 const GuestLogin = guestOnly(Login);
 const GuestPasswordResetRequest = guestOnly(PasswordResetRequest);
-// const GuestPasswordReset = guestOnly(PasswordReset);
+const GuestPasswordResetConfirm = guestOnly(PasswordResetConfirm);
 const AuthenticatedSettings = userOnly(Settings);
 const AuthenticatedSubscription = userOnly(
   Subscription,
@@ -150,7 +150,7 @@ const routes = [
   {
     path: passwordResetConfirmPathDef,
     exact: true,
-    component: Classic
+    component: GuestPasswordResetConfirm
   },
   {
     component: NotFound

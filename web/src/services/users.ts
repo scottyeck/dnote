@@ -134,6 +134,17 @@ export function getMe() {
   });
 }
 
+interface ResetPasswordParams {
+  token: string;
+  password: string;
+}
+
+export function resetPassword({ token, password }: ResetPasswordParams) {
+  const payload = { token, password };
+
+  return apiClient.patch('/reset-password', payload);
+}
+
 // classic
 export function classicPresignin({ email }) {
   return apiClient.get(`/v1/presignin?email=${email}`);
