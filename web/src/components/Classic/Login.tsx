@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import Helmet from 'react-helmet';
 
-import { useSelector, useDispatch } from '../../store';
+import { useDispatch } from '../../store';
 import { loginHelper, aes256GcmDecrypt } from '../../crypto';
 import { bufToB64, b64ToBuf } from '../../libs/encoding';
-import {
-  ClassicMigrationSteps,
-  getClassicMigrationPath,
-  getHomePath
-} from '../../libs/paths';
 import { getCurrentUser } from '../../store/auth';
 import { classicPresignin, classicSignin } from '../../services/users';
 import authStyles from '../Common/Auth.scss';
@@ -20,11 +14,6 @@ import LoginForm from '../Login/LoginForm';
 interface Props {}
 
 const ClassicLogin: React.SFC<Props> = () => {
-  const { user } = useSelector(state => {
-    return {
-      user: state.auth.user
-    };
-  });
   const [errMsg, setErrMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [emailVal, setEmailVal] = useState('');
@@ -69,25 +58,6 @@ const ClassicLogin: React.SFC<Props> = () => {
       setErrMsg(err.message);
       setSubmitting(false);
     }
-  }
-
-  if (!user.isFetched) {
-    return <div>Loading</div>;
-  }
-
-  const userData = user.data;
-  const loggedIn = userData.uuid !== '';
-
-  if (loggedIn && !userData.encrypted) {
-    return <Redirect to={getHomePath()} />;
-  }
-
-  if (loggedIn && userData.encrypted) {
-    return (
-      <Redirect
-        to={getClassicMigrationPath(ClassicMigrationSteps.setPassword)}
-      />
-    );
   }
 
   return (

@@ -41,8 +41,21 @@ func (a *App) classicMigrate(w http.ResponseWriter, r *http.Request) {
 
 	db := database.DBConn
 
-	if err := db.Model(&user).Update("encrypted = ?", false).Error; err != nil {
-		handleError(w, "updating user", err, http.StatusInternalServerError)
+	var account database.Account
+	if err := db.Where("user_id = ?", user.ID).First(&account).Error; err != nil {
+		handleError(w, "finding account", err, http.StatusInternalServerError)
+		return
+	}
+
+	if err := db.Model(&account).
+		Update(map[string]interface{}{
+			"salt":                 "",
+			"auth_key_hash":        "",
+			"cipher_key_enc":       "",
+			"client_kdf_iteration": 0,
+			"server_kdf_iteration": 0,
+		}).Error; err != nil {
+		handleError(w, "updating account", err, http.StatusInternalServerError)
 		return
 	}
 }

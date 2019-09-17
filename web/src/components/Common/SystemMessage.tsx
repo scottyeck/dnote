@@ -26,7 +26,6 @@ import Flash from './Flash';
 import { unsetMessage } from '../../store/ui';
 import { useSelector, useDispatch } from '../../store';
 import { MessageState } from '../../store/ui';
-import styles from './SystemMessage.scss';
 
 interface Props extends RouteComponentProps {}
 
@@ -64,7 +63,7 @@ const SystemMessage: React.SFC<Props> = ({ location }) => {
   const messageData = message[matchedPath];
 
   return (
-    <div className={classnames('container mobile-nopadding', styles.wrapper)}>
+    <div className={classnames('container mobile-nopadding')}>
       <Flash
         kind={messageData.kind}
         onDismiss={() => {

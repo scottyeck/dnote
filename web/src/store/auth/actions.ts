@@ -131,7 +131,7 @@ export function getCurrentUser(
               email: '',
               emailVerified: false,
               pro: false,
-              encrypted: false
+              classic: false
             })
           );
           return;

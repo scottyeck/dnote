@@ -86,6 +86,9 @@ const ClassicDecrypt: React.SFC<Props> = ({ history }) => {
           path: homePathDef
         })
       );
+
+      localStorage.removeItem('cipherKey');
+
       history.push('/');
     } catch (e) {
       console.log(e);

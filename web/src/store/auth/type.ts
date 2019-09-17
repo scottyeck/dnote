@@ -6,7 +6,7 @@ export interface UserData {
   emailVerified: boolean;
   pro: boolean;
   // TODO: remove once all classic users have been migrated
-  encrypted: boolean;
+  classic: boolean;
 }
 
 export interface EmailPrefData {
