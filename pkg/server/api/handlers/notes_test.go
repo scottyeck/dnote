@@ -244,6 +244,7 @@ func TestGetNote(t *testing.T) {
 	}
 }
 
+// TODO: finish the test after implementing note sharing
 // func TestGetNote_guestAccessPrivate(t *testing.T) {
 // 	defer testutils.ClearData()
 // 	db := database.DBConn

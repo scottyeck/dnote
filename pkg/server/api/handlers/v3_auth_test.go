@@ -24,6 +24,30 @@ func init() {
 	mailer.InitTemplates(&templatePath)
 }
 
+func assertSessionResp(t *testing.T, res *http.Response) {
+	// after register, should sign in user
+	var got SessionResponse
+	if err := json.NewDecoder(res.Body).Decode(&got); err != nil {
+		t.Fatal(errors.Wrap(err, "decoding payload"))
+	}
+
+	var sessionCount int
+	var session database.Session
+	db := database.DBConn
+	testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
+	testutils.MustExec(t, db.First(&session), "getting session")
+
+	assert.Equal(t, sessionCount, 1, "sessionCount mismatch")
+	assert.Equal(t, got.Key, session.Key, "session Key mismatch")
+	assert.Equal(t, got.ExpiresAt, session.ExpiresAt.Unix(), "session ExpiresAt mismatch")
+
+	c := testutils.GetCookieByName(res.Cookies(), "id")
+	assert.Equal(t, c.Value, session.Key, "session key mismatch")
+	assert.Equal(t, c.Path, "/", "session path mismatch")
+	assert.Equal(t, c.HttpOnly, true, "session HTTPOnly mismatch")
+	assert.Equal(t, c.Expires.Unix(), session.ExpiresAt.Unix(), "session Expires mismatch")
+}
+
 func TestRegister(t *testing.T) {
 	testCases := []struct {
 		email    string
@@ -77,25 +101,7 @@ func TestRegister(t *testing.T) {
 			assert.Equal(t, user.MaxUSN, 0, "MaxUSN mismatch")
 
 			// after register, should sign in user
-			var got SessionResponse
-			if err := json.NewDecoder(res.Body).Decode(&got); err != nil {
-				t.Fatal(errors.Wrap(err, "decoding payload"))
-			}
-
-			var sessionCount int
-			var session database.Session
-			testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
-			testutils.MustExec(t, db.First(&session), "getting session")
-
-			assert.Equal(t, sessionCount, 1, "sessionCount mismatch")
-			assert.Equal(t, got.Key, session.Key, "session Key mismatch")
-			assert.Equal(t, got.ExpiresAt, session.ExpiresAt.Unix(), "session ExpiresAt mismatch")
-
-			c := testutils.GetCookieByName(res.Cookies(), "id")
-			assert.Equal(t, c.Value, session.Key, "session key mismatch")
-			assert.Equal(t, c.Path, "/", "session path mismatch")
-			assert.Equal(t, c.HttpOnly, true, "session HTTPOnly mismatch")
-			assert.Equal(t, c.Expires.Unix(), session.ExpiresAt.Unix(), "session Expires mismatch")
+			assertSessionResp(t, res)
 		})
 	}
 }
@@ -153,6 +159,124 @@ func TestRegisterMissingParams(t *testing.T) {
 
 		assert.Equal(t, accountCount, 0, "accountCount mismatch")
 		assert.Equal(t, userCount, 0, "userCount mismatch")
+	})
+}
+
+func TestSignIn(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupAccountData(u, "alice@example.com", "pass1234")
+
+		dat := `{"email": "alice@example.com", "password": "pass1234"}`
+		req := testutils.MakeReq(server, "POST", "/v3/signin", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+		var user database.User
+		testutils.MustExec(t, db.Model(&database.User{}).First(&user), "finding user")
+		assert.NotEqual(t, user.LastLoginAt, nil, "LastLoginAt mismatch")
+
+		// after register, should sign in user
+		assertSessionResp(t, res)
+	})
+
+	t.Run("wrong password", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupAccountData(u, "alice@example.com", "pass1234")
+
+		dat := `{"email": "alice@example.com", "password": "wrongpassword1234"}`
+		req := testutils.MakeReq(server, "POST", "/v3/signin", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusUnauthorized, "")
+
+		var user database.User
+		testutils.MustExec(t, db.Model(&database.User{}).First(&user), "finding user")
+		assert.DeepEqual(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
+
+		var sessionCount int
+		testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
+		assert.Equal(t, sessionCount, 0, "sessionCount mismatch")
+	})
+
+	t.Run("wrong email", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupAccountData(u, "alice@example.com", "pass1234")
+
+		dat := `{"email": "bob@example.com", "password": "pass1234"}`
+		req := testutils.MakeReq(server, "POST", "/v3/signin", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusUnauthorized, "")
+
+		var user database.User
+		testutils.MustExec(t, db.Model(&database.User{}).First(&user), "finding user")
+		assert.DeepEqual(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
+
+		var sessionCount int
+		testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
+		assert.Equal(t, sessionCount, 0, "sessionCount mismatch")
+	})
+
+	t.Run("nonexistent email", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		dat := `{"email": "nonexistent@example.com", "password": "pass1234"}`
+		req := testutils.MakeReq(server, "POST", "/v3/signin", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusUnauthorized, "")
+
+		var sessionCount int
+		testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
+		assert.Equal(t, sessionCount, 0, "sessionCount mismatch")
 	})
 }
 
