@@ -7,6 +7,7 @@ import Form from './Form';
 import Logo from '../../Icons/Logo';
 import * as usersService from '../../../services/users';
 import authStyles from '../../Common/Auth.scss';
+import { getLoginPath } from '../../../libs/paths';
 import styles from './Request.scss';
 
 interface Props {}
@@ -61,8 +62,8 @@ const PasswordResetRequest: React.SFC<Props> = () => {
                   Check your email for a link to reset your password.
                 </div>
                 <Link
-                  to="/login"
-                  className="button button-first button-stretch"
+                  to={getLoginPath()}
+                  className="button button-first button-normal button-stretch"
                 >
                   Back to sign in
                 </Link>
@@ -74,7 +75,7 @@ const PasswordResetRequest: React.SFC<Props> = () => {
 
           <div className={authStyles.footer}>
             <div className={authStyles.callout}>Remember your password?</div>
-            <Link to="/login" className="auth-cta">
+            <Link to={getLoginPath()} className="auth-cta">
               Login
             </Link>
           </div>

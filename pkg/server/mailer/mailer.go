@@ -43,6 +43,8 @@ type Email struct {
 var (
 	// T is a map of templates
 	T = map[string]*template.Template{}
+	// EmailTypeResetPassword represents a reset password email
+	EmailTypeResetPassword = "reset_password"
 	// EmailTypeWeeklyDigest represents a weekly digest email
 	EmailTypeWeeklyDigest = "weekly_digest"
 	// EmailTypeEmailVerification represents an email verification email

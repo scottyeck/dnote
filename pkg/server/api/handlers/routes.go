@@ -349,6 +349,7 @@ func NewRouter(app *App) *mux.Router {
 		{"GET", "/me", auth(app.getMe, nil), true},
 		{"POST", "/verification-token", auth(app.createVerificationToken, nil), true},
 		{"PATCH", "/verify-email", app.verifyEmail, true},
+		{"POST", "/reset-token", app.createResetToken, true},
 		{"PATCH", "/account/profile", auth(app.updateProfile, nil), true},
 		{"PATCH", "/account/password", auth(app.updatePassword, nil), true},
 		{"GET", "/account/email-preference", tokenAuth(app.getEmailPreference, database.TokenTypeEmailPreference), true},

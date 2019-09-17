@@ -19,12 +19,15 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/dnote/dnote/pkg/server/api/helpers"
 	"github.com/dnote/dnote/pkg/server/api/operations"
 	"github.com/dnote/dnote/pkg/server/database"
+	"github.com/dnote/dnote/pkg/server/mailer"
+	"github.com/pkg/errors"
 )
 
 // Session represents user session
@@ -80,4 +83,64 @@ func (a *App) getMe(w http.ResponseWriter, r *http.Request) {
 	tx.Commit()
 
 	respondJSON(w, response)
+}
+
+type createResetTokenPayload struct {
+	Email string `json:"email"`
+}
+
+func (a *App) createResetToken(w http.ResponseWriter, r *http.Request) {
+	db := database.DBConn
+
+	var params createResetTokenPayload
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	var account database.Account
+	conn := db.Where("email = ?", params.Email).First(&account)
+	if conn.RecordNotFound() {
+		return
+	}
+	if err := conn.Error; err != nil {
+		handleError(w, errors.Wrap(err, "finding account").Error(), nil, http.StatusInternalServerError)
+		return
+	}
+
+	resetToken, err := generateResetToken()
+	if err != nil {
+		handleError(w, errors.Wrap(err, "generating token").Error(), nil, http.StatusInternalServerError)
+		return
+	}
+
+	token := database.Token{
+		UserID: account.UserID,
+		Value:  resetToken,
+		Type:   database.TokenTypeResetPassword,
+	}
+
+	if err := db.Save(&token).Error; err != nil {
+		http.Error(w, errors.Wrap(err, "saving token").Error(), http.StatusInternalServerError)
+		return
+	}
+
+	subject := "Reset your password"
+	data := struct {
+		Subject string
+		Token   string
+	}{
+		subject,
+		resetToken,
+	}
+	email := mailer.NewEmail("noreply@dnote.io", []string{params.Email}, subject)
+	if err := email.ParseTemplate(mailer.EmailTypeResetPassword, data); err != nil {
+		http.Error(w, errors.Wrap(err, "parsing template").Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := email.Send(); err != nil {
+		http.Error(w, errors.Wrap(err, "sending email").Error(), http.StatusInternalServerError)
+		return
+	}
 }
