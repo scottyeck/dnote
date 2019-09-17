@@ -121,7 +121,7 @@ func (a *App) createResetToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.Save(&token).Error; err != nil {
-		http.Error(w, errors.Wrap(err, "saving token").Error(), http.StatusInternalServerError)
+		handleError(w, errors.Wrap(err, "saving token").Error(), nil, http.StatusInternalServerError)
 		return
 	}
 
@@ -135,12 +135,12 @@ func (a *App) createResetToken(w http.ResponseWriter, r *http.Request) {
 	}
 	email := mailer.NewEmail("noreply@dnote.io", []string{params.Email}, subject)
 	if err := email.ParseTemplate(mailer.EmailTypeResetPassword, data); err != nil {
-		http.Error(w, errors.Wrap(err, "parsing template").Error(), http.StatusInternalServerError)
+		handleError(w, errors.Wrap(err, "parsing template").Error(), nil, http.StatusInternalServerError)
 		return
 	}
 
 	if err := email.Send(); err != nil {
-		http.Error(w, errors.Wrap(err, "sending email").Error(), http.StatusInternalServerError)
+		handleError(w, errors.Wrap(err, "sending email").Error(), nil, http.StatusInternalServerError)
 		return
 	}
 }

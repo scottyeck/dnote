@@ -99,15 +99,20 @@ func InitTemplates(srcDir *string) {
 
 	weeklyDigestTmpl, err := initTemplate(box, EmailTypeWeeklyDigest)
 	if err != nil {
-		panic(errors.Wrap(err, "initializing template"))
+		panic(errors.Wrap(err, "initializing weekly digest template"))
 	}
 	emailVerificationTmpl, err := initTemplate(box, EmailTypeEmailVerification)
 	if err != nil {
-		panic(errors.Wrap(err, "initializing template"))
+		panic(errors.Wrap(err, "initializing email verification template"))
+	}
+	passwowrdResetTmpl, err := initTemplate(box, EmailTypeResetPassword)
+	if err != nil {
+		panic(errors.Wrap(err, "initializing password reset template"))
 	}
 
 	T[EmailTypeWeeklyDigest] = weeklyDigestTmpl
 	T[EmailTypeEmailVerification] = emailVerificationTmpl
+	T[EmailTypeResetPassword] = passwowrdResetTmpl
 }
 
 // NewEmail returns a pointer to an Email struct with the given data

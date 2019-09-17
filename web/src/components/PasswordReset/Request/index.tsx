@@ -65,7 +65,7 @@ const PasswordResetRequest: React.SFC<Props> = () => {
                   to={getLoginPath()}
                   className="button button-first button-normal button-stretch"
                 >
-                  Back to sign in
+                  Back to login
                 </Link>
               </div>
             ) : (
