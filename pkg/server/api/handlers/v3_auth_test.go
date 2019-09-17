@@ -162,6 +162,42 @@ func TestRegisterMissingParams(t *testing.T) {
 	})
 }
 
+func TestRegisterDuplicateEmail(t *testing.T) {
+	defer testutils.ClearData()
+	db := database.DBConn
+
+	// Setup
+	server := httptest.NewServer(NewRouter(&App{
+		Clock: clock.NewMock(),
+	}))
+	defer server.Close()
+
+	u := testutils.SetupUserData()
+	testutils.SetupAccountData(u, "sung@dnote.io", "somepassword")
+
+	dat := `{"email": "sung@dnote.io", "password": "foobarbaz"}`
+	req := testutils.MakeReq(server, "POST", "/v3/register", dat)
+
+	// Execute
+	res := testutils.HTTPDo(t, req)
+
+	// Test
+	assert.StatusCodeEquals(t, res, http.StatusBadRequest, "status code mismatch")
+
+	var accountCount, userCount, verificationTokenCount int
+	testutils.MustExec(t, db.Model(&database.Account{}).Count(&accountCount), "counting account")
+	testutils.MustExec(t, db.Model(&database.User{}).Count(&userCount), "counting user")
+	testutils.MustExec(t, db.Model(&database.Token{}).Count(&verificationTokenCount), "counting verification token")
+
+	var user database.User
+	testutils.MustExec(t, db.Where("id = ?", u.ID).First(&user), "finding user")
+
+	assert.Equal(t, accountCount, 1, "account count mismatch")
+	assert.Equal(t, userCount, 1, "user count mismatch")
+	assert.Equal(t, verificationTokenCount, 0, "verification_token should not have been created")
+	assert.Equal(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
+}
+
 func TestSignIn(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		defer testutils.ClearData()
@@ -217,7 +253,7 @@ func TestSignIn(t *testing.T) {
 
 		var user database.User
 		testutils.MustExec(t, db.Model(&database.User{}).First(&user), "finding user")
-		assert.DeepEqual(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
+		assert.Equal(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
 
 		var sessionCount int
 		testutils.MustExec(t, db.Model(&database.Session{}).Count(&sessionCount), "counting session")
