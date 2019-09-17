@@ -5,7 +5,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import Form from './Form';
 import Logo from '../../Icons/Logo';
 import * as usersService from '../../../services/users';
-import { receiveUser } from '../../../store/auth';
+import { getCurrentUser } from '../../../store/auth';
 import { setMessage } from '../../../store/ui';
 import { useDispatch } from '../../../store';
 import { homePathDef } from '../../../libs/paths';
@@ -40,10 +40,10 @@ const PasswordResetConfirm: React.SFC<Props> = ({ match, history }) => {
 
     usersService
       .resetPassword({ token, password })
-      .then(res => {
-        const { user } = res;
-
-        dispatch(receiveUser(user));
+      .then(() => {
+        return dispatch(getCurrentUser());
+      })
+      .then(() => {
         dispatch(
           setMessage({
             message: 'Your password was successfully reset.',
