@@ -146,12 +146,13 @@ const App: React.SFC<Props> = ({ location }) => {
       </Switch>
 
       <main
-        className={classnames(styles.wrapper, {
+        className={classnames('page', styles.wrapper, {
           [styles.noheader]: noHeader,
           [styles.nofooter]: noFooter
         })}
       >
         <SystemMessage />
+
         <Switch>{render()}</Switch>
       </main>
 
