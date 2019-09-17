@@ -65,7 +65,7 @@ export function register(params: RegisterParams) {
     password: params.password
   };
 
-  return apiClient.post('/v2/register', payload);
+  return apiClient.post('/v3/register', payload);
 }
 
 interface SigninParams {
@@ -79,11 +79,11 @@ export function signin(params: SigninParams) {
     password: params.password
   };
 
-  return apiClient.post('/v2/signin', payload);
+  return apiClient.post('/v3/signin', payload);
 }
 
 export function signout() {
-  return apiClient.post('/v1/signout');
+  return apiClient.post('/v3/signout');
 }
 
 export function sendResetPasswordEmail({ email }) {
@@ -147,7 +147,7 @@ export function resetPassword({ token, password }: ResetPasswordParams) {
 
 // classic
 export function classicPresignin({ email }) {
-  return apiClient.get(`/v1/presignin?email=${email}`);
+  return apiClient.get(`/classic/presignin?email=${email}`);
 }
 
 interface classicPresigninPayload {
@@ -162,7 +162,7 @@ export function classicSignin({
 }): Promise<classicPresigninPayload> {
   const payload = { email, auth_key: authKey };
 
-  return apiClient.post<any>('/v1/signin', payload).then(resp => {
+  return apiClient.post<any>('/classic/signin', payload).then(resp => {
     return {
       key: resp.key,
       expiresAt: resp.expires_at,

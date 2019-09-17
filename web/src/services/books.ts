@@ -25,7 +25,7 @@ interface BookFetchParams {
 }
 
 export function fetch(queryObj: BookFetchParams = {}) {
-  const baseURL = '/v1/books';
+  const baseURL = '/v3/books';
 
   const queryStr = qs.stringify(queryObj);
 
@@ -54,22 +54,22 @@ interface CreatePayload {
 }
 
 export function create(payload: CreateParams) {
-  return apiClient.post<CreatePayload>('/v2/books', payload);
+  return apiClient.post<CreatePayload>('/v3/books', payload);
 }
 
 export function remove(uuid: string) {
-  return apiClient.del(`/v1/books/${uuid}`);
+  return apiClient.del(`/v3/books/${uuid}`);
 }
 
 // TODO: type
 type updateParams = any;
 
 export function update(uuid: string, payload: updateParams) {
-  return apiClient.patch(`/v1/books/${uuid}`, payload);
+  return apiClient.patch(`/v3/books/${uuid}`, payload);
 }
 
 export function get(bookUUID: string) {
-  const endpoint = `/v1/books/${bookUUID}`;
+  const endpoint = `/v3/books/${bookUUID}`;
 
   return apiClient.get(endpoint);
 }

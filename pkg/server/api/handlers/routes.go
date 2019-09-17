@@ -366,8 +366,8 @@ func NewRouter(app *App) *mux.Router {
 		{"GET", "/calendar", auth(app.getCalendar, &proOnly), true},
 
 		// migration of classic users
-		{"GET", "/v1/presignin", cors(app.classicPresignin), true},
-		{"POST", "/v1/signin", cors(app.classicSignin), true},
+		{"GET", "/classic/presignin", cors(app.classicPresignin), true},
+		{"POST", "/classic/signin", cors(app.classicSignin), true},
 		{"PATCH", "/classic/migrate", auth(app.classicMigrate, &proOnly), true},
 		{"GET", "/classic/notes", auth(app.classicGetNotes, nil), true},
 		{"PATCH", "/classic/set-password", auth(app.classicSetPassword, nil), true},
@@ -396,6 +396,10 @@ func NewRouter(app *App) *mux.Router {
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
+
+	router.PathPrefix("/v1").Handler(applyMiddleware(app.notSupported, true))
+	router.PathPrefix("/v2").Handler(applyMiddleware(app.notSupported, true))
+
 	for _, route := range routes {
 		handler := route.HandlerFunc
 
@@ -404,9 +408,6 @@ func NewRouter(app *App) *mux.Router {
 			Path(route.Pattern).
 			Handler(applyMiddleware(handler, route.RateLimit))
 	}
-
-	router.PathPrefix("/v1").Handler(applyMiddleware(app.notSupported, true))
-	router.PathPrefix("/v2").Handler(applyMiddleware(app.notSupported, true))
 
 	return router
 }
