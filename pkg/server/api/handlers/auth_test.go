@@ -4,44 +4,123 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/dnote/dnote/pkg/assert"
 	"github.com/dnote/dnote/pkg/clock"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/testutils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestCreateResetToken(t *testing.T) {
-	defer testutils.ClearData()
-	db := database.DBConn
+	t.Run("success", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
 
-	// Setup
-	server := httptest.NewServer(NewRouter(&App{
-		Clock: clock.NewMock(),
-	}))
-	defer server.Close()
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
 
-	u := testutils.SetupUserData()
-	testutils.SetupAccountData(u, "alice@example.com", "somepassword")
+		u := testutils.SetupUserData()
+		testutils.SetupAccountData(u, "alice@example.com", "somepassword")
 
-	dat := `{"email": "alice@example.com"}`
-	req := testutils.MakeReq(server, "POST", "/reset-token", dat)
+		dat := `{"email": "alice@example.com"}`
+		req := testutils.MakeReq(server, "POST", "/reset-token", dat)
 
-	// Execute
-	res := testutils.HTTPDo(t, req)
+		// Execute
+		res := testutils.HTTPDo(t, req)
 
-	// Test
-	assert.StatusCodeEquals(t, res, http.StatusOK, "Status code mismtach")
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "Status code mismtach")
 
-	var tokenCount int
-	testutils.MustExec(t, db.Model(&database.Token{}).Count(&tokenCount), "counting tokens")
+		var tokenCount int
+		testutils.MustExec(t, db.Model(&database.Token{}).Count(&tokenCount), "counting tokens")
 
-	var resetToken database.Token
-	testutils.MustExec(t, db.Where("user_id = ? AND type = ?", u.ID, database.TokenTypeResetPassword).First(&resetToken), "finding reset token")
+		var resetToken database.Token
+		testutils.MustExec(t, db.Where("user_id = ? AND type = ?", u.ID, database.TokenTypeResetPassword).First(&resetToken), "finding reset token")
 
-	assert.Equal(t, tokenCount, 1, "reset_token count mismatch")
-	assert.NotEqual(t, resetToken.Value, nil, "reset_token value mismatch")
-	if resetToken.UsedAt != nil {
-		t.Errorf("used_at should be nil but got: %+v", resetToken.UsedAt)
-	}
+		assert.Equal(t, tokenCount, 1, "reset_token count mismatch")
+		assert.NotEqual(t, resetToken.Value, nil, "reset_token value mismatch")
+		if resetToken.UsedAt != nil {
+			t.Errorf("used_at should be nil but got: %+v", resetToken.UsedAt)
+		}
+	})
+
+	t.Run("nonexistent email", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupAccountData(u, "alice@example.com", "somepassword")
+
+		dat := `{"email": "bob@example.com"}`
+		req := testutils.MakeReq(server, "POST", "/reset-token", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "Status code mismtach")
+
+		var tokenCount int
+		testutils.MustExec(t, db.Model(&database.Token{}).Count(&tokenCount), "counting tokens")
+		assert.Equal(t, tokenCount, 0, "reset_token count mismatch")
+	})
+}
+
+func TestResetPassword(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		a := testutils.SetupAccountData(u, "sung@dnote.io", "oldpassword")
+		tok := database.Token{
+			UserID: u.ID,
+			Value:  "MivFxYiSMMA4An9dP24DNQ==",
+			Type:   database.TokenTypeResetPassword,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+		otherTok := database.Token{
+			UserID: u.ID,
+			Value:  "somerandomvalue",
+			Type:   database.TokenTypeEmailVerification,
+		}
+		testutils.MustExec(t, db.Save(&otherTok), "preparing another token")
+
+		dat := `{"token": "MivFxYiSMMA4An9dP24DNQ==", "password": "newpassword"}`
+		req := testutils.MakeReq(server, "PATCH", "/reset-password", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "Status code mismatch")
+
+		var resetToken, verificationToken database.Token
+		var account database.Account
+		testutils.MustExec(t, db.Where("value = ?", "MivFxYiSMMA4An9dP24DNQ==").First(&resetToken), "finding reset token")
+		testutils.MustExec(t, db.Where("value = ?", "somerandomvalue").First(&verificationToken), "finding reset token")
+		testutils.MustExec(t, db.Where("id = ?", a.ID).First(&account), "finding account")
+
+		assert.NotEqual(t, resetToken.UsedAt, nil, "reset_token UsedAt mismatch")
+		passwordErr := bcrypt.CompareHashAndPassword([]byte(account.Password.String), []byte("newpassword"))
+		assert.Equal(t, passwordErr, nil, "Password mismatch")
+		assert.Equal(t, verificationToken.UsedAt, (*time.Time)(nil), "verificationToken UsedAt mismatch")
+	})
 }
