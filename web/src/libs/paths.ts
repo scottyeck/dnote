@@ -34,6 +34,8 @@ export const subscriptionsCheckoutPathDef = '/subscriptions/checkout';
 export const emailPrefPathDef = '/email-preference';
 export const verifyEmailPathDef = '/verify-email/:token';
 export const classicMigrationPathDef = '/classic/:step?';
+export const passwordResetRequestPathDef = '/password-reset';
+export const passwordResetConfirmPathDef = '/password-reset/:token';
 
 // layout definitions
 export const noHeaderPaths = [
@@ -41,7 +43,9 @@ export const noHeaderPaths = [
   joinPathDef,
   emailPrefPathDef,
   verifyEmailPathDef,
-  classicMigrationPathDef
+  classicMigrationPathDef,
+  passwordResetRequestPathDef,
+  passwordResetConfirmPathDef
 ];
 export const noFooterPaths = [
   loginPathDef,
@@ -50,7 +54,9 @@ export const noFooterPaths = [
   subscriptionsCheckoutPathDef,
   emailPrefPathDef,
   verifyEmailPathDef,
-  classicMigrationPathDef
+  classicMigrationPathDef,
+  passwordResetRequestPathDef,
+  passwordResetConfirmPathDef
 ];
 export const subscriptionPaths = [
   subscriptionsPathDef,
@@ -154,6 +160,14 @@ export function getSubscriptionPath(searchObj = {}): Location {
 
 export function getSubscriptionCheckoutPath(searchObj = {}): Location {
   return getLocation({ pathname: subscriptionsCheckoutPathDef, searchObj });
+}
+
+export function getPasswordResetRequestPath(searchObj = {}): Location {
+  return getLocation({ pathname: passwordResetRequestPathDef, searchObj });
+}
+
+export function getPasswordResetConfirmPath(searchObj = {}): Location {
+  return getLocation({ pathname: passwordResetConfirmPathDef, searchObj });
 }
 
 export enum SettingSections {

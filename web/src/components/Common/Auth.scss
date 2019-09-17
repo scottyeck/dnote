@@ -89,3 +89,9 @@
   width: 100%;
   margin-bottom: 0;
 }
+
+.forgot {
+  @include font-size('small');
+  float: right;
+  font-weight: 400;
+}

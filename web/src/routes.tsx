@@ -37,6 +37,8 @@ import Books from './components/Books';
 import Subscription from './components/Subscription';
 import Classic from './components/Classic';
 import Checkout from './components/Subscription/Checkout';
+import PasswordResetRequest from './components/PasswordReset/Request';
+// import PasswordReset from './components/PasswordReset/Confirm';
 import {
   notePathDef,
   homePathDef,
@@ -48,6 +50,8 @@ import {
   settingsPathDef,
   subscriptionsPathDef,
   subscriptionsCheckoutPathDef,
+  passwordResetRequestPathDef,
+  passwordResetConfirmPathDef,
   getJoinPath,
   emailPrefPathDef,
   verifyEmailPathDef,
@@ -60,6 +64,8 @@ const AuthenticatedEdit = userOnly(Edit);
 const AuthenticatedBooks = userOnly(Books);
 const GuestJoin = guestOnly(Join);
 const GuestLogin = guestOnly(Login);
+const GuestPasswordResetRequest = guestOnly(PasswordResetRequest);
+// const GuestPasswordReset = guestOnly(PasswordReset);
 const AuthenticatedSettings = userOnly(Settings);
 const AuthenticatedSubscription = userOnly(
   Subscription,
@@ -133,6 +139,16 @@ const routes = [
   },
   {
     path: classicMigrationPathDef,
+    exact: true,
+    component: Classic
+  },
+  {
+    path: passwordResetRequestPathDef,
+    exact: true,
+    component: GuestPasswordResetRequest
+  },
+  {
+    path: passwordResetConfirmPathDef,
     exact: true,
     component: Classic
   },
