@@ -123,4 +123,165 @@ func TestResetPassword(t *testing.T) {
 		assert.Equal(t, passwordErr, nil, "Password mismatch")
 		assert.Equal(t, verificationToken.UsedAt, (*time.Time)(nil), "verificationToken UsedAt mismatch")
 	})
+
+	t.Run("nonexistent token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		a := testutils.SetupAccountData(u, "sung@dnote.io", "somepassword")
+		tok := database.Token{
+			UserID: u.ID,
+			Value:  "MivFxYiSMMA4An9dP24DNQ==",
+			Type:   database.TokenTypeResetPassword,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+
+		dat := `{"token": "-ApMnyvpg59uOU5b-Kf5uQ==", "password": "oldpassword"}`
+		req := testutils.MakeReq(server, "PATCH", "/reset-password", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusBadRequest, "Status code mismatch")
+
+		var resetToken database.Token
+		var account database.Account
+		testutils.MustExec(t, db.Where("value = ?", "MivFxYiSMMA4An9dP24DNQ==").First(&resetToken), "finding reset token")
+		testutils.MustExec(t, db.Where("id = ?", a.ID).First(&account), "finding account")
+
+		assert.Equal(t, a.Password, account.Password, "password should not have been updated")
+		assert.Equal(t, a.Password, account.Password, "password should not have been updated")
+		assert.Equal(t, resetToken.UsedAt, (*time.Time)(nil), "used_at should be nil")
+	})
+
+	t.Run("expired token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		a := testutils.SetupAccountData(u, "sung@dnote.io", "somepassword")
+		tok := database.Token{
+			UserID: u.ID,
+			Value:  "MivFxYiSMMA4An9dP24DNQ==",
+			Type:   database.TokenTypeResetPassword,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+		testutils.MustExec(t, db.Model(&tok).Update("created_at", time.Now().Add(time.Minute*-11)), "Failed to prepare reset_token created_at")
+
+		dat := `{"token": "MivFxYiSMMA4An9dP24DNQ==", "password": "oldpassword"}`
+		req := testutils.MakeReq(server, "PATCH", "/reset-password", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusGone, "Status code mismatch")
+
+		var resetToken database.Token
+		var account database.Account
+		testutils.MustExec(t, db.Where("value = ?", "MivFxYiSMMA4An9dP24DNQ==").First(&resetToken), "failed to find reset_token")
+		testutils.MustExec(t, db.Where("id = ?", a.ID).First(&account), "failed to find account")
+		assert.Equal(t, a.Password, account.Password, "password should not have been updated")
+		assert.Equal(t, resetToken.UsedAt, (*time.Time)(nil), "used_at should be nil")
+	})
+
+	t.Run("used token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		a := testutils.SetupAccountData(u, "sung@dnote.io", "somepassword")
+
+		usedAt := time.Now().Add(time.Hour * -11).UTC()
+		tok := database.Token{
+			UserID: u.ID,
+			Value:  "MivFxYiSMMA4An9dP24DNQ==",
+			Type:   database.TokenTypeResetPassword,
+			UsedAt: &usedAt,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+		testutils.MustExec(t, db.Model(&tok).Update("created_at", time.Now().Add(time.Minute*-11)), "Failed to prepare reset_token created_at")
+
+		dat := `{"token": "MivFxYiSMMA4An9dP24DNQ==", "password": "oldpassword"}`
+		req := testutils.MakeReq(server, "PATCH", "/reset-password", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusBadRequest, "Status code mismatch")
+
+		var resetToken database.Token
+		var account database.Account
+		testutils.MustExec(t, db.Where("value = ?", "MivFxYiSMMA4An9dP24DNQ==").First(&resetToken), "failed to find reset_token")
+		testutils.MustExec(t, db.Where("id = ?", a.ID).First(&account), "failed to find account")
+		assert.Equal(t, a.Password, account.Password, "password should not have been updated")
+
+		if resetToken.UsedAt.Year() != usedAt.Year() ||
+			resetToken.UsedAt.Month() != usedAt.Month() ||
+			resetToken.UsedAt.Day() != usedAt.Day() ||
+			resetToken.UsedAt.Hour() != usedAt.Hour() ||
+			resetToken.UsedAt.Minute() != usedAt.Minute() ||
+			resetToken.UsedAt.Second() != usedAt.Second() {
+			t.Errorf("used_at should be %+v but got: %+v", usedAt, resetToken.UsedAt)
+		}
+	})
+
+	t.Run("using wrong type token: email_verification", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		a := testutils.SetupAccountData(u, "sung@dnote.io", "somepassword")
+		tok := database.Token{
+			UserID: u.ID,
+			Value:  "MivFxYiSMMA4An9dP24DNQ==",
+			Type:   database.TokenTypeEmailVerification,
+		}
+		testutils.MustExec(t, db.Save(&tok), "Failed to prepare reset_token")
+		testutils.MustExec(t, db.Model(&tok).Update("created_at", time.Now().Add(time.Minute*-11)), "Failed to prepare reset_token created_at")
+
+		dat := `{"token": "MivFxYiSMMA4An9dP24DNQ==", "password": "oldpassword"}`
+		req := testutils.MakeReq(server, "PATCH", "/reset-password", dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusBadRequest, "Status code mismatch")
+
+		var resetToken database.Token
+		var account database.Account
+		testutils.MustExec(t, db.Where("value = ?", "MivFxYiSMMA4An9dP24DNQ==").First(&resetToken), "failed to find reset_token")
+		testutils.MustExec(t, db.Where("id = ?", a.ID).First(&account), "failed to find account")
+
+		assert.Equal(t, a.Password, account.Password, "password should not have been updated")
+		assert.Equal(t, resetToken.UsedAt, (*time.Time)(nil), "used_at should be nil")
+	})
 }
