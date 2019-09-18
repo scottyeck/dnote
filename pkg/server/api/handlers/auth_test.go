@@ -13,6 +13,33 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestGetMe(t *testing.T) {
+	defer testutils.ClearData()
+	db := database.DBConn
+
+	// Setup
+	server := httptest.NewServer(NewRouter(&App{
+		Clock: clock.NewMock(),
+	}))
+	defer server.Close()
+
+	u := testutils.SetupUserData()
+	testutils.SetupAccountData(u, "alice@example.com", "somepassword")
+
+	dat := `{"email": "alice@example.com"}`
+	req := testutils.MakeReq(server, "POST", "/reset-token", dat)
+
+	// Execute
+	res := testutils.HTTPAuthDo(t, req, u)
+
+	// Test
+	assert.StatusCodeEquals(t, res, http.StatusOK, "Status code mismtach")
+
+	var user database.User
+	testutils.MustExec(t, db.Where("id = ?", u.ID).First(&user), "finding user")
+	assert.Equal(t, user.LastLoginAt, (*time.Time)(nil), "LastLoginAt mismatch")
+}
+
 func TestCreateResetToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		defer testutils.ClearData()
