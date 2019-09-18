@@ -581,6 +581,42 @@ func TestUpdateEmailPreference(t *testing.T) {
 		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
 		assert.Equal(t, preference.DigestWeekly, true, "email mismatch")
 	})
+
+	t.Run("create a record if not exists", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		tok := database.Token{
+			UserID: u.ID,
+			Type:   database.TokenTypeEmailPreference,
+			Value:  "someTokenValue",
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+
+		// Execute
+		dat := `{"digest_weekly": false}`
+		url := fmt.Sprintf("/account/email-preference?token=%s", "someTokenValue")
+		req := testutils.MakeReq(server, "PATCH", url, dat)
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+		var preferenceCount int
+		testutils.MustExec(t, db.Model(database.EmailPreference{}).Count(&preferenceCount), "counting preference")
+		assert.Equal(t, preferenceCount, 1, "preference count mismatch")
+
+		var preference database.EmailPreference
+		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
+		assert.Equal(t, preference.DigestWeekly, false, "email mismatch")
+	})
 }
 
 func TestGetEmailPreference(t *testing.T) {
