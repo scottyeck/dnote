@@ -375,7 +375,6 @@ func NewRouter(app *App) *mux.Router {
 		// v3
 		{"GET", "/v3/sync/fragment", cors(auth(app.GetSyncFragment, &proOnly)), true},
 		{"GET", "/v3/sync/state", cors(auth(app.GetSyncState, &proOnly)), true},
-
 		{"OPTIONS", "/v3/books", cors(app.BooksOptions), true},
 		{"GET", "/v3/books", cors(auth(app.GetBooks, &proOnly)), true},
 		{"GET", "/v3/books/{bookUUID}", cors(auth(app.GetBook, &proOnly)), true},
@@ -383,12 +382,10 @@ func NewRouter(app *App) *mux.Router {
 		{"PATCH", "/v3/books/{bookUUID}", cors(auth(app.UpdateBook, &proOnly)), false},
 		{"DELETE", "/v3/books/{bookUUID}", cors(auth(app.DeleteBook, &proOnly)), false},
 		{"GET", "/v3/demo/books", app.GetDemoBooks, true},
-
 		{"OPTIONS", "/v3/notes", cors(app.NotesOptions), true},
 		{"POST", "/v3/notes", cors(auth(app.CreateNote, &proOnly)), true},
 		{"PATCH", "/v3/notes/{noteUUID}", auth(app.UpdateNote, &proOnly), false},
 		{"DELETE", "/v3/notes/{noteUUID}", auth(app.DeleteNote, &proOnly), false},
-
 		{"POST", "/v3/signin", cors(app.signin), true},
 		{"OPTIONS", "/v3/signout", cors(app.signoutOptions), true},
 		{"POST", "/v3/signout", cors(app.signout), true},

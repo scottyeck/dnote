@@ -71,9 +71,7 @@ func TestCreateResetToken(t *testing.T) {
 
 		assert.Equal(t, tokenCount, 1, "reset_token count mismatch")
 		assert.NotEqual(t, resetToken.Value, nil, "reset_token value mismatch")
-		if resetToken.UsedAt != nil {
-			t.Errorf("used_at should be nil but got: %+v", resetToken.UsedAt)
-		}
+		assert.Equal(t, resetToken.UsedAt, (*time.Time)(nil), "reset_token UsedAt mismatch")
 	})
 
 	t.Run("nonexistent email", func(t *testing.T) {
