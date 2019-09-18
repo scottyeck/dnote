@@ -20,11 +20,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 
-module.exports = ({
-  production = false,
-  test = false,
-  standalone = false
-} = {}) => {
+module.exports = ({ production = false, test = false } = {}) => {
   let domain;
   if (production) {
     domain = 'dnote.io';
@@ -32,12 +28,7 @@ module.exports = ({
     domain = '127.0.0.1';
   }
 
-  let basename;
-  if (standalone) {
-    basename = '/';
-  } else {
-    basename = '/app';
-  }
+  const basename = '/';
 
   let baseURL;
   if (production) {

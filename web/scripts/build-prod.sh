@@ -9,7 +9,6 @@ compiledPath="$basePath/web/compiled"
 baseUrl=""
 assetBaseUrl=""
 
-STANDALONE=true \
 BASE_URL=$baseUrl \
 ASSET_BASE_URL=$assetBaseUrl \
 PUBLIC_PATH=$publicPath \

@@ -4,7 +4,6 @@ set -ex
 
 basePath="$GOPATH/src/github.com/dnote/dnote"
 
-standalone=${STANDALONE:-false}
 isTest=${IS_TEST:-false}
 baseUrl=$BASE_URL
 assetBaseUrl=$ASSET_BASE_URL
@@ -22,7 +21,6 @@ pushd "$basePath/web"
     "$basePath"/web/node_modules/.bin/webpack\
       --colors\
       --display-error-details\
-      --env.standalone="$standalone"\
       --env.isTest="$isTest"\
       --config "$basePath"/web/webpack/prod.config.js
 

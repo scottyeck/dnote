@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1090
-# dev.sh builds and starts development environment for standalone app
+# dev.sh builds and starts development environment
 set -eux -o pipefail
 
 # clean up background processes
@@ -27,7 +27,6 @@ set +a
   ASSET_BASE_URL=http://localhost:3000 \
   COMPILED_PATH="$appPath"/compiled \
   PUBLIC_PATH="$appPath"/public \
-  STANDALONE=true \
   COMPILED_PATH="$basePath/web/compiled" \
   IS_TEST=true \
     "$appPath"/scripts/webpack-dev.sh
