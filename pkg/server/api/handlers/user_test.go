@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -9,9 +10,11 @@ import (
 
 	"github.com/dnote/dnote/pkg/assert"
 	"github.com/dnote/dnote/pkg/clock"
+	"github.com/dnote/dnote/pkg/server/api/presenters"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/mailer"
 	"github.com/dnote/dnote/pkg/server/testutils"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -380,7 +383,7 @@ func TestUpdateEmail(t *testing.T) {
 	})
 }
 
-func TestUpdateEmailPreferences(t *testing.T) {
+func TestUpdateEmailPreference(t *testing.T) {
 	t.Run("with login", func(t *testing.T) {
 		defer testutils.ClearData()
 		db := database.DBConn
@@ -407,7 +410,7 @@ func TestUpdateEmailPreferences(t *testing.T) {
 		assert.Equal(t, preference.DigestWeekly, true, "preference mismatch")
 	})
 
-	t.Run("with token", func(t *testing.T) {
+	t.Run("with an unused token", func(t *testing.T) {
 		defer testutils.ClearData()
 		db := database.DBConn
 
@@ -480,4 +483,134 @@ func TestUpdateEmailPreferences(t *testing.T) {
 		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
 		assert.Equal(t, preference.DigestWeekly, true, "email mismatch")
 	})
+
+	t.Run("with expired token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupEmailPreferenceData(u, true)
+
+		usedAt := time.Now().Add(-11 * time.Minute)
+		tok := database.Token{
+			UserID: u.ID,
+			Type:   database.TokenTypeEmailPreference,
+			Value:  "someTokenValue",
+			UsedAt: &usedAt,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+
+		// Execute
+		dat := `{"digest_weekly": false}`
+		url := fmt.Sprintf("/account/email-preference?token=%s", "someTokenValue")
+		req := testutils.MakeReq(server, "PATCH", url, dat)
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusUnauthorized, "")
+
+		var preference database.EmailPreference
+		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
+		assert.Equal(t, preference.DigestWeekly, true, "email mismatch")
+	})
+
+	t.Run("with a used but unexpired token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupEmailPreferenceData(u, true)
+		usedAt := time.Now().Add(-9 * time.Minute)
+		tok := database.Token{
+			UserID: u.ID,
+			Type:   database.TokenTypeEmailPreference,
+			Value:  "someTokenValue",
+			UsedAt: &usedAt,
+		}
+		testutils.MustExec(t, db.Save(&tok), "preparing token")
+
+		dat := `{"digest_weekly": false}`
+		url := fmt.Sprintf("/account/email-preference?token=%s", "someTokenValue")
+		req := testutils.MakeReq(server, "PATCH", url, dat)
+
+		// Execute
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+		var preference database.EmailPreference
+		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
+		assert.Equal(t, preference.DigestWeekly, false, "DigestWeekly mismatch")
+	})
+
+	t.Run("no user and no token", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		u := testutils.SetupUserData()
+		testutils.SetupEmailPreferenceData(u, true)
+
+		// Execute
+		dat := `{"digest_weekly": false}`
+		req := testutils.MakeReq(server, "PATCH", "/account/email-preference", dat)
+		res := testutils.HTTPDo(t, req)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusUnauthorized, "")
+
+		var preference database.EmailPreference
+		testutils.MustExec(t, db.Where("user_id = ?", u.ID).First(&preference), "finding preference")
+		assert.Equal(t, preference.DigestWeekly, true, "email mismatch")
+	})
+}
+
+func TestGetEmailPreference(t *testing.T) {
+	defer testutils.ClearData()
+
+	// Setup
+	server := httptest.NewServer(NewRouter(&App{
+		Clock: clock.NewMock(),
+	}))
+	defer server.Close()
+
+	u := testutils.SetupUserData()
+	pref := testutils.SetupEmailPreferenceData(u, true)
+
+	// Execute
+	req := testutils.MakeReq(server, "GET", "/account/email-preference", "")
+	res := testutils.HTTPAuthDo(t, req, u)
+
+	// Test
+	assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+	var got presenters.EmailPreference
+	if err := json.NewDecoder(res.Body).Decode(&got); err != nil {
+		t.Fatal(errors.Wrap(err, "decoding payload"))
+	}
+
+	expected := presenters.EmailPreference{
+		DigestWeekly: pref.DigestWeekly,
+		CreatedAt:    presenters.FormatTS(pref.CreatedAt),
+		UpdatedAt:    presenters.FormatTS(pref.UpdatedAt),
+	}
+	assert.DeepEqual(t, got, expected, "payload mismatch")
 }
