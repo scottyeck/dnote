@@ -5,7 +5,7 @@ set -ex
 basePath="$GOPATH/src/github.com/dnote/dnote"
 
 isTest=${IS_TEST:-false}
-baseUrl=$BASE_URL
+bundleBaseUrl=$BUNDLE_BASE_URL
 assetBaseUrl=$ASSET_BASE_URL
 
 set -u
@@ -25,7 +25,7 @@ pushd "$basePath/web"
       --config "$basePath"/web/webpack/prod.config.js
 
   NODE_ENV=PRODUCTION \
-  BASE_URL=$baseUrl \
+  BUNDLE_BASE_URL=$bundleBaseUrl \
   ASSET_BASE_URL=$assetBaseUrl \
   PUBLIC_PATH=$PUBLIC_PATH \
   COMPILED_PATH=$COMPILED_PATH \

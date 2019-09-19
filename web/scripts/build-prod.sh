@@ -9,7 +9,7 @@ compiledPath="$basePath/web/compiled"
 baseUrl=""
 assetBaseUrl=""
 
-BASE_URL=$baseUrl \
+BUNDLE_BASE_URL=$baseUrl \
 ASSET_BASE_URL=$assetBaseUrl \
 PUBLIC_PATH=$publicPath \
 COMPILED_PATH=$compiledPath \

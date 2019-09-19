@@ -23,8 +23,8 @@ set +a
 (
   cd "$appPath" &&
 
-  BASE_URL=http://localhost:8080 \
-  ASSET_BASE_URL=http://localhost:3000 \
+  BUNDLE_BASE_URL=http://localhost:8080/dist \
+  ASSET_BASE_URL=http://localhost:3000/dist \
   COMPILED_PATH="$appPath"/compiled \
   PUBLIC_PATH="$appPath"/public \
   COMPILED_PATH="$basePath/web/compiled" \
