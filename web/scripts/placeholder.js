@@ -66,10 +66,10 @@ function getJSBundleTag() {
   if (isProduction) {
     jsFilename = manifest['app.js'];
   } else {
-    jsFilename = `app.js`;
+    jsFilename = '/app.js';
   }
 
-  const jsBundleUrl = `${bundleBaseURL}/${jsFilename}`;
+  const jsBundleUrl = `${bundleBaseURL}${jsFilename}`;
   return `<script src="${jsBundleUrl}"></script>`;
 }
 
