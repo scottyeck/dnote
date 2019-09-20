@@ -25,16 +25,16 @@ export function updateUser({ name }) {
   return apiClient.patch('/account/profile', payload);
 }
 
-interface UpdateEmailParams {
+interface UpdateProfileParams {
   email: string;
 }
 
-export function updateEmail({ email }: UpdateEmailParams) {
+export function updateProfile({ email }: UpdateProfileParams) {
   const payload = {
     email
   };
 
-  return apiClient.patch('/account/email', payload);
+  return apiClient.patch('/account/profile', payload);
 }
 
 interface UpdatePasswordParams {

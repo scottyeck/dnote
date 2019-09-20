@@ -70,7 +70,7 @@ const Login: React.SFC<Props> = ({ location }) => {
   const referrer = getReferrer(location);
 
   return (
-    <div className={authStyles.page}>
+    <div id="T-login-page" className={authStyles.page}>
       <Helmet>
         <title>Sign In</title>
       </Helmet>
