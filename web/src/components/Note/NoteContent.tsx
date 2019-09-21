@@ -133,6 +133,7 @@ const Content: React.SFC<Props> = ({ onDeleteModalOpen }) => {
         {note.user.uuid === user.uuid && (
           <div className={styles.actions}>
             <button
+              id="T-delete-note-button"
               type="button"
               className={classnames('button-no-ui', styles.action)}
               onClick={e => {
