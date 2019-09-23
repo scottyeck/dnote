@@ -3,7 +3,9 @@ set -eux
 
 basePath="$GOPATH/src/github.com/dnote/dnote"
 appPath="$basePath"/web
-wwwUrl=$WWW_URL
+rootUrl=$ROOT_URL
+
+echo "here is $rootUrl"
 
 (
   cd "$appPath" &&
@@ -18,8 +20,8 @@ wwwUrl=$WWW_URL
   IS_TEST=true \
     node "$appPath"/scripts/placeholder.js &&
 
+  ROOT_URL=$ROOT_URL \
   "$appPath"/node_modules/.bin/webpack-dev-server\
     --env.isTest="$IS_TEST"\
-    --env wwwUrl="$wwwUrl"\
     --config "$appPath"/webpack/dev.config.js
 )

@@ -26,7 +26,7 @@ set +a
 
   BUNDLE_BASE_URL=http://localhost:8080 \
   ASSET_BASE_URL=http://localhost:3000/dist \
-  WWW_URL=http://localhost:$serverPort \
+  ROOT_URL=http://localhost:$serverPort \
   COMPILED_PATH="$appPath"/compiled \
   PUBLIC_PATH="$appPath"/public \
   COMPILED_PATH="$basePath/web/compiled" \

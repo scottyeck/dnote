@@ -221,8 +221,6 @@ export function checkCurrentPathIn(
   return false;
 }
 
-export function getRootPath() {
-  return __WWW_URL__;
-
-  // return getHomePath();
+export function getRootUrl() {
+  return __ROOT_URL__;
 }

@@ -21,7 +21,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = ({ production = false, test = false } = {}) => {
-  const wwwUrl = process.env.WWW_URL;
+  const rootUrl = process.env.ROOT_URL;
 
   let stripePublicKey;
   if (test) {
@@ -31,7 +31,7 @@ module.exports = ({ production = false, test = false } = {}) => {
   }
 
   const compileTimeConstantForMinification = {
-    __WWW_URL__: JSON.stringify(wwwUrl),
+    __ROOT_URL__: JSON.stringify(rootUrl),
     __STRIPE_PUBLIC_KEY__: JSON.stringify(stripePublicKey)
   };
 

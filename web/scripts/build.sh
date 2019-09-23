@@ -7,7 +7,6 @@ basePath="$GOPATH/src/github.com/dnote/dnote"
 isTest=${IS_TEST:-false}
 bundleBaseUrl=$BUNDLE_BASE_URL
 assetBaseUrl=$ASSET_BASE_URL
-wwwUrl=$WWW_URL
 
 set -u
 rm -rf "$basePath/web/public"
@@ -19,11 +18,11 @@ pushd "$basePath/web"
     "$basePath"/web/scripts/setup.sh
 
   OUTPUT_PATH="$COMPILED_PATH" \
+  ROOT_URL="$ROOT_URL" \
     "$basePath"/web/node_modules/.bin/webpack\
       --colors\
       --display-error-details\
       --env.isTest="$isTest"\
-      --env wwwUrl="$wwwUrl"\
       --config "$basePath"/web/webpack/prod.config.js
 
   NODE_ENV=PRODUCTION \
