@@ -12,6 +12,7 @@ trap cleanup EXIT
 basePath="$GOPATH/src/github.com/dnote/dnote"
 appPath="$basePath/web"
 serverPath="$basePath/pkg/server"
+serverPort=3000
 
 # load env
 set -a
@@ -25,6 +26,7 @@ set +a
 
   BUNDLE_BASE_URL=http://localhost:8080 \
   ASSET_BASE_URL=http://localhost:3000/dist \
+  WWW_URL=http://localhost:$serverPort \
   COMPILED_PATH="$appPath"/compiled \
   PUBLIC_PATH="$appPath"/public \
   COMPILED_PATH="$basePath/web/compiled" \
@@ -35,4 +37,4 @@ devServerPID=$!
 
 # run server
 (cd "$serverPath" && CompileDaemon \
-  -command="$serverPath/server start")
+  -command="$serverPath/server start -port $serverPort")

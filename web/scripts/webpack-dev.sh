@@ -3,6 +3,7 @@ set -eux
 
 basePath="$GOPATH/src/github.com/dnote/dnote"
 appPath="$basePath"/web
+wwwUrl=$WWW_URL
 
 (
   cd "$appPath" &&
@@ -19,5 +20,6 @@ appPath="$basePath"/web
 
   "$appPath"/node_modules/.bin/webpack-dev-server\
     --env.isTest="$IS_TEST"\
+    --env wwwUrl="$wwwUrl"\
     --config "$appPath"/webpack/dev.config.js
 )

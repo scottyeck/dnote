@@ -3,3 +3,4 @@ declare module '*.scss';
 
 // globals defined by webpack-define-plugin
 declare const __STRIPE_PUBLIC_KEY__: string;
+declare const __WWW_URL__: string;
