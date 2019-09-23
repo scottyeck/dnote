@@ -50,7 +50,7 @@ build() {
   mkdir -p "$destDir"
   xgo \
     -go "$goVersion" \
-    -ldflags "-X main.apiEndpoint=https://api.dnote.io -X main.versionTag=$version" \
+    -ldflags "-X main.apiEndpoint=https://api.getdnote.com -X main.versionTag=$version" \
     --targets="$platform/$arch" \
     --tags "fts5" \
     --dest="$destDir" \
