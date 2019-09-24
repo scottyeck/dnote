@@ -6,11 +6,11 @@ import Logo from '../Icons/Logo';
 import authStyles from '../Common/Auth.scss';
 import Flash from '../Common/Flash';
 import JoinForm from '../Join/JoinForm';
-import * as usersService from '../../services/users';
+import * as usersService from 'jslib/services/users';
 import {
   getClassicMigrationPath,
   ClassicMigrationSteps
-} from '../../libs/paths';
+} from 'web/libs/paths';
 
 interface Props extends RouteComponentProps {}
 

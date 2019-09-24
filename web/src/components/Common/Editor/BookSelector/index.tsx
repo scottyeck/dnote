@@ -26,7 +26,7 @@ import CaretIcon from '../../../Icons/Caret';
 import SearchInput from '../../SearchInput';
 import { useDispatch, useSelector } from '../../../../store';
 import { updateBook } from '../../../../store/editor';
-import { booksToOptions } from '../../../../libs/select';
+import { booksToOptions } from 'jslib/helpers/select';
 import OptionItem from './OptionItem';
 import styles from './index.scss';
 

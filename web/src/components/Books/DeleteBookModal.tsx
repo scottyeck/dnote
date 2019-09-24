@@ -22,7 +22,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import Modal, { Header, Body } from '../Common/Modal';
 import Flash from '../Common/Flash';
-import * as booksOperation from '../../operations/books';
+import * as booksOperation from 'jslib/operations/books';
 import { removeBook } from '../../store/books';
 import { useSelector, useDispatch } from '../../store';
 import Button from '../Common/Button';

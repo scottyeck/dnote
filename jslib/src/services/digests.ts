@@ -16,8 +16,8 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { apiClient } from '../libs/http';
-import { getPath } from '../libs/url';
+import { apiClient } from "../helpers/http";
+import { getPath } from "../helpers/url";
 
 export function fetch(digestUUID, { demo }) {
   let endpoint;
@@ -35,7 +35,7 @@ export function fetchAll({ page, demo }) {
   if (demo) {
     path = `/demo/digests`;
   } else {
-    path = '/digests';
+    path = "/digests";
   }
 
   const endpoint = getPath(path, { page });

@@ -17,3 +17,15 @@ export interface NoteData {
     uuid: string;
   };
 }
+
+export interface EmailPrefData {
+  digestWeekly: boolean;
+}
+
+export interface UserData {
+  uuid: string;
+  email: string;
+  emailVerified: boolean;
+  pro: boolean;
+  classic: boolean;
+}

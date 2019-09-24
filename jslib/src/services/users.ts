@@ -16,13 +16,13 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { apiClient } from '../libs/http';
-import { EmailPrefData, UserData } from '../store/auth';
+import { apiClient } from "../helpers/http";
+import { EmailPrefData, UserData } from "../operations/types";
 
 export function updateUser({ name }) {
   const payload = { name };
 
-  return apiClient.patch('/account/profile', payload);
+  return apiClient.patch("/account/profile", payload);
 }
 
 interface UpdateProfileParams {
@@ -34,7 +34,7 @@ export function updateProfile({ email }: UpdateProfileParams) {
     email
   };
 
-  return apiClient.patch('/account/profile', payload);
+  return apiClient.patch("/account/profile", payload);
 }
 
 interface UpdatePasswordParams {
@@ -51,7 +51,7 @@ export function updatePassword({
     new_password: newPassword
   };
 
-  return apiClient.patch('/account/password', payload);
+  return apiClient.patch("/account/password", payload);
 }
 
 interface RegisterParams {
@@ -65,7 +65,7 @@ export function register(params: RegisterParams) {
     password: params.password
   };
 
-  return apiClient.post('/v3/register', payload);
+  return apiClient.post("/v3/register", payload);
 }
 
 interface SigninParams {
@@ -79,33 +79,33 @@ export function signin(params: SigninParams) {
     password: params.password
   };
 
-  return apiClient.post('/v3/signin', payload);
+  return apiClient.post("/v3/signin", payload);
 }
 
 export function signout() {
-  return apiClient.post('/v3/signout');
+  return apiClient.post("/v3/signout");
 }
 
 export function sendResetPasswordEmail({ email }) {
   const payload = { email };
 
-  return apiClient.post('/reset-token', payload);
+  return apiClient.post("/reset-token", payload);
 }
 
 export function sendEmailVerificationEmail() {
-  return apiClient.post('/verification-token');
+  return apiClient.post("/verification-token");
 }
 
 export function verifyEmail({ token }) {
   const payload = { token };
 
-  return apiClient.patch('/verify-email', payload);
+  return apiClient.patch("/verify-email", payload);
 }
 
 export function updateEmailPreference({ token, digestFrequency }) {
-  const payload = { digest_weekly: digestFrequency === 'weekly' };
+  const payload = { digest_weekly: digestFrequency === "weekly" };
 
-  let endpoint = '/account/email-preference';
+  let endpoint = "/account/email-preference";
   if (token) {
     endpoint = `${endpoint}?token=${token}`;
   }
@@ -120,7 +120,7 @@ interface GetEmailPreferenceParams {
 export function getEmailPreference({
   token
 }: GetEmailPreferenceParams): Promise<EmailPrefData> {
-  let endpoint = '/account/email-preference';
+  let endpoint = "/account/email-preference";
   if (token) {
     endpoint = `${endpoint}?token=${token}`;
   }
@@ -139,7 +139,7 @@ interface GetMeResponse {
 }
 
 export function getMe(): Promise<UserData> {
-  return apiClient.get<GetMeResponse>('/me').then(res => {
+  return apiClient.get<GetMeResponse>("/me").then(res => {
     const { user } = res;
 
     return {
@@ -160,7 +160,7 @@ interface ResetPasswordParams {
 export function resetPassword({ token, password }: ResetPasswordParams) {
   const payload = { token, password };
 
-  return apiClient.patch('/reset-password', payload);
+  return apiClient.patch("/reset-password", payload);
 }
 
 // classic
@@ -180,7 +180,7 @@ export function classicSignin({
 }): Promise<classicPresigninPayload> {
   const payload = { email, auth_key: authKey };
 
-  return apiClient.post<any>('/classic/signin', payload).then(resp => {
+  return apiClient.post<any>("/classic/signin", payload).then(resp => {
     return {
       key: resp.key,
       expiresAt: resp.expires_at,
@@ -198,9 +198,9 @@ export function classicSetPassword({ password }: classicSetPasswordPayload) {
     password
   };
 
-  return apiClient.patch<any>('/classic/set-password', payload);
+  return apiClient.patch<any>("/classic/set-password", payload);
 }
 
 export function classicCompleteMigrate() {
-  return apiClient.patch('/classic/migrate', '');
+  return apiClient.patch("/classic/migrate", "");
 }

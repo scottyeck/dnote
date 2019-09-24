@@ -18,7 +18,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import * as usersService from '../../../services/users';
+import * as usersService from 'jslib/services/users';
 import Button from '../../Common/Button';
 import Modal, { Header, Body } from '../../Common/Modal';
 import Flash from '../../Common/Flash';

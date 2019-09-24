@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import * as usersService from '../../../services/users';
+import * as usersService from 'jslib/services/users';
 import { getCurrentUser } from '../../../store/auth';
 import { useDispatch } from '../../../store';
 import Button from '../../Common/Button';

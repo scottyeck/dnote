@@ -24,8 +24,8 @@ import { connect } from 'react-redux';
 import Lock from '../Icons/Lock';
 import Menu from '../Common/Menu';
 import UserIcon from '../Icons/User';
-import * as usersService from '../../services/users';
-import { SettingSections, getSettingsPath } from '../../libs/paths';
+import * as usersService from 'jslib/services/users';
+import { SettingSections, getSettingsPath } from 'web/libs/paths';
 import { AppState } from '../../store';
 import { UserData } from '../../store/auth';
 

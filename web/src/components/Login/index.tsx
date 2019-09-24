@@ -21,11 +21,11 @@ import Helmet from 'react-helmet';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import LoginForm from './LoginForm';
-import { getReferrer } from '../../libs/url';
-import { getRootUrl } from '../../libs/paths';
+import { getReferrer } from 'jslib/helpers/url';
+import { getRootUrl } from 'web/libs/paths';
 import Logo from '../Icons/Logo';
 import Flash from '../Common/Flash';
-import * as usersService from '../../services/users';
+import * as usersService from 'jslib/services/users';
 import { getCurrentUser } from '../../store/auth';
 import { updateAuthEmail } from '../../store/form';
 import authStyles from '../Common/Auth.scss';

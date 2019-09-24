@@ -8,9 +8,9 @@ import { useDispatch, useSelector } from '../../store';
 import { resetEditor } from '../../store/editor';
 import { createBook } from '../../store/books';
 import { setMessage } from '../../store/ui';
-import * as notesOperation from '../../operations/notes';
-import { getNotePath, notePathDef } from '../../libs/paths';
-import { useCleanupEditor, useFocusTextarea } from '../../libs/hooks/editor';
+import * as notesOperation from 'jslib/operations/notes';
+import { getNotePath, notePathDef } from 'web/libs/paths';
+import { useCleanupEditor, useFocusTextarea } from 'web/libs/hooks/editor';
 import styles from '../New/New.scss';
 
 interface Props extends RouteComponentProps {

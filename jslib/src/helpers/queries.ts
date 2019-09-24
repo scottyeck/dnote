@@ -2,7 +2,6 @@ import { Location } from 'history';
 
 import { parseSearchString } from './url';
 import { removeKey } from './obj';
-import { getHomePath } from './paths';
 import * as searchLib from './search';
 
 export interface Queries {
@@ -14,7 +13,7 @@ function encodeQuery(keyword: string, value: string): string {
   return `${keyword}:${value}`;
 }
 
-const keywordBook = 'book';
+export const keywordBook = 'book';
 
 export const keywords = [keywordBook];
 
@@ -64,24 +63,4 @@ export function stringify(queries: Queries): string {
   }
 
   return ret;
-}
-
-export function getSearchDest(location: Location, queries: Queries) {
-  let searchObj: any = parseSearchString(location.search);
-
-  if (queries.q !== '') {
-    searchObj.q = queries.q;
-  } else {
-    searchObj = removeKey(searchObj, 'q');
-  }
-
-  if (queries.book.length > 0) {
-    searchObj.book = queries.book;
-  } else {
-    searchObj = removeKey(searchObj, keywordBook);
-  }
-
-  searchObj = removeKey(searchObj, 'page');
-
-  return getHomePath(searchObj);
 }

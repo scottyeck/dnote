@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { Redirect } from 'react-router-dom';
 
+import { bufToB64, b64ToBuf } from 'web/libs/encoding';
+import { ClassicMigrationSteps, getClassicMigrationPath } from 'web/libs/paths';
+import { classicPresignin, classicSignin } from 'jslib/services/users';
 import { useSelector, useDispatch } from '../../store';
 import { loginHelper, aes256GcmDecrypt } from '../../crypto';
-import { bufToB64, b64ToBuf } from '../../libs/encoding';
 import { getCurrentUser } from '../../store/auth';
-import { classicPresignin, classicSignin } from '../../services/users';
 import authStyles from '../Common/Auth.scss';
 import Logo from '../Icons/Logo';
 import Flash from '../Common/Flash';
 import LoginForm from '../Login/LoginForm';
-import {
-  ClassicMigrationSteps,
-  getClassicMigrationPath
-} from '../../libs/paths';
 
 interface Props {}
 

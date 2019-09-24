@@ -18,7 +18,7 @@
 
 import React, { useState } from 'react';
 
-import { updateEmailPreference } from '../../services/users';
+import { updateEmailPreference } from 'jslib/services/users';
 import { useDispatch } from '../../store';
 import { receiveEmailPreference } from '../../store/auth';
 import Button from './Button';

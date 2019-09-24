@@ -22,8 +22,8 @@ import { RouteComponentProps } from 'react-router-dom';
 import { receiveUser } from '../../store/auth';
 import { setMessage } from '../../store/ui';
 import { useDispatch } from '../../store';
-import { getHomePath, homePathDef, emailPrefPathDef } from '../../libs/paths';
-import * as usersService from '../../services/users';
+import { getHomePath, homePathDef, emailPrefPathDef } from 'web/libs/paths';
+import * as usersService from 'jslib/services/users';
 
 interface Match {
   token: string;

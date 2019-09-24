@@ -19,9 +19,9 @@
 // This module provides interfaces to perform operations. It abstarcts
 // the backend implementation and thus unifies the API for web and desktop clients.
 
-import * as notesService from '../services/notes';
-import { NoteData } from './types';
-import { Filters } from '../libs/filters';
+import * as notesService from "../services/notes";
+import { NoteData } from "./types";
+import { Filters } from "../helpers/filters";
 
 export function fetch(params: Filters) {
   return notesService.fetch(params);

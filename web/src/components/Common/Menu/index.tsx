@@ -20,7 +20,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import classnames from 'classnames';
 
 import Popover from '../Popover';
-import { useEventListener } from '../../../libs/hooks';
+import { useEventListener } from 'web/libs/hooks';
 import { KEYCODE_UP, KEYCODE_DOWN } from '../../../helpers/keyboard';
 
 interface ContentProps {

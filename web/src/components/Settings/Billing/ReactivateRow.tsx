@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { useDispatch } from '../../../store';
 import { getSubscription } from '../../../store/auth';
 import SettingRow from '../SettingRow';
-import * as paymentService from '../../../services/payment';
+import * as paymentService from 'jslib/services/payment';
 import styles from '../Settings.scss';
 
 interface Props {

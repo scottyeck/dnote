@@ -25,7 +25,7 @@ import Button from '../../../Common/Button';
 import NameOnCardInput from '../../../Common/PaymentInput/NameOnCard';
 import CardInput from '../../../Common/PaymentInput/Card';
 import CountryInput from '../../../Common/PaymentInput/Country';
-import * as paymentService from '../../../../services/payment';
+import * as paymentService from 'jslib/services/payment';
 import settingsStyles from '../../Settings.scss';
 import styles from './Form.scss';
 

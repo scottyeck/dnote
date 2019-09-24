@@ -16,8 +16,8 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import qs from 'qs';
-import { apiClient } from '../libs/http';
+import qs from "qs";
+import { apiClient } from "../helpers/http";
 
 interface BookFetchParams {
   name?: string;
@@ -25,7 +25,7 @@ interface BookFetchParams {
 }
 
 export function fetch(queryObj: BookFetchParams = {}) {
-  const baseURL = '/v3/books';
+  const baseURL = "/v3/books";
 
   const queryStr = qs.stringify(queryObj);
 
@@ -54,7 +54,7 @@ interface CreatePayload {
 }
 
 export function create(payload: CreateParams) {
-  return apiClient.post<CreatePayload>('/v3/books', payload);
+  return apiClient.post<CreatePayload>("/v3/books", payload);
 }
 
 export function remove(uuid: string) {

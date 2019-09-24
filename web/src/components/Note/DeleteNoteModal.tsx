@@ -21,11 +21,11 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import Modal, { Header, Body } from '../Common/Modal';
 import Flash from '../Common/Flash';
-import * as notesOperation from '../../operations/notes';
+import * as notesOperation from 'jslib/operations/notes';
 import { setMessage } from '../../store/ui';
 import { useDispatch } from '../../store';
 import Button from '../Common/Button';
-import { homePathDef, getHomePath } from '../../libs/paths';
+import { homePathDef, getHomePath } from 'web/libs/paths';
 import styles from './DeleteNoteModal.scss';
 
 interface Props extends RouteComponentProps {

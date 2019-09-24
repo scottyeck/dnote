@@ -85,39 +85,43 @@ gulp.task(
   gulp.series("manifest", () => {
     let manifest = require(`./dist/${target}/manifest.json`);
 
-    return (
-      browserify({
-        basedir: ".",
-        debug: true,
-        entries: ["src/scripts/popup.tsx"]
+    let chain = browserify({
+      basedir: ".",
+      debug: true,
+      entries: ["src/scripts/popup.tsx"]
+    })
+      .plugin(tsify)
+      .transform("babelify", {
+        presets: ["@babel/preset-env"],
+        extensions: [".js", ".tsx"]
       })
-        .plugin(tsify)
-        .transform("babelify", {
-          presets: ["@babel/preset-env"],
-          extensions: [".js", ".tsx"]
-        })
-        .bundle()
-        .pipe(source("popup.js"))
+      .bundle()
+      .pipe(source("popup.js"));
+
+    if (isProduction) {
+      chain = chain
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        // inject variables
-        .pipe(
-          replace(
-            "__API_ENDPOINT__",
-            isProduction ? "https://api.getdnote.com" : "http://127.0.0.1:5000"
-          )
+        .pipe(sourcemaps.write("./"));
+    }
+
+    // inject variables
+    return chain
+      .pipe(
+        replace(
+          "__API_ENDPOINT__",
+          isProduction ? "https://api.getdnote.com" : "http://127.0.0.1:5000"
         )
-        .pipe(
-          replace(
-            "__WEB_URL__",
-            isProduction ? "https://app.getdnote.com" : "http://127.0.0.1:3000"
-          )
+      )
+      .pipe(
+        replace(
+          "__WEB_URL__",
+          isProduction ? "https://app.getdnote.com" : "http://127.0.0.1:3000"
         )
-        .pipe(replace("__VERSION__", manifest.version))
-        .pipe(gulp.dest(`dist/${target}/scripts`))
-    );
+      )
+      .pipe(replace("__VERSION__", manifest.version))
+      .pipe(gulp.dest(`dist/${target}/scripts`));
   })
 );
 
@@ -131,13 +135,13 @@ gulp.task(
     gulp
       .watch([
         "src/*.html",
-        "src/scripts/**/*.js",
+        "src/scripts/**/*",
         "src/images/**/*",
         "src/styles/**/*"
       ])
       .on("change", livereload.reload);
 
-    gulp.watch("src/scripts/**/*.ts", gulp.parallel("lint", "babel"));
+    gulp.watch("src/scripts/**/*", gulp.parallel("lint", "babel"));
     gulp.watch("src/*.html", gulp.parallel("html"));
     gulp.watch("manifests/**/*.json", gulp.parallel("manifest"));
   })

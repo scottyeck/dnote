@@ -16,10 +16,10 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getPath } from '../libs/url';
-import { apiClient } from '../libs/http';
-import { NoteData } from '../operations/types';
-import { Filters } from '../libs/filters';
+import { getPath } from "../helpers/url";
+import { apiClient } from "../helpers/http";
+import { NoteData } from "../operations/types";
+import { Filters } from "../helpers/filters";
 
 interface CreateParams {
   book_uuid: string;
@@ -31,7 +31,7 @@ interface CreateResponse {
 }
 
 export function create(params: CreateParams): Promise<CreateResponse> {
-  return apiClient.post<CreateResponse>('/v3/notes', params);
+  return apiClient.post<CreateResponse>("/v3/notes", params);
 }
 
 interface UpdateParams {
@@ -75,7 +75,7 @@ export function fetch(filters: Filters) {
     params.book = queries.book;
   }
 
-  const endpoint = getPath('/notes', params);
+  const endpoint = getPath("/notes", params);
 
   return apiClient.get<FetchResponse>(endpoint, {});
 }
@@ -96,7 +96,7 @@ export function fetchOne(
 }
 
 export function classicFetch() {
-  const endpoint = '/classic/notes';
+  const endpoint = "/classic/notes";
 
-  return apiClient.get(endpoint, { credentials: 'include' });
+  return apiClient.get(endpoint, { credentials: "include" });
 }

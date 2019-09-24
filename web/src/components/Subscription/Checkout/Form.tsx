@@ -25,11 +25,11 @@ import { History } from 'history';
 
 import Sidebar from './Sidebar';
 import Flash from '../../Common/Flash';
-import * as paymentService from '../../../services/payment';
+import * as paymentService from 'jslib/services/payment';
 import { getCurrentUser } from '../../../store/auth';
 import { useDispatch } from '../../../store';
 import { setMessage } from '../../../store/ui';
-import { getHomePath } from '../../../libs/paths';
+import { getHomePath } from 'web/libs/paths';
 import NameOnCardInput from '../../Common/PaymentInput/NameOnCard';
 import CardInput from '../../Common/PaymentInput/Card';
 import CountryInput from '../../Common/PaymentInput/Country';

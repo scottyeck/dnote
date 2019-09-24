@@ -26,7 +26,7 @@ import {
   KEYCODE_ESC
 } from '../../helpers/keyboard';
 import { scrollTo } from '../dom';
-import { Option } from '../../libs/select';
+import { Option } from 'jslib/helpers/select';
 
 interface ScrollToSelectedParams {
   shouldScroll: boolean;

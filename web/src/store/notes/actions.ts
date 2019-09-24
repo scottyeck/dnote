@@ -33,8 +33,8 @@ import {
   ResetAction
 } from './type';
 import { ThunkAction } from '../types';
-import * as notesOperation from '../../operations/notes';
-import { Filters } from '../../libs/filters';
+import * as notesOperation from 'jslib/operations/notes';
+import { Filters } from 'jslib/helpers/filters';
 
 export function addNote(note): AddAction {
   return {

@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
+import { b64ToBuf, bufToUtf8 } from 'web/libs/encoding';
+import { homePathDef } from 'web/libs/paths';
+import * as booksService from 'jslib/services/books';
+import * as notesService from 'jslib/services/notes';
+import * as usersService from 'jslib/services/users';
 import Logo from '../Icons/Logo';
 import { aes256GcmDecrypt } from '../../crypto';
-import { b64ToBuf, bufToUtf8 } from '../../libs/encoding';
 import { useDispatch } from '../../store';
 import { setMessage } from '../../store/ui';
-import { homePathDef } from '../../libs/paths';
-import * as booksService from '../../services/books';
-import * as notesService from '../../services/notes';
-import * as usersService from '../../services/users';
 
 interface Props extends RouteComponentProps {}
 

@@ -17,9 +17,9 @@
  */
 
 import { RECEIVE, ADD, REMOVE, START_FETCHING, FINISH_FETCHING } from './type';
-import { BookData } from '../../operations/books';
+import { BookData } from 'jslib/operations/books';
 import { ThunkAction } from '../types';
-import * as booksOperation from '../../operations/books';
+import * as booksOperation from 'jslib/operations/books';
 
 function receiveBooks(books: BookData[]) {
   return {

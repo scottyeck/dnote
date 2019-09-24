@@ -16,7 +16,7 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { apiClient } from '../libs/http';
+import { apiClient } from "../helpers/http";
 
 export function createSubscription({ source, country }) {
   const payload = {
@@ -24,33 +24,33 @@ export function createSubscription({ source, country }) {
     country
   };
 
-  return apiClient.post('/subscriptions', payload);
+  return apiClient.post("/subscriptions", payload);
 }
 
 export function getSubscription() {
-  return apiClient.get('/subscriptions');
+  return apiClient.get("/subscriptions");
 }
 
 export function cancelSubscription({ subscriptionId }) {
   const data = {
-    op: 'cancel',
+    op: "cancel",
     stripe_subscription_id: subscriptionId
   };
 
-  return apiClient.patch('/subscriptions', data);
+  return apiClient.patch("/subscriptions", data);
 }
 
 export function reactivateSubscription({ subscriptionId }) {
   const data = {
-    op: 'reactivate',
+    op: "reactivate",
     stripe_subscription_id: subscriptionId
   };
 
-  return apiClient.patch('/subscriptions', data);
+  return apiClient.patch("/subscriptions", data);
 }
 
 export function getSource() {
-  return apiClient.get('/stripe_source');
+  return apiClient.get("/stripe_source");
 }
 
 export function updateSource({ source, country }) {
@@ -59,5 +59,5 @@ export function updateSource({ source, country }) {
     country
   };
 
-  return apiClient.patch('/stripe_source', payload);
+  return apiClient.patch("/stripe_source", payload);
 }

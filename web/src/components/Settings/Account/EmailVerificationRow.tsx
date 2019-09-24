@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 
 import SettingRow from '../SettingRow';
-import * as usersService from '../../../services/users';
+import * as usersService from 'jslib/services/users';
 
 import settingsStyles from '../Settings.scss';
 

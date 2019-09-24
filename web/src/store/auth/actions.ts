@@ -18,10 +18,10 @@
 
 import { UserData, EmailPrefData, SourceData, SubscriptionData } from './type';
 import { ThunkAction } from '../types';
-import { getMe } from '../../services/users';
-import { apiClient } from '../../libs/http';
-import * as paymentService from '../../services/payment';
-import * as usersService from '../../services/users';
+import { getMe } from 'jslib/services/users';
+import { apiClient } from 'jslib/helpers/http';
+import * as paymentService from 'jslib/services/payment';
+import * as usersService from 'jslib/services/users';
 
 import {
   RECEIVE_EMAIL_PREFERENCE,

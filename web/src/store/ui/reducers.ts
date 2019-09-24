@@ -17,7 +17,7 @@
  */
 
 import { SET_MESSAGE, UNSET_MESSAGE, UIState, UIActionType } from './type';
-import { removeKey } from '../../libs/obj';
+import { removeKey } from 'jslib/helpers/obj';
 
 export const initialState: UIState = {
   message: {}

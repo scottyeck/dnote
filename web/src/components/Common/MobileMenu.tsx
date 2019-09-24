@@ -3,8 +3,8 @@ import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import CloseIcon from '../Icons/Close';
-import { SettingSections, getSettingsPath } from '../../libs/paths';
-import * as usersService from '../../services/users';
+import { SettingSections, getSettingsPath } from 'web/libs/paths';
+import * as usersService from 'jslib/services/users';
 import styles from './MobileMenu.scss';
 
 interface Props {

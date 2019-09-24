@@ -18,8 +18,8 @@
 
 import { RECEIVE, START_FETCHING, ERROR, RESET } from './type';
 import { ThunkAction } from '../types';
-import * as notesOperation from '../../operations/notes';
-import { NoteData } from '../../operations/types';
+import * as notesOperation from 'jslib/operations/notes';
+import { NoteData } from 'jslib/operations/types';
 
 export function receiveNote(note) {
   return {

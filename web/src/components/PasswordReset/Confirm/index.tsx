@@ -4,11 +4,11 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
 import Form from './Form';
 import Logo from '../../Icons/Logo';
-import * as usersService from '../../../services/users';
+import * as usersService from 'jslib/services/users';
 import { getCurrentUser } from '../../../store/auth';
 import { setMessage } from '../../../store/ui';
 import { useDispatch } from '../../../store';
-import { homePathDef } from '../../../libs/paths';
+import { homePathDef } from 'web/libs/paths';
 import authStyles from '../../Common/Auth.scss';
 import Flash from '../../Common/Flash';
 

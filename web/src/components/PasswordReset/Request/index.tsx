@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import Flash from '../../Common/Flash';
 import Form from './Form';
 import Logo from '../../Icons/Logo';
-import * as usersService from '../../../services/users';
+import * as usersService from 'jslib/services/users';
 import authStyles from '../../Common/Auth.scss';
-import { getLoginPath } from '../../../libs/paths';
+import { getLoginPath } from 'web/libs/paths';
 import styles from './Request.scss';
 
 interface Props {}

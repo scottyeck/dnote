@@ -1,4 +1,4 @@
-export function debounce(func, wait, immediate) {
+export function debounce(func, wait, immediate?) {
   let timeout;
 
   return () => {
@@ -15,7 +15,7 @@ export function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
 
     if (callNow) {
-      func.apply(context, args);
+      // func.apply(context, args);
     }
   };
 }

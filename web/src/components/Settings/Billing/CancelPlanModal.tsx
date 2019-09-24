@@ -19,7 +19,7 @@
 import React, { useState } from 'react';
 
 import { useDispatch } from '../../../store';
-import * as paymentService from '../../../services/payment';
+import * as paymentService from 'jslib/services/payment';
 import Button from '../../Common/Button';
 import Modal, { Header, Body } from '../../Common/Modal';
 import styles from '../Settings.scss';

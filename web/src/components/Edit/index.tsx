@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import Flash from '../Common/Flash';
 import { useDispatch, useSelector } from '../../store';
 import { stageNote } from '../../store/editor';
-import * as notesOperation from '../../operations/notes';
+import * as notesOperation from 'jslib/operations/notes';
 import Content from './Content';
 import styles from '../New/New.scss';
 
