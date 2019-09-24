@@ -26,7 +26,7 @@ interface CreateParams {
   content: string;
 }
 
-interface CreateResponse {
+export interface CreateResponse {
   result: NoteData;
 }
 
@@ -57,7 +57,7 @@ export function remove(noteUUID: string) {
   return apiClient.del(endpoint, {});
 }
 
-interface FetchResponse {
+export interface FetchResponse {
   notes: NoteData[];
   total: number;
 }
