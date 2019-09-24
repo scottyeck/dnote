@@ -1,7 +1,5 @@
 import { get } from "../utils/fetch";
 import config from "../utils/config";
-import { aes256GcmDecrypt } from '../utils/crypto'
-import { b64ToBuf, bufToUtf8 } from '../utils/encoding'
 
 export const START_FETCHING = "books/START_FETCHING";
 export const RECEIVE = "books/RECEIVE";
@@ -62,40 +60,13 @@ function receiveBooksError(error) {
 }
 
 export async function decryptBook(book, cipherKeyBuf) {
-  const labelDec = await aes256GcmDecrypt(cipherKeyBuf, b64ToBuf(book.label));
-
   return {
     ...book,
-    label: bufToUtf8(labelDec)
+    label: book.label
   };
 }
 
 export function fetchBooks(key, cipherKey) {
-  console.log('cipherKey',cipherKey);
-  return dispatch => {
-    dispatch(startFetchingBooks());
-
-    console.log('here');
-    const cipherKeyBuf = b64ToBuf(cipherKey)
-    console.log('cipherKeyBuf', cipherKeyBuf);
-
-    get(`${config.apiEndpoint}/v1/books`, {
-      headers: {
-        Authorization: `Bearer ${key}`
-      }
-    })
-      .then(books => {
-        const p = books.map(book => {
-          return decryptBook(book, cipherKeyBuf)
-        })
-
-        return Promise.all(p).then(booksDec => {
-          dispatch(receiveBooks(booksDec));
-        })
-      })
-      .catch(err => {
-        console.log("error fetching books", err);
-        dispatch(receiveBooksError(err));
-      });
-  };
+  console.log("cipherKey", cipherKey);
+  return dispatch => {};
 }

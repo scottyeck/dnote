@@ -1,7 +1,7 @@
 {
   "name": "Dnote",
   "version": "__VERSION__",
-  "description": "Capture your coding knowledge without leaving the browser.",
+  "description": "Capture your microlessons without leaving the browser.",
   "applications": {
     "gecko": {
       "id": "sung@dnote.io",

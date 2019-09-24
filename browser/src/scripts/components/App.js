@@ -4,9 +4,9 @@ import classnames from "classnames";
 
 import Header from "./Header";
 import Home from "./Home";
-import Success from "./Success";
-import Composer from "./Composer";
-import Menu from "./Menu";
+// import Success from "./Success";
+// import Composer from "./Composer";
+// import Menu from "./Menu";
 import { resetSettings } from "../actions/settings";
 import { post } from "../utils/fetch";
 import config from "../utils/config";
@@ -17,7 +17,7 @@ class App extends React.Component {
 
     this.state = {
       isShowingMenu: false,
-      errorMessage: ''
+      errorMessage: ""
     };
   }
 
@@ -25,9 +25,9 @@ class App extends React.Component {
     const { settings, doResetSettings } = this.props;
 
     // if session is expired, clear it
-    const now = Math.round(new Date().getTime()/1000)
+    const now = Math.round(new Date().getTime() / 1000);
     if (settings.sessionKey && settings.sessionKeyExpiry < now) {
-      doResetSettings()
+      doResetSettings();
     }
   }
 
@@ -36,20 +36,27 @@ class App extends React.Component {
 
     try {
       console.log(1);
-      const res = await post(`${config.apiEndpoint}/v1/signout`, {}, {
-        headers: {
-          Authorization: `Bearer ${settings.sessionKey}`
+      const res = await post(
+        `${config.apiEndpoint}/v1/signout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${settings.sessionKey}`
+          }
         }
-      })
+      );
       console.log(2);
-      doResetSettings()
-      done()
+      doResetSettings();
+      done();
     } catch (e) {
-      this.setState({
-        errorMessage: `Could not log out: ${e.message}`
-      }, done)
+      this.setState(
+        {
+          errorMessage: `Could not log out: ${e.message}`
+        },
+        done
+      );
     }
-  }
+  };
 
   toggleMenu = () => {
     this.setState(prevState => {
@@ -60,18 +67,17 @@ class App extends React.Component {
   };
 
   renderRoutes = (path, loggedIn) => {
-    switch (path) {
-      case "/success":
-        return <Success />;
-      case "/":
-        if (loggedIn) {
-          return <Composer />;
-        }
-
-        return <Home />;
-      default:
-        return <div>Not found</div>;
-    }
+    //   switch (path) {
+    //     case "/success":
+    //       return <Success />;
+    //     case "/":
+    //       if (loggedIn) {
+    //         return <Composer />;
+    //       }
+    //       return <Home />;
+    //     default:
+    //       return <div>Not found</div>;
+    //   }
   };
 
   render() {
@@ -94,13 +100,8 @@ class App extends React.Component {
         )}
 
         <main>
-          {errorMessage && (
-            <div className="alert error">
-              {errorMessage}
-            </div>
-          )}
-
-          {this.renderRoutes(path, isLoggedIn)}
+          {errorMessage && <div className="alert error">{errorMessage}</div>}
+          yo
         </main>
       </div>
     );
@@ -116,6 +117,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   doResetSettings: resetSettings
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

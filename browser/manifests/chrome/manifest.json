@@ -1,7 +1,7 @@
 {
   "name": "Dnote",
   "version": "__VERSION__",
-  "description": "Capture your coding knowledge without leaving the browser.",
+  "description": "Capture your microlessons without leaving the browser.",
   "icons": {
     "16": "images/iconx16.png",
     "48": "images/iconx48.png",

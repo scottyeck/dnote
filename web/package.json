@@ -8,7 +8,7 @@
     "test:watch": "./node_modules/karma/bin/karma start ./karma.conf.js --watch",
     "lint": "./node_modules/.bin/eslint ./src"
   },
-  "author": "Sung Won Cho <sung@monomax.sh> (https://dnote.com)",
+  "author": "Monomax Software <hello@monomax.sh> (https://www.getdnote.com)",
   "license": "AGPL",
   "devDependencies": {
     "@babel/core": "^7.5.5",

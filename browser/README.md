@@ -1,11 +1,8 @@
 # Dnote Browser Extension
 
-Capture your coding wisdom within seconds without leaving the browser.
-
-[Dnote](https://dnote.io) browser extension for Firefox and Chrome.
+Dnote browser extension for Chrome and Firefox. Capture new information without opening a new tab or leaving your browser.
 
 ![Dnote browser demo](assets/demo.gif)
-
 
 ## Installation
 
@@ -20,7 +17,7 @@ Capture your coding wisdom within seconds without leaving the browser.
 
 We learn many things while reading technical articles, or browsing StackOverflow. Unless we write them down we forget most of them exponentially.
 
-This extension integrates seamlessly with [Dnote CLI](https://github.com/dnote-io/cli) and requires [Dnote Cloud](https://dnote.io/cloud) account.
+This extension integrates seamlessly with [Dnote CLI](https://github.com/dnote/dnote/cli) and requires [Dnote Cloud](https://www.getdnote.com/pricing) account.
 
 ## Hotkeys
 
