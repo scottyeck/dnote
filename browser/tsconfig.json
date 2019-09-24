@@ -6,6 +6,12 @@
         "module": "commonjs",
         "jsx": "react",
         "allowJs": true,
-        "target": "es6"
+        "target": "es6",
+        "baseUrl": ".",
+        "paths": {
+            "jslib/*": [
+                "../jslib/src/*"
+            ]
+         }
     }
 }
