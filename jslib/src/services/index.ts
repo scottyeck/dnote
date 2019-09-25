@@ -8,17 +8,17 @@ import initPaymentService from './payment';
 // init initializes service helpers with the given http configuration
 // and returns an object of all services.
 export default function initServices(c: HttpClientConfig) {
-  const users = initUsersService(c);
-  const books = initBooksService(c);
-  const notes = initNotesService(c);
-  const digests = initDigestsService(c);
-  const payment = initPaymentService(c);
+  const usersService = initUsersService(c);
+  const booksService = initBooksService(c);
+  const notesService = initNotesService(c);
+  const digestsService = initDigestsService(c);
+  const paymentService = initPaymentService(c);
 
   return {
-    users,
-    books,
-    notes,
-    digests,
-    payment
+    users: usersService,
+    books: booksService,
+    notes: notesService,
+    digests: digestsService,
+    payment: paymentService
   };
 }
