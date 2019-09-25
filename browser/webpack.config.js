@@ -6,6 +6,8 @@ const ENV = process.env.NODE_ENV;
 const TARGET = process.env.TARGET;
 const isProduction = ENV === 'production';
 
+console.log(`Running webpack in ${ENV} mode`);
+
 const webUrl = isProduction
   ? 'https://app.getdnote.com'
   : 'http://127.0.0.1:3000';
@@ -32,7 +34,9 @@ const moduleRules = [
 
 module.exports = env => {
   return {
-    mode: ENV,
+    // run in production mode because of Content Security Policy error encountered
+    // when running a JavaScript bundle produced in a development mode
+    mode: 'production',
     entry: { popup: ['./src/scripts/popup.tsx'] },
     output: {
       filename: '[name].js',

@@ -1,18 +1,15 @@
-const fs = require('fs');
 const gulp = require('gulp');
 const del = require('del');
 const replace = require('gulp-replace');
-const source = require('vinyl-source-stream');
 const gulpif = require('gulp-if');
 const imagemin = require('gulp-imagemin');
 const livereload = require('gulp-livereload');
 const zip = require('gulp-zip');
 
-const target = process.env.TARGET || 'firefox';
-const isProduction = process.env.NODE_ENV === 'PRODUCTION';
+const target = process.env.TARGET;
 
 gulp.task('manifest', () => {
-  const pkg = JSON.parse(fs.readFileSync('./package.json'));
+  const pkg = require('./package.json');
 
   return gulp
     .src(`manifests/${target}/manifest.json`)
@@ -30,24 +27,6 @@ gulp.task(
     return gulp.src('src/*.html').pipe(gulp.dest(`dist/${target}`));
   })
 );
-
-gulp.task('extras', () => {
-  return gulp
-    .src(
-      [
-        'src/*.*',
-        'src/_locales/**',
-        '!src/scripts.babel',
-        '!src/*.json',
-        '!src/*.html'
-      ],
-      {
-        base: 'app',
-        dot: true
-      }
-    )
-    .pipe(gulp.dest(`dist/${target}`));
-});
 
 gulp.task('images', () => {
   return gulp
@@ -87,7 +66,7 @@ gulp.task(
 );
 
 gulp.task('package', function() {
-  let manifest = require(`./dist/${target}/manifest.json`);
+  const manifest = require(`./dist/${target}/manifest.json`);
 
   return gulp
     .src(`dist/${target}/**`)
@@ -95,9 +74,6 @@ gulp.task('package', function() {
     .pipe(gulp.dest(`package/${target}`));
 });
 
-gulp.task(
-  'build',
-  gulp.series('manifest', gulp.parallel('html', 'extras', 'images'))
-);
+gulp.task('build', gulp.series('manifest', gulp.parallel('html', 'images')));
 
 gulp.task('default', gulp.series('clean', 'build'));

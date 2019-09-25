@@ -3,8 +3,10 @@
   "description": "Dnote browser extension for Chrome and Firefox",
   "scripts": {
     "clean": "TARGET=firefox gulp clean && TARGET=chrome gulp clean",
-    "build:chrome": "TARGET=chrome NODE_ENV=production webpack && TARGET=chrome NODE_ENV=production gulp build",
-    "build:firefox": "TARGET=firefox NODE_ENV=production webpack && TARGET=firefox NODE_ENV=production gulp build",
+    "build:chrome": "TARGET=chrome NODE_ENV=production concurrently webpack \"gulp build\"",
+    "build:firefox": "TARGET=firefox NODE_ENV=production concurrently webpack \"gulp build\"",
+    "package:chrome": "TARGET=chrome NODE_ENV=production gulp package",
+    "package:firefox": "TARGET=firefox NODE_ENV=production gulp package",
     "watch:chrome": "TARGET=chrome NODE_ENV=development concurrently \"webpack --watch\" \"gulp watch\"  ",
     "watch:firefox": "TARGET=firefox NODE_ENV=development concurrently \"webpack --watch\" \"gulp watch\"  "
   },

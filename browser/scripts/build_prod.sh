@@ -1,17 +1,14 @@
 #!/bin/bash
-
 # build_prod.sh builds distributable archive for the addon
 # remember to bump version in package.json
+set -eux
 
 # clean
-TARGET=chrome ./node_modules/.bin/gulp clean
-TARGET=firefox ./node_modules/.bin/gulp clean
+npm run clean
 
-# build and package chrome
-NODE_ENV=PRODUCTION TARGET=chrome ./node_modules/.bin/webpack
-NODE_ENV=PRODUCTION TARGET=chrome ./node_modules/.bin/gulp
-TARGET=chrome ./node_modules/.bin/gulp package
-
+# chrome
+npm run build:chrome
+npm run package:chrome
 # firefox
-NODE_ENV=PRODUCTION TARGET=firefox ./node_modules/.bin/gulp
-TARGET=firefox ./node_modules/.bin/gulp package
+npm run build:firefox
+npm run package:firefox
