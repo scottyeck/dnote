@@ -91,34 +91,41 @@ function del(path: string, options = {}) {
   });
 }
 
-// httpClient implements basic http verbs
-export const httpClient = {
-  get,
-  post,
-  patch,
-  put,
-  del
-};
-
-function prependApi(path: string): string {
-  return `/api${path}`;
+export interface HttpClientConfig {
+  pathPrefix: string;
+  baseUrl: string;
 }
 
-// apiClient is a special case of http client that prepends '/api' to the path
-export const apiClient = {
-  get: <T = any>(path: string, options = {}) => {
-    return get<T>(prependApi(path), options);
-  },
-  post: <T>(path: string, options = {}) => {
-    return post<T>(prependApi(path), options);
-  },
-  patch: <T = any>(path: string, data, options = {}) => {
-    return patch<T>(prependApi(path), data, options);
-  },
-  put: (path: string, data, options = {}) => {
-    return put(prependApi(path), data, options);
-  },
-  del: (path: string, options = {}) => {
-    return del(prependApi(path), options);
+// getHttpClient returns an http client
+export function getHttpClient(c: HttpClientConfig) {
+  function transformPath(path: string): string {
+    let ret = path;
+
+    if (c.pathPrefix !== '') {
+      ret = `${c.pathPrefix}${ret}`;
+    }
+    if (c.baseUrl !== '') {
+      ret = `${c.baseUrl}/${ret}`;
+    }
+
+    return ret;
   }
-};
+
+  return {
+    get: <T = any>(path: string, options = {}) => {
+      return get<T>(transformPath(path), options);
+    },
+    post: <T>(path: string, options = {}) => {
+      return post<T>(transformPath(path), options);
+    },
+    patch: <T = any>(path: string, data, options = {}) => {
+      return patch<T>(transformPath(path), data, options);
+    },
+    put: (path: string, data, options = {}) => {
+      return put(transformPath(path), data, options);
+    },
+    del: (path: string, options = {}) => {
+      return del(transformPath(path), options);
+    }
+  };
+}

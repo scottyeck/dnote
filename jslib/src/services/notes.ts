@@ -16,12 +16,12 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getPath } from "../helpers/url";
-import { apiClient } from "../helpers/http";
-import { NoteData } from "../operations/types";
-import { Filters } from "../helpers/filters";
+import { getPath } from '../helpers/url';
+import { getHttpClient, HttpClientConfig } from '../helpers/http';
+import { NoteData } from '../operations/types';
+import { Filters } from '../helpers/filters';
 
-interface CreateParams {
+export interface CreateParams {
   book_uuid: string;
   content: string;
 }
@@ -30,31 +30,15 @@ export interface CreateResponse {
   result: NoteData;
 }
 
-export function create(params: CreateParams): Promise<CreateResponse> {
-  return apiClient.post<CreateResponse>("/v3/notes", params);
-}
-
-interface UpdateParams {
+export interface UpdateParams {
   book_uuid?: string;
   content?: string;
   public?: boolean;
 }
 
-interface UpdateNoteResp {
+export interface UpdateNoteResp {
   status: number;
   result: NoteData;
-}
-
-export function update(noteUUID: string, params: UpdateParams) {
-  const endpoint = `/v3/notes/${noteUUID}`;
-
-  return apiClient.patch<UpdateNoteResp>(endpoint, params);
-}
-
-export function remove(noteUUID: string) {
-  const endpoint = `/v3/notes/${noteUUID}`;
-
-  return apiClient.del(endpoint, {});
 }
 
 export interface FetchResponse {
@@ -62,41 +46,63 @@ export interface FetchResponse {
   total: number;
 }
 
-export function fetch(filters: Filters) {
-  const params: any = {
-    page: filters.page
-  };
-
-  const { queries } = filters;
-  if (queries.q) {
-    params.q = queries.q;
-  }
-  if (queries.book) {
-    params.book = queries.book;
-  }
-
-  const endpoint = getPath("/notes", params);
-
-  return apiClient.get<FetchResponse>(endpoint, {});
+export interface FetchOneQuery {
+  q?: string;
 }
 
 type FetchOneResponse = NoteData;
 
-interface FetchOneQuery {
-  q?: string;
-}
+export default function init(config: HttpClientConfig) {
+  const client = getHttpClient(config);
 
-export function fetchOne(
-  noteUUID: string,
-  params: FetchOneQuery
-): Promise<FetchOneResponse> {
-  const endpoint = getPath(`/notes/${noteUUID}`, params);
+  return {
+    create: (params: CreateParams): Promise<CreateResponse> => {
+      return client.post<CreateResponse>('/v3/notes', params);
+    },
 
-  return apiClient.get<FetchOneResponse>(endpoint, {});
-}
+    update: (noteUUID: string, params: UpdateParams) => {
+      const endpoint = `/v3/notes/${noteUUID}`;
 
-export function classicFetch() {
-  const endpoint = "/classic/notes";
+      return client.patch<UpdateNoteResp>(endpoint, params);
+    },
 
-  return apiClient.get(endpoint, { credentials: "include" });
+    remove: (noteUUID: string) => {
+      const endpoint = `/v3/notes/${noteUUID}`;
+
+      return client.del(endpoint, {});
+    },
+
+    fetch: (filters: Filters) => {
+      const params: any = {
+        page: filters.page
+      };
+
+      const { queries } = filters;
+      if (queries.q) {
+        params.q = queries.q;
+      }
+      if (queries.book) {
+        params.book = queries.book;
+      }
+
+      const endpoint = getPath('/notes', params);
+
+      return client.get<FetchResponse>(endpoint, {});
+    },
+
+    fetchOne: (
+      noteUUID: string,
+      params: FetchOneQuery
+    ): Promise<FetchOneResponse> => {
+      const endpoint = getPath(`/notes/${noteUUID}`, params);
+
+      return client.get<FetchOneResponse>(endpoint, {});
+    },
+
+    classicFetch: () => {
+      const endpoint = '/classic/notes';
+
+      return client.get(endpoint, { credentials: 'include' });
+    }
+  };
 }

@@ -16,7 +16,8 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as booksService from '../services/books';
+import initBooksService from '../services/books';
+import { HttpClientConfig } from '../helpers/http';
 
 export type BookData = {
   uuid: string;
@@ -26,27 +27,33 @@ export type BookData = {
   label: string;
 };
 
-export async function get(bookUUID: string) {
-  return booksService.get(bookUUID);
-}
-
-interface CreateParams {
+export interface CreateParams {
   name: string;
 }
 
-// create creates an encrypted book. It returns a promise that resolves with
-// a decrypted book.
-export async function create(payload: CreateParams): Promise<BookData> {
-  return booksService.create(payload).then(res => {
-    return res.book;
-  });
-}
+export default function init(c: HttpClientConfig) {
+  const booksService = initBooksService(c);
 
-export async function fetch(params = {}) {
-  return booksService.fetch(params);
-}
+  return {
+    get: (bookUUID: string) => {
+      return booksService.get(bookUUID);
+    },
 
-// remove deletes the book with the given uuid
-export async function remove(bookUUID: string) {
-  return booksService.remove(bookUUID);
+    // create creates an encrypted book. It returns a promise that resolves with
+    // a decrypted book.
+    create: (payload: CreateParams): Promise<BookData> => {
+      return booksService.create(payload).then(res => {
+        return res.book;
+      });
+    },
+
+    fetch: (params = {}) => {
+      return booksService.fetch(params);
+    },
+
+    // remove deletes the book with the given uuid
+    remove: (bookUUID: string) => {
+      return booksService.remove(bookUUID);
+    }
+  };
 }

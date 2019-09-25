@@ -16,34 +16,19 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import qs from "qs";
-import { apiClient } from "../helpers/http";
+import qs from 'qs';
+import { getHttpClient, HttpClientConfig } from '../helpers/http';
 
-interface BookFetchParams {
+export interface BookFetchParams {
   name?: string;
   encrypted?: boolean;
 }
 
-export function fetch(queryObj: BookFetchParams = {}) {
-  const baseURL = "/v3/books";
-
-  const queryStr = qs.stringify(queryObj);
-
-  let endpoint;
-  if (queryStr) {
-    endpoint = `${baseURL}?${queryStr}`;
-  } else {
-    endpoint = baseURL;
-  }
-
-  return apiClient.get(endpoint);
-}
-
-interface CreateParams {
+export interface CreateParams {
   name: string;
 }
 
-interface CreatePayload {
+export interface CreatePayload {
   book: {
     uuid: string;
     usn: number;
@@ -53,23 +38,44 @@ interface CreatePayload {
   };
 }
 
-export function create(payload: CreateParams) {
-  return apiClient.post<CreatePayload>("/v3/books", payload);
-}
-
-export function remove(uuid: string) {
-  return apiClient.del(`/v3/books/${uuid}`);
-}
-
 // TODO: type
 type updateParams = any;
 
-export function update(uuid: string, payload: updateParams) {
-  return apiClient.patch(`/v3/books/${uuid}`, payload);
-}
+export default function init(config: HttpClientConfig) {
+  const client = getHttpClient(config);
 
-export function get(bookUUID: string) {
-  const endpoint = `/v3/books/${bookUUID}`;
+  return {
+    fetch: (queryObj: BookFetchParams = {}) => {
+      const baseURL = '/v3/books';
 
-  return apiClient.get(endpoint);
+      const queryStr = qs.stringify(queryObj);
+
+      let endpoint;
+      if (queryStr) {
+        endpoint = `${baseURL}?${queryStr}`;
+      } else {
+        endpoint = baseURL;
+      }
+
+      return client.get(endpoint);
+    },
+
+    create: (payload: CreateParams) => {
+      return client.post<CreatePayload>('/v3/books', payload);
+    },
+
+    remove: (uuid: string) => {
+      return client.del(`/v3/books/${uuid}`);
+    },
+
+    update: (uuid: string, payload: updateParams) => {
+      return client.patch(`/v3/books/${uuid}`, payload);
+    },
+
+    get: (bookUUID: string) => {
+      const endpoint = `/v3/books/${bookUUID}`;
+
+      return client.get(endpoint);
+    }
+  };
 }

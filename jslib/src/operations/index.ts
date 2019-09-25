@@ -1,9 +1,15 @@
-import * as BooksOperations from './books';
-import * as NotesOperations from './notes';
-import * as Types from './types';
+import { HttpClientConfig } from '../helpers/http';
+import initBooksOperations from './books';
+import initNotesOperations from './notes';
 
-export {
-  BooksOperations,
-  NotesOperations,
-  Types
+// init initializes service helpers with the given http configuration
+// and returns an object of all services.
+export default function initOperations(c: HttpClientConfig) {
+  const books = initBooksOperations(c);
+  const notes = initNotesOperations(c);
+
+  return {
+    books,
+    notes
+  };
 }

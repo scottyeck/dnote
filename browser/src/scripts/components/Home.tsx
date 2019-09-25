@@ -85,7 +85,11 @@ const Home: React.FunctionComponent<Props> = () => {
 
       <div className="actions">
         Don't have an account?{' '}
-        <a href="https://dnote.io/join" target="_blank" className="signup">
+        <a
+          href="https://app.getdnote.com/join"
+          target="_blank"
+          className="signup"
+        >
           Sign Up
         </a>
       </div>

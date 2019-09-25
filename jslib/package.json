@@ -27,6 +27,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-typescript": "^4.1.1",
     "mocha": "^6.2.0",
+    "prettier": "^1.18.2",
     "typescript": "^3.6.3"
   }
 }

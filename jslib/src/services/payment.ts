@@ -17,34 +17,53 @@
  */
 
 import { getHttpClient, HttpClientConfig } from '../helpers/http';
-import { getPath } from '../helpers/url';
 
 export default function init(config: HttpClientConfig) {
   const client = getHttpClient(config);
 
   return {
-    fetch: (digestUUID, { demo }) => {
-      let endpoint;
-      if (demo) {
-        endpoint = `/demo/digests/${digestUUID}`;
-      } else {
-        endpoint = `/digests/${digestUUID}`;
-      }
+    createSubscription: ({ source, country }) => {
+      const payload = {
+        source,
+        country
+      };
 
-      return client.get(endpoint);
+      return client.post('/subscriptions', payload);
     },
 
-    fetchAll: ({ page, demo }) => {
-      let path;
-      if (demo) {
-        path = `/demo/digests`;
-      } else {
-        path = '/digests';
-      }
+    getSubscription: () => {
+      return client.get('/subscriptions');
+    },
 
-      const endpoint = getPath(path, { page });
+    cancelSubscription: ({ subscriptionId }) => {
+      const data = {
+        op: 'cancel',
+        stripe_subscription_id: subscriptionId
+      };
 
-      return client.get(endpoint);
+      return client.patch('/subscriptions', data);
+    },
+
+    reactivateSubscription: ({ subscriptionId }) => {
+      const data = {
+        op: 'reactivate',
+        stripe_subscription_id: subscriptionId
+      };
+
+      return client.patch('/subscriptions', data);
+    },
+
+    getSource: () => {
+      return client.get('/stripe_source');
+    },
+
+    updateSource: ({ source, country }) => {
+      const payload = {
+        source,
+        country
+      };
+
+      return client.patch('/stripe_source', payload);
     }
   };
 }

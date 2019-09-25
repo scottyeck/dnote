@@ -19,46 +19,50 @@
 // This module provides interfaces to perform operations. It abstarcts
 // the backend implementation and thus unifies the API for web and desktop clients.
 
-import * as notesService from "../services/notes";
-import { NoteData } from "./types";
-import { Filters } from "../helpers/filters";
-
-export function fetch(params: Filters) {
-  return notesService.fetch(params);
-}
+import initNotesService from '../services/notes';
+import { HttpClientConfig } from '../helpers/http';
+import { NoteData } from './types';
+import { Filters } from '../helpers/filters';
 
 export interface FetchOneParams {
   q?: string;
 }
 
-export function fetchOne(noteUUID: string, params: FetchOneParams = {}) {
-  return notesService.fetchOne(noteUUID, params);
-}
-
-interface CreateParams {
+export interface CreateParams {
   bookUUID: string;
   content: string;
 }
 
-export function create({ bookUUID, content }: CreateParams) {
-  return notesService.create({ book_uuid: bookUUID, content });
-}
-
-interface UpdateParams {
+export interface UpdateParams {
   book_uuid?: string;
   content?: string;
   public?: boolean;
 }
 
-export function update(
-  noteUUID: string,
-  input: UpdateParams
-): Promise<NoteData> {
-  return notesService.update(noteUUID, input).then(res => {
-    return res.result;
-  });
-}
+export default function init(c: HttpClientConfig) {
+  const notesService = initNotesService(c);
 
-export function remove(noteUUID) {
-  return notesService.remove(noteUUID);
+  return {
+    fetch: (params: Filters) => {
+      return notesService.fetch(params);
+    },
+
+    fetchOne: (noteUUID: string, params: FetchOneParams = {}) => {
+      return notesService.fetchOne(noteUUID, params);
+    },
+
+    create: ({ bookUUID, content }: CreateParams) => {
+      return notesService.create({ book_uuid: bookUUID, content });
+    },
+
+    update: (noteUUID: string, input: UpdateParams): Promise<NoteData> => {
+      return notesService.update(noteUUID, input).then(res => {
+        return res.result;
+      });
+    },
+
+    remove: noteUUID => {
+      return notesService.remove(noteUUID);
+    }
+  };
 }
