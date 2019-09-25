@@ -1,8 +1,8 @@
-import React from "react";
-import { Creatable } from "react-select";
-import cloneDeep from "lodash/cloneDeep";
+import React from 'react';
+import { Creatable } from 'react-select';
+import cloneDeep from 'lodash/cloneDeep';
 
-import BookIcon from "./BookIcon";
+import BookIcon from './BookIcon';
 
 export default class BookSelector extends React.Component {
   getCurrentBook = () => {
@@ -17,15 +17,13 @@ export default class BookSelector extends React.Component {
     }
   };
 
-  generateId = label => {
-    return `new-${label}`;
-  };
+  generateId = (label) => `new-${label}`;
 
-  shouldAddOption = option => {
+  shouldAddOption = (option) => {
     const { books } = this.props;
 
     if (!option.isNew) {
-      console.log("not new");
+      console.log('not new');
       return false;
     }
 
@@ -47,7 +45,7 @@ export default class BookSelector extends React.Component {
       onBlur,
       onChange,
       onAddBook,
-      selectorRef
+      selectorRef,
     } = this.props;
 
     const currentOption = this.getCurrentBook();
@@ -65,7 +63,7 @@ export default class BookSelector extends React.Component {
         valueKey="uuid"
         placeholder="Choose a book"
         options={options}
-        onChange={option => {
+        onChange={(option) => {
           if (!option) {
             onChange();
             return;
@@ -78,30 +76,22 @@ export default class BookSelector extends React.Component {
           onChange(option.uuid);
         }}
         onBlur={onBlur}
-        newOptionCreator={({ label, labelKey, valueKey }) => {
-          return {
-            [labelKey]: label,
-            [valueKey]: this.generateId(label),
-            isNew: true
-          };
-        }}
-        valueRenderer={option => {
-          return (
-            <div className="book-value">
-              <BookIcon width={14} height={14} className="book-icon" />
-              <div className="book-label">
-                {option.label}
-              </div>
+        newOptionCreator={({ label, labelKey, valueKey }) => ({
+          [labelKey]: label,
+          [valueKey]: this.generateId(label),
+          isNew: true,
+        })}
+        valueRenderer={(option) => (
+          <div className="book-value">
+            <BookIcon width={14} height={14} className="book-icon" />
+            <div className="book-label">
+              {option.label}
             </div>
-          );
-        }}
-        promptTextCreator={label => {
-          return `Add a new book ${label}`;
-        }}
+          </div>
+        )}
+        promptTextCreator={(label) => `Add a new book ${label}`}
         optionClassName="book-option"
-        optionRenderer={option => {
-          return option.label;
-        }}
+        optionRenderer={(option) => option.label}
       />
     );
   }

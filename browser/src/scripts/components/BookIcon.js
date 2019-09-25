@@ -1,6 +1,8 @@
-import React from "react";
+import React from 'react';
 
-const Icon = ({ fill, width, height, className }) => {
+const Icon = ({
+  fill, width, height, className,
+}) => {
   const h = `${height}px`;
   const w = `${width}px`;
 
@@ -20,9 +22,9 @@ const Icon = ({ fill, width, height, className }) => {
 };
 
 Icon.defaultProps = {
-  fill: "#000",
+  fill: '#000',
   width: 32,
-  height: 32
+  height: 32,
 };
 
 export default Icon;

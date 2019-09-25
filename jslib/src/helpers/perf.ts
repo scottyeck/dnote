@@ -16,7 +16,7 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function debounce(func, wait, immediate) {
+export function debounce(func: Function, wait: number, immediate?: boolean) {
   let timeout;
 
   return (...args) => {
@@ -31,7 +31,7 @@ export function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
 
     if (callNow) {
-      func.apply(context, args);
+      func.apply(this, args);
     }
   };
 }

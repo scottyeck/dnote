@@ -73,13 +73,23 @@ interface SigninParams {
   password: string;
 }
 
+interface SigninResponse {
+  key: string;
+  expires_at: number;
+}
+
 export function signin(params: SigninParams) {
   const payload = {
     email: params.email,
     password: params.password
   };
 
-  return apiClient.post("/v3/signin", payload);
+  return apiClient.post<SigninResponse>("/v3/signin", payload).then(resp => {
+    return {
+      key: resp.key,
+      expiresAt: resp.expires_at
+    }
+  })
 }
 
 export function signout() {

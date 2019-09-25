@@ -100,7 +100,7 @@ export const httpClient = {
   del
 };
 
-function prependApi(path) {
+function prependApi(path: string): string {
   return `/api${path}`;
 }
 

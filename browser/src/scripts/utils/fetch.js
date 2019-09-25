@@ -1,16 +1,15 @@
-import qs from "qs";
+import qs from 'qs';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else {
-    return response.text().then(body => {
-      let error = new Error(body);
-      error.response = response;
-
-      throw error;
-    });
   }
+  return response.text().then((body) => {
+    const error = new Error(body);
+    error.response = response;
+
+    throw error;
+  });
 }
 
 function parseJSON(response) {
@@ -18,7 +17,7 @@ function parseJSON(response) {
     return response.json();
   }
 
-  return Promise.resolve()
+  return Promise.resolve();
 }
 
 function request(url, options) {
@@ -29,9 +28,9 @@ function request(url, options) {
 
 export function post(url, data, options = {}) {
   return request(url, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(data),
-    ...options
+    ...options,
   });
 }
 
@@ -43,7 +42,7 @@ export function get(url, options = {}) {
   }
 
   return request(endpoint, {
-    method: "GET",
-    ...options
+    method: 'GET',
+    ...options,
   });
 }
