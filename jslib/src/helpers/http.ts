@@ -105,7 +105,7 @@ export function getHttpClient(c: HttpClientConfig) {
       ret = `${c.pathPrefix}${ret}`;
     }
     if (c.baseUrl !== '') {
-      ret = `${c.baseUrl}/${ret}`;
+      ret = `${c.baseUrl}${ret}`;
     }
 
     return ret;

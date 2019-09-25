@@ -8,6 +8,7 @@ TARGET=chrome ./node_modules/.bin/gulp clean
 TARGET=firefox ./node_modules/.bin/gulp clean
 
 # build and package chrome
+NODE_ENV=PRODUCTION TARGET=chrome ./node_modules/.bin/webpack
 NODE_ENV=PRODUCTION TARGET=chrome ./node_modules/.bin/gulp
 TARGET=chrome ./node_modules/.bin/gulp package
 

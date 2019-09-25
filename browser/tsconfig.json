@@ -3,10 +3,11 @@
         "sourceMap": true,
         "esModuleInterop": true,
         "noImplicitAny": false,
-        "module": "commonjs",
+        "module": "es6",
+        "moduleResolution": "node",
         "jsx": "react",
         "allowJs": true,
-        "target": "es6",
+        "target": "es5",
         "baseUrl": ".",
         "paths": {
             "jslib/*": [

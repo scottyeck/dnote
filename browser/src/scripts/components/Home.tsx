@@ -6,7 +6,7 @@ import Link from './Link';
 import config from '../utils/config';
 import { updateSettings } from '../store/settings/actions';
 import { useDispatch } from '../store/hooks';
-import * as usersService from 'jslib/services/users';
+import services from '../utils/services';
 
 interface Props {}
 
@@ -24,7 +24,7 @@ const Home: React.FunctionComponent<Props> = () => {
     setLoggingIn(true);
 
     try {
-      const signinResp = await usersService.signin({ email, password });
+      const signinResp = await services.users.signin({ email, password });
 
       dispatch(
         updateSettings({

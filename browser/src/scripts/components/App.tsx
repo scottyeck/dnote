@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 
-import * as usersService from 'jslib/services/users';
+import services from '../utils/services';
 import { resetSettings } from '../store/settings/actions';
 import { useSelector, useDispatch } from '../store/hooks';
 import Header from './Header';
@@ -52,7 +52,7 @@ const App: React.FunctionComponent<Props> = () => {
   };
   const handleLogout = async () => {
     try {
-      await usersService.signout();
+      await services.users.signout();
       dispatch(resetSettings());
     } catch (e) {
       setErrMsg(e.message);
