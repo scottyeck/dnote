@@ -8,6 +8,7 @@ import Header from './Header';
 import Home from './Home';
 import Menu from './Menu';
 import Success from './Success';
+import Composer from './Composer';
 
 interface Props {}
 
@@ -17,7 +18,7 @@ function renderRoutes(path: string, isLoggedIn: boolean) {
       return <Success />;
     case '/':
       if (isLoggedIn) {
-        // return <Composer />;
+        return <Composer />;
       }
 
       return <Home />;

@@ -17,7 +17,7 @@ const Home: React.FunctionComponent<Props> = () => {
   const [loggingIn, setLoggingIn] = useState(false);
   const dispatch = useDispatch();
 
-  const onLogin = async e => {
+  const handleLogin = async e => {
     e.preventDefault();
 
     setErrMsg('');
@@ -48,7 +48,7 @@ const Home: React.FunctionComponent<Props> = () => {
 
       {errMsg && <div className="alert error">{errMsg}</div>}
 
-      <form id="login-form" onSubmit={onLogin}>
+      <form id="login-form" onSubmit={handleLogin}>
         <label htmlFor="email-input">Email</label>
 
         <input

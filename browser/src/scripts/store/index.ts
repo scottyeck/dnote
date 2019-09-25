@@ -3,10 +3,12 @@ import thunkMiddleware from 'redux-thunk';
 
 import location from './location/reducers';
 import settings from './settings/reducers';
+import books from './books/reducers';
 
 const rootReducer = combineReducers({
   location,
-  settings
+  settings,
+  books
 });
 
 // configuruStore returns a new store that contains the appliation state

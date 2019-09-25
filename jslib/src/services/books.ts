@@ -45,7 +45,7 @@ export default function init(config: HttpClientConfig) {
   const client = getHttpClient(config);
 
   return {
-    fetch: (queryObj: BookFetchParams = {}) => {
+    fetch: (queryObj: BookFetchParams = {}, opts = {}) => {
       const baseURL = '/v3/books';
 
       const queryStr = qs.stringify(queryObj);
@@ -57,7 +57,7 @@ export default function init(config: HttpClientConfig) {
         endpoint = baseURL;
       }
 
-      return client.get(endpoint);
+      return client.get(endpoint, opts);
     },
 
     create: (payload: CreateParams) => {
