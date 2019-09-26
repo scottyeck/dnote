@@ -887,7 +887,7 @@ func saveSyncState(tx *database.DB, serverTime int64, serverMaxUSN int) error {
 
 func newRun(ctx context.DnoteCtx) infra.RunEFunc {
 	return func(cmd *cobra.Command, args []string) error {
-		if ctx.SessionKey == "" || ctx.CipherKey == nil {
+		if ctx.SessionKey == "" {
 			return errors.New("not logged in")
 		}
 
