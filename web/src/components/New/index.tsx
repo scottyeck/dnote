@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { Prompt, RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 import Helmet from 'react-helmet';
@@ -19,6 +19,22 @@ import styles from './New.scss';
 
 interface Props extends RouteComponentProps {}
 
+// useInitFocus initializes the focus on HTML elements depending on the current
+// state of the editor.
+function useInitFocus({ bookLabel, textareaRef, setTriggerFocus }) {
+  useEffect(() => {
+    if (!bookLabel) {
+      setTriggerFocus();
+    } else {
+      const textareaEl = textareaRef.current;
+
+      if (textareaEl) {
+        textareaEl.focus();
+      }
+    }
+  }, [setTriggerFocus, bookLabel, textareaRef]);
+}
+
 const New: React.SFC<Props> = ({ history }) => {
   const { editor } = useSelector(state => {
     return {
@@ -26,21 +42,17 @@ const New: React.SFC<Props> = ({ history }) => {
     };
   });
   const dispatch = useDispatch();
-
   const [errMessage, setErrMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [textareaEl, setTextareaEl] = useState(null);
+  const textareaRef = useRef(null);
   const [setTriggerFocus, triggerRef] = useFocus();
 
   useCleanupEditor();
-
-  useEffect(() => {
-    if (!editor.bookLabel) {
-      setTriggerFocus();
-    } else if (textareaEl) {
-      textareaEl.focus();
-    }
-  }, [setTriggerFocus, editor.bookLabel, textareaEl]);
+  useInitFocus({
+    bookLabel: editor.bookLabel,
+    textareaRef,
+    setTriggerFocus
+  });
 
   return (
     <Fragment>
@@ -65,8 +77,7 @@ const New: React.SFC<Props> = ({ history }) => {
             <Editor
               isNew
               isBusy={submitting}
-              textareaEl={textareaEl}
-              setTextareaEl={setTextareaEl}
+              textareaRef={textareaRef}
               bookSelectorTriggerRef={triggerRef}
               onSubmit={async ({ draftContent, draftBookUUID }) => {
                 setSubmitting(true);

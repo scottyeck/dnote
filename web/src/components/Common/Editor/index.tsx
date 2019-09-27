@@ -19,8 +19,7 @@ interface Props {
   cancelPath?: Location<any>;
   isNew?: boolean;
   disabled?: boolean;
-  textareaEl: HTMLTextAreaElement;
-  setTextareaEl: React.Dispatch<any>;
+  textareaRef: React.MutableRefObject<any>;
   bookSelectorTriggerRef?: React.MutableRefObject<HTMLElement>;
 }
 
@@ -33,8 +32,7 @@ const Editor: React.SFC<Props> = ({
   onSubmit,
   isBusy,
   disabled,
-  textareaEl,
-  setTextareaEl,
+  textareaRef,
   isNew,
   bookSelectorTriggerRef,
   cancelPath = getHomePath()
@@ -91,8 +89,8 @@ const Editor: React.SFC<Props> = ({
             onAfterChange={() => {
               dispatch(markDirty());
 
-              if (textareaEl) {
-                focusTextarea(textareaEl);
+              if (textareaRef.current) {
+                focusTextarea(textareaRef.current);
               }
             }}
           />
@@ -132,7 +130,7 @@ const Editor: React.SFC<Props> = ({
       <div className={styles['content-wrapper']}>
         {mode === Mode.write ? (
           <Textarea
-            setTextareaEl={setTextareaEl}
+            textareaRef={textareaRef}
             inputTimerRef={inputTimerRef}
             content={content}
             onChange={setContent}

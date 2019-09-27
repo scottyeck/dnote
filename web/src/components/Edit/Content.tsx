@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
@@ -26,11 +26,10 @@ const Edit: React.SFC<Props> = ({ noteUUID, history, setErrMessage }) => {
     };
   });
   const dispatch = useDispatch();
-
   const [submitting, setSubmitting] = useState(false);
-  const [textareaEl, setTextareaEl] = useState(null);
+  const textareaRef = useRef(null);
 
-  useFocusTextarea(textareaEl);
+  useFocusTextarea(textareaRef.current);
   useCleanupEditor();
 
   return (
@@ -42,8 +41,7 @@ const Edit: React.SFC<Props> = ({ noteUUID, history, setErrMessage }) => {
 
       <Editor
         isBusy={submitting}
-        textareaEl={textareaEl}
-        setTextareaEl={setTextareaEl}
+        textareaRef={textareaRef}
         cancelPath={prevLocation}
         onSubmit={async ({ draftContent, draftBookUUID }) => {
           setSubmitting(true);
