@@ -60,6 +60,7 @@ func getStaticHandler() http.Handler {
 	return http.StripPrefix("/static/", http.FileServer(box))
 }
 
+// getRootHandler returns an HTTP handler that serves the app shell
 func getRootHandler() http.HandlerFunc {
 	b := mustFind(rootBox, "index.html")
 
@@ -100,7 +101,9 @@ func initServer() *mux.Router {
 	srv.PathPrefix("/static").Handler(getStaticHandler())
 	srv.Handle("/service-worker.js", getSWHandler())
 	srv.Handle("/robots.txt", getRobotsHandler())
-	srv.Handle("/", getRootHandler())
+
+	// For all other requests, serve the index.html file
+	srv.PathPrefix("/").Handler(getRootHandler())
 
 	return srv
 }
