@@ -22,5 +22,7 @@
 @import '../App/rem';
 
 .wrapper {
-  // margin-bottom: rem(20px);
+  @include breakpoint(md) {
+    margin-top: rem(20px);
+  }
 }
