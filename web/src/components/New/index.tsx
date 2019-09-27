@@ -35,8 +35,12 @@ const New: React.SFC<Props> = ({ history }) => {
   useCleanupEditor();
 
   useEffect(() => {
-    setTriggerFocus();
-  }, [setTriggerFocus]);
+    if (!editor.bookLabel) {
+      setTriggerFocus();
+    } else if (textareaEl) {
+      textareaEl.focus();
+    }
+  }, [setTriggerFocus, editor.bookLabel, textareaEl]);
 
   return (
     <Fragment>
