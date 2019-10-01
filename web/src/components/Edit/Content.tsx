@@ -50,55 +50,7 @@ const Edit: React.SFC<Props> = ({ noteUUID, history, setErrMessage }) => {
   useFocusTextarea(textareaRef.current);
   useCleanupEditor();
 
-  return (
-    <div className={styles.wrapper}>
-      <div className={classnames(styles.overlay, {})} />
-      <div className={styles.header}>
-        <h2 className={styles.heading}>Edit note</h2>
-      </div>
-
-      <Editor
-        isBusy={submitting}
-        textareaRef={textareaRef}
-        cancelPath={prevLocation}
-        onSubmit={async ({ draftContent, draftBookUUID }) => {
-          setSubmitting(true);
-
-          try {
-            let bookUUID;
-
-            if (!draftBookUUID) {
-              const book = await dispatch(createBook(editor.bookLabel));
-              bookUUID = book.uuid;
-            } else {
-              bookUUID = draftBookUUID;
-            }
-
-            const note = await operations.notes.update(noteUUID, {
-              book_uuid: bookUUID,
-              content: draftContent
-            });
-
-            dispatch(resetEditor());
-
-            const dest = getNotePath(note.uuid);
-            history.push(dest);
-
-            dispatch(
-              setMessage({
-                message: 'Updated the note',
-                kind: 'info',
-                path: notePathDef
-              })
-            );
-          } catch (err) {
-            setErrMessage(err.message);
-            setSubmitting(false);
-          }
-        }}
-      />
-    </div>
-  );
+  return null;
 };
 
 export default React.memo(withRouter(Edit));

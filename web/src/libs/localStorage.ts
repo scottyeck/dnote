@@ -16,13 +16,28 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const stateKey = 'state';
+import { AppState } from '../store';
 
-// loadState parses the serialized state tree stored in the localStorage
-// and returns it
-export function loadState(): JSON {
+/* localStorage keys */
+export const editorKey = 'state.editor';
+
+// setObj stringifies the given value and stores the result under the given key
+// in the localStorage
+export function setObj(key: string, val: object) {
   try {
-    const serialized = localStorage.getItem(stateKey);
+    const serialized = JSON.stringify(val);
+
+    localStorage.setItem(key, serialized);
+  } catch (e) {
+    console.log('Unable save to the localStorage', e.message);
+  }
+}
+
+// getObj reads a serialized object stored in the localStorage, parses it, and returns
+// the result. If none is found, it returns undefined.
+export function getObj(key: string) {
+  try {
+    const serialized = localStorage.getItem(key);
 
     if (serialized === null) {
       return undefined;
@@ -35,13 +50,17 @@ export function loadState(): JSON {
   }
 }
 
-// saveState writes the given state to localStorage
-export function saveState(state: object) {
-  try {
-    const serialized = JSON.stringify(state);
+// loadState parses serialized state trees in the localStorage, combines them,
+// and returns the resulting app state. If no state trees are found, it returns
+// undefined.
+export function loadState(): Partial<AppState> | undefined {
+  const editor = getObj(editorKey);
 
-    localStorage.setItem(stateKey, serialized);
-  } catch (e) {
-    console.log('Unable save to the localStorage', e.message);
+  if (!editor) {
+    return undefined;
   }
+
+  return {
+    editor
+  };
 }

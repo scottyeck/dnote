@@ -35,25 +35,28 @@ interface Props {
   triggerClassName?: string;
   isReady: boolean;
   defaultIsOpen?: boolean;
-  onAfterChange: () => void;
   isOpen: boolean;
   setIsOpen: (boolean) => void;
   triggerRef?: React.MutableRefObject<HTMLElement>;
+  onSelectBook: ({ label, uuid }: { label: string; uuid: string }) => void;
+  currentValue: string;
+  currentLabel: string;
 }
 
 const BookSelector: React.SFC<Props> = ({
   wrapperClassName,
   triggerClassName,
   isReady,
-  onAfterChange,
   isOpen,
   setIsOpen,
-  triggerRef
+  triggerRef,
+  onSelectBook,
+  currentValue,
+  currentLabel
 }) => {
-  const { books, editor } = useSelector(state => {
+  const { books } = useSelector(state => {
     return {
-      books: state.books,
-      editor: state.editor
+      books: state.books
     };
   });
   const dispatch = useDispatch();
@@ -67,8 +70,6 @@ const BookSelector: React.SFC<Props> = ({
   }, [isOpen]);
 
   const options = booksToOptions(books.data);
-  const currentValue = editor.bookUUID;
-  const currentLabel = editor.bookLabel;
 
   let ariaExpanded;
   if (isOpen) {
@@ -76,8 +77,8 @@ const BookSelector: React.SFC<Props> = ({
   }
 
   function handleSelect(option) {
-    dispatch(updateBook({ label: option.label, uuid: option.value }));
-    onAfterChange();
+    console.log('option', option);
+    onSelectBook({ label: option.label, uuid: option.value });
   }
 
   return (

@@ -24,14 +24,19 @@ import { Location } from 'history';
 import { focusTextarea } from 'web/libs/dom';
 import { getHomePath } from 'web/libs/paths';
 import BooksSelector from './BookSelector';
-import { useDispatch, useSelector } from '../../../store';
-import { flushContent, markDirty } from '../../../store/editor';
+import { useDispatch, useSelector, useStore } from '../../../store';
+// import { markDirty } from '../../../store/editor';
 import Textarea from './Textarea';
 import Preview from './Preview';
 import Button from '../Button';
 import styles from './Editor.scss';
 
 interface Props {
+  content: string;
+  onContentChange: (string) => void;
+  onSelectBook: ({ label, uuid }: { label: string; uuid: string }) => void;
+  bookUUID: string;
+  bookLabel: string;
   onSubmit: (param: { draftContent: string; draftBookUUID: string }) => void;
   isBusy: boolean;
   cancelPath?: Location<any>;
@@ -47,24 +52,28 @@ enum Mode {
 }
 
 const Editor: React.SFC<Props> = ({
+  content,
+  bookUUID,
+  bookLabel,
   onSubmit,
   isBusy,
   disabled,
   textareaRef,
   isNew,
   bookSelectorTriggerRef,
+  onContentChange,
+  onSelectBook,
   cancelPath = getHomePath()
 }) => {
-  const { editor, books } = useSelector(state => {
+  const { books } = useSelector(state => {
     return {
-      editor: state.editor,
       books: state.books
     };
   });
   const dispatch = useDispatch();
+  const store = useStore();
   const [bookSelectorOpen, setBookSelectorOpen] = useState(false);
 
-  const [content, setContent] = useState(editor.content);
   const [mode, setMode] = useState(Mode.write);
   const inputTimerRef = useRef(null);
 
@@ -72,16 +81,10 @@ const Editor: React.SFC<Props> = ({
   const isPreviewMode = mode === Mode.preview;
 
   function handleSubmit() {
-    // immediately flush the content
-    if (inputTimerRef.current) {
-      window.clearTimeout(inputTimerRef.current);
-
-      // eslint-disable-next-line no-param-reassign
-      inputTimerRef.current = null;
-      dispatch(flushContent(content));
-    }
-
-    onSubmit({ draftContent: content, draftBookUUID: editor.bookUUID });
+    onSubmit({
+      draftContent: content,
+      draftBookUUID: bookUUID
+    });
   }
 
   if (disabled) {
@@ -104,13 +107,9 @@ const Editor: React.SFC<Props> = ({
             isOpen={bookSelectorOpen}
             setIsOpen={setBookSelectorOpen}
             triggerRef={bookSelectorTriggerRef}
-            onAfterChange={() => {
-              dispatch(markDirty());
-
-              if (textareaRef.current) {
-                focusTextarea(textareaRef.current);
-              }
-            }}
+            onSelectBook={onSelectBook}
+            currentValue={bookUUID}
+            currentLabel={bookLabel}
           />
         </div>
 
@@ -151,7 +150,7 @@ const Editor: React.SFC<Props> = ({
             textareaRef={textareaRef}
             inputTimerRef={inputTimerRef}
             content={content}
-            onChange={setContent}
+            onChange={onContentChange}
             onSubmit={handleSubmit}
           />
         ) : (
@@ -165,7 +164,7 @@ const Editor: React.SFC<Props> = ({
           type="submit"
           kind="third"
           size="normal"
-          disabled={isBusy}
+          isBusy={isBusy}
         >
           {isNew ? 'Save' : 'Update'}
         </Button>

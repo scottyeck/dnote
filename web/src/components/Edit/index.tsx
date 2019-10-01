@@ -84,11 +84,6 @@ const Edit: React.SFC<Props> = ({ match }) => {
       </Flash>
 
       {isReady && <Content noteUUID={noteUUID} setErrMessage={setErrMessage} />}
-
-      <Prompt
-        message="You have unsaved changes. Continue?"
-        when={editor.dirty}
-      />
     </div>
   );
 };

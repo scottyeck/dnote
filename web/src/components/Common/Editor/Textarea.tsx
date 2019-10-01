@@ -29,7 +29,6 @@ import editorStyles from './Editor.scss';
 interface Props {
   content: string;
   onChange: (string) => void;
-  doFlushContent: (string) => void;
   onSubmit: () => void;
   textareaRef: React.MutableRefObject<any>;
   inputTimerRef: React.MutableRefObject<any>;
@@ -39,7 +38,6 @@ interface Props {
 const Textarea: React.SFC<Props> = ({
   content,
   onChange,
-  doFlushContent,
   onSubmit,
   textareaRef,
   inputTimerRef,
@@ -53,20 +51,7 @@ const Textarea: React.SFC<Props> = ({
         ref={textareaRef}
         value={content}
         onChange={e => {
-          const { value } = e.target;
-          onChange(value);
-
-          // flush the draft to the data store when user stops typing
-          if (inputTimerRef.current) {
-            window.clearTimeout(inputTimerRef.current);
-          }
-          // eslint-disable-next-line no-param-reassign
-          inputTimerRef.current = window.setTimeout(() => {
-            // eslint-disable-next-line no-param-reassign
-            inputTimerRef.current = null;
-
-            doFlushContent(value);
-          }, 1000);
+          onChange(e.target.value);
         }}
         onFocus={() => {
           setContentFocused(true);
@@ -93,17 +78,4 @@ const Textarea: React.SFC<Props> = ({
   );
 };
 
-function mapStateToProps(state: AppState) {
-  return {
-    editor: state.editor
-  };
-}
-
-const mapDispatchToProps = {
-  doFlushContent: flushContent
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Textarea);
+export default Textarea;

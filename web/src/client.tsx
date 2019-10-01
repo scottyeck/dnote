@@ -27,21 +27,11 @@ import { Provider } from 'react-redux';
 import { debounce } from 'jslib/helpers/perf';
 import App from './components/App';
 import configureStore from './store';
-import { loadState, saveState } from './libs/localStorage';
+import { loadState } from './libs/localStorage';
 import './libs/restoreScroll';
 
 const persistedState = loadState();
 const store = configureStore(persistedState);
-
-store.subscribe(
-  debounce(() => {
-    const state = store.getState();
-
-    saveState({
-      editor: state.editor
-    });
-  }, 1000)
-);
 
 function renderApp() {
   render(

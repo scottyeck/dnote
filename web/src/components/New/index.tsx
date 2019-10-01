@@ -17,11 +17,12 @@
  */
 
 import React, { useState, useRef, useEffect, Fragment } from 'react';
-import { Prompt, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 import Helmet from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 
+import { useEditor } from 'web/libs/editor';
 import { focusTextarea } from 'web/libs/dom';
 import operations from 'web/libs/operations';
 import { getNotePath, notePathDef } from 'web/libs/paths';
@@ -30,7 +31,6 @@ import { useFocus } from 'web/libs/hooks/dom';
 import Editor from '../Common/Editor';
 import Flash from '../Common/Flash';
 import { useDispatch, useSelector } from '../../store';
-import { resetEditor } from '../../store/editor';
 import { createBook } from '../../store/books';
 import { setMessage } from '../../store/ui';
 import PayWall from '../Common/PayWall';
@@ -40,10 +40,10 @@ interface Props extends RouteComponentProps {}
 
 // useInitFocus initializes the focus on HTML elements depending on the current
 // state of the editor.
-function useInitFocus({ bookLabel, textareaRef, setTriggerFocus }) {
+function useInitFocus({ bookLabel, content, textareaRef, focusTrigger }) {
   useEffect(() => {
-    if (!bookLabel) {
-      setTriggerFocus();
+    if (!bookLabel && !content) {
+      focusTrigger();
     } else {
       const textareaEl = textareaRef.current;
 
@@ -51,26 +51,26 @@ function useInitFocus({ bookLabel, textareaRef, setTriggerFocus }) {
         focusTextarea(textareaEl);
       }
     }
-  }, [setTriggerFocus, bookLabel, textareaRef]);
+  }, [focusTrigger, bookLabel, textareaRef]);
 }
 
 const New: React.SFC<Props> = ({ history }) => {
-  const { editor } = useSelector(state => {
-    return {
-      editor: state.editor
-    };
-  });
+  const [editor, editorActions] = useEditor();
+
+  console.log(editor);
+
   const dispatch = useDispatch();
   const [errMessage, setErrMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const textareaRef = useRef(null);
-  const [setTriggerFocus, triggerRef] = useFocus();
+  const [focusTrigger, triggerRef] = useFocus();
 
   useCleanupEditor();
   useInitFocus({
     bookLabel: editor.bookLabel,
+    content: editor.content,
     textareaRef,
-    setTriggerFocus
+    focusTrigger
   });
 
   return (
@@ -98,9 +98,22 @@ const New: React.SFC<Props> = ({ history }) => {
 
             <Editor
               isNew
+              content={editor.content}
+              bookUUID={editor.bookUUID}
+              bookLabel={editor.bookLabel}
               isBusy={submitting}
               textareaRef={textareaRef}
               bookSelectorTriggerRef={triggerRef}
+              onContentChange={content => {
+                editorActions.updateContent(content);
+              }}
+              onSelectBook={({ label, uuid }) => {
+                editorActions.updateBook({ label, uuid });
+
+                if (textareaRef.current) {
+                  focusTextarea(textareaRef.current);
+                }
+              }}
               onSubmit={async ({ draftContent, draftBookUUID }) => {
                 setSubmitting(true);
 
@@ -119,7 +132,7 @@ const New: React.SFC<Props> = ({ history }) => {
                     content: draftContent
                   });
 
-                  dispatch(resetEditor());
+                  editorActions.clear();
 
                   const dest = getNotePath(res.result.uuid);
                   history.push(dest);
@@ -138,11 +151,6 @@ const New: React.SFC<Props> = ({ history }) => {
               }}
             />
           </div>
-
-          <Prompt
-            message="You have unsaved changes. Continue?"
-            when={editor.dirty}
-          />
         </div>
       </PayWall>
     </Fragment>
