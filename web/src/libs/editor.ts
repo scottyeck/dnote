@@ -10,6 +10,8 @@ export interface EditorState {
   dirty: boolean;
 }
 
+const editorKey = 'state.editor';
+
 export const UPDATE_CONTENT = 'UPDATE_CONTENT';
 export const UPDATE_BOOK = 'UPDATE_BOOK';
 
@@ -92,7 +94,7 @@ const defaultState: EditorState = {
 // getInitialState retrieves the initial state for the editor from an offline
 // data source applicable to the platform.
 function getInitialState() {
-  return localStorageLib.getObj(localStorageLib.editorKey) || defaultState;
+  return localStorageLib.getObj(editorKey) || defaultState;
 }
 
 // useEditor returns an editor state and a map of dispatchers to modify the
@@ -103,7 +105,7 @@ export function useEditor(): [EditorState, EditorDispatchers] {
 
   // persist the editor state to the localStorage
   useEffect(() => {
-    localStorageLib.setObj(localStorageLib.editorKey, state);
+    localStorageLib.setObj(editorKey, state);
   }, [state]);
 
   const dispatchers = {
@@ -114,7 +116,7 @@ export function useEditor(): [EditorState, EditorDispatchers] {
       dispatch(updateBook(params));
     },
     clear: () => {
-      localStorage.removeItem(localStorageLib.editorKey);
+      localStorage.removeItem(editorKey);
     }
   };
 

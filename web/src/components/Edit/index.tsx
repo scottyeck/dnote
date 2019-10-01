@@ -25,7 +25,6 @@ import { withRouter } from 'react-router-dom';
 import operations from 'web/libs/operations';
 import Flash from '../Common/Flash';
 import { useDispatch, useSelector } from '../../store';
-import { stageNote } from '../../store/editor';
 import Content from './Content';
 import styles from '../New/New.scss';
 
@@ -36,11 +35,6 @@ interface Match {
 interface Props extends RouteComponentProps<Match> {}
 
 const Edit: React.SFC<Props> = ({ match }) => {
-  const { editor } = useSelector(state => {
-    return {
-      editor: state.editor
-    };
-  });
   const dispatch = useDispatch();
 
   const [errMessage, setErrMessage] = useState('');
@@ -52,14 +46,14 @@ const Edit: React.SFC<Props> = ({ match }) => {
     operations.notes
       .fetchOne(noteUUID)
       .then(note => {
-        dispatch(
-          stageNote({
-            noteUUID: note.uuid,
-            bookUUID: note.book.uuid,
-            bookLabel: note.book.label,
-            content: note.content
-          })
-        );
+        //dispatch(
+        //     stageNote({
+        //       noteUUID: note.uuid,
+        //       bookUUID: note.book.uuid,
+        //         bookLabel: note.book.label,
+        //         content: note.content
+        //       })
+        //     );
 
         setIsReady(true);
       })

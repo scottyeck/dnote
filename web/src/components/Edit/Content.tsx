@@ -26,7 +26,6 @@ import { getNotePath, notePathDef } from 'web/libs/paths';
 import { useCleanupEditor, useFocusTextarea } from 'web/libs/hooks/editor';
 import Editor from '../Common/Editor';
 import { useDispatch, useSelector } from '../../store';
-import { resetEditor } from '../../store/editor';
 import { createBook } from '../../store/books';
 import { setMessage } from '../../store/ui';
 import styles from '../New/New.scss';
@@ -37,9 +36,8 @@ interface Props extends RouteComponentProps {
 }
 
 const Edit: React.SFC<Props> = ({ noteUUID, history, setErrMessage }) => {
-  const { editor, prevLocation } = useSelector(state => {
+  const { prevLocation } = useSelector(state => {
     return {
-      editor: state.editor,
       prevLocation: state.route.prevLocation
     };
   });

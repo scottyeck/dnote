@@ -19,7 +19,7 @@
 import { AppState } from '../store';
 
 /* localStorage keys */
-export const editorKey = 'state.editor';
+export const stateKey = 'state';
 
 // setObj stringifies the given value and stores the result under the given key
 // in the localStorage
@@ -54,13 +54,5 @@ export function getObj(key: string) {
 // and returns the resulting app state. If no state trees are found, it returns
 // undefined.
 export function loadState(): Partial<AppState> | undefined {
-  const editor = getObj(editorKey);
-
-  if (!editor) {
-    return undefined;
-  }
-
-  return {
-    editor
-  };
+  return getObj(stateKey);
 }

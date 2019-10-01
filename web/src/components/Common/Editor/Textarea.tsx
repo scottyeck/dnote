@@ -21,7 +21,6 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 
 import { KEYCODE_ENTER } from 'jslib/helpers/keyboard';
-import { flushContent } from '../../../store/editor';
 import { AppState } from '../../../store';
 import styles from './Textarea.scss';
 import editorStyles from './Editor.scss';

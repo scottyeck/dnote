@@ -22,7 +22,6 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { AuthState } from './auth/type';
 import { FormState } from './form/type';
 import { BooksState } from './books/type';
-import { EditorState } from './editor/type';
 import { NoteState } from './note/type';
 import { NotesState } from './notes/type';
 import { UIState } from './ui/type';
@@ -43,7 +42,6 @@ export interface AppState {
   auth: AuthState;
   form: FormState;
   books: BooksState;
-  editor: EditorState;
   note: NoteState;
   notes: NotesState;
   ui: UIState;

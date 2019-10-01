@@ -26,7 +26,6 @@ import BookIcon from '../../../Icons/Book';
 import CaretIcon from '../../../Icons/Caret';
 import SearchInput from '../../SearchInput';
 import { useDispatch, useSelector } from '../../../../store';
-import { updateBook } from '../../../../store/editor';
 import OptionItem from './OptionItem';
 import styles from './index.scss';
 

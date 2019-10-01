@@ -22,7 +22,6 @@ import thunkMiddleware from 'redux-thunk';
 import auth from './auth/reducers';
 import form from './form/reducers';
 import books from './books/reducers';
-import editor from './editor/reducers';
 import note from './note/reducers';
 import ui from './ui/reducers';
 import route from './route/reducers';
@@ -33,7 +32,6 @@ const rootReducer = combineReducers({
   auth,
   form,
   books,
-  editor,
   notes,
   note,
   ui,
