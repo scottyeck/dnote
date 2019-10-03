@@ -47,3 +47,23 @@ export interface UserData {
   pro: boolean;
   classic: boolean;
 }
+
+export type BookData = {
+  uuid: string;
+  usn: number;
+  created_at: string;
+  updated_at: string;
+  label: string;
+};
+
+export interface DigestRuleData {
+  uuid: string;
+  title: string;
+  enabled: boolean;
+  hour: number;
+  minute: number;
+  frequency: number;
+  books: BookData[];
+  created_at: number;
+  updated_at: number;
+}

@@ -21,7 +21,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 import { History } from 'history';
 
-import { BookData } from 'jslib/operations/books';
+import { BookData } from 'jslib/operations/types';
 import { escapesRegExp } from 'web/libs/string';
 import { getHomePath } from 'web/libs/paths';
 import {

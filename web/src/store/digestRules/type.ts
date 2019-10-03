@@ -16,49 +16,49 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { DigestRuleData } from 'jslib/operations/types';
 import { RemoteData } from '../types';
-import { BookData } from 'jslib/operations/types';
 
-export type BooksState = RemoteData<BookData[]>;
+export type DigestRulesState = RemoteData<DigestRuleData[]>;
 
-export const RECEIVE = 'books/RECEIVE';
-export const ADD = 'books/ADD';
-export const REMOVE = 'books/REMOVE';
-export const START_FETCHING = 'books/START_FETCHING';
-export const FINISH_FETCHING = 'books/FINISH_FETCHING';
+export const RECEIVE = 'digestRules/RECEIVE';
+export const ADD = 'digestRules/ADD';
+export const REMOVE = 'digestRules/REMOVE';
+export const START_FETCHING = 'digestRules/START_FETCHING';
+export const FINISH_FETCHING = 'digestRules/FINISH_FETCHING';
 
-export interface ReceiveBooks {
+export interface ReceiveDigestRulesAction {
   type: typeof RECEIVE;
   data: {
-    books: BookData[];
+    digestRules: DigestRuleData[];
   };
 }
 
-export interface StartFetchingBooks {
+export interface StartFetchingDigestRulesAction {
   type: typeof START_FETCHING;
 }
 
-export interface FinishFetchingBooks {
+export interface FinishFetchingDigestRulesAction {
   type: typeof FINISH_FETCHING;
 }
 
-export interface AddBook {
+export interface AddDigestRuleAction {
   type: typeof ADD;
   data: {
-    book: BookData;
+    digestRule: DigestRuleData;
   };
 }
 
-export interface RemoveBook {
+export interface RemoveDigestRuleAction {
   type: typeof REMOVE;
   data: {
-    bookUUID: string;
+    uuid: string;
   };
 }
 
-export type BooksActionType =
-  | ReceiveBooks
-  | StartFetchingBooks
-  | FinishFetchingBooks
-  | AddBook
-  | RemoveBook;
+export type DigestRulesActionType =
+  | ReceiveDigestRulesAction
+  | StartFetchingDigestRulesAction
+  | FinishFetchingDigestRulesAction
+  | AddDigestRuleAction
+  | RemoveDigestRuleAction;

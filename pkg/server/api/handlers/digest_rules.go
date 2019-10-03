@@ -47,34 +47,25 @@ func (a *App) getDigestRules(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, resp)
 }
 
-type digestRuleParams struct {
-	Title     *string   `json:"title"`
-	Hour      *int      `json:"hour"`
-	Minute    *int      `json:"minute"`
-	Frequency *int      `json:"frequency"`
-	BookUUIDs *[]string `json:"book_uuids"`
+type createDigestRuleParams struct {
+	Title     string   `json:"title"`
+	Hour      int      `json:"hour"`
+	Minute    int      `json:"minute"`
+	Frequency int      `json:"frequency"`
+	BookUUIDs []string `json:"book_uuids"`
 }
 
-func parseCreateDigestRuleParams(r *http.Request) (digestRuleParams, error) {
-	var ret digestRuleParams
+func parseCreateDigestRuleParams(r *http.Request) (createDigestRuleParams, error) {
+	var ret createDigestRuleParams
 
 	if err := json.NewDecoder(r.Body).Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
 	}
 
-	if ret.Title == nil {
-		return ret, errors.New("title is required")
-	}
-	if ret.Hour == nil {
-		return ret, errors.New("hour is required")
-	}
-	if ret.Minute == nil {
-		return ret, errors.New("minute is required")
-	}
-	if ret.Frequency == nil {
+	if ret.Frequency == 0 {
 		return ret, errors.New("frequency is required")
 	}
-	if ret.BookUUIDs == nil {
+	if len(ret.BookUUIDs) == 0 {
 		return ret, errors.New("book_uuids is required")
 	}
 
@@ -102,10 +93,10 @@ func (a *App) createDigestRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	record := database.DigestRule{
-		Title:     *params.Title,
-		Hour:      *params.Hour,
-		Minute:    *params.Minute,
-		Frequency: *params.Frequency,
+		Title:     params.Title,
+		Hour:      params.Hour,
+		Minute:    params.Minute,
+		Frequency: params.Frequency,
 		Books:     books,
 	}
 	if err := db.Create(&record).Error; err != nil {
@@ -119,8 +110,17 @@ func (a *App) createDigestRule(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, resp)
 }
 
-func parseUpdateDigestParams(r *http.Request) (digestRuleParams, error) {
-	var ret digestRuleParams
+type updateDigestRuleParams struct {
+	Title     *string   `json:"title"`
+	Enabled   *bool     `json:"enabled"`
+	Hour      *int      `json:"hour"`
+	Minute    *int      `json:"minute"`
+	Frequency *int      `json:"frequency"`
+	BookUUIDs *[]string `json:"book_uuids"`
+}
+
+func parseUpdateDigestParams(r *http.Request) (updateDigestRuleParams, error) {
+	var ret updateDigestRuleParams
 
 	if err := json.NewDecoder(r.Body).Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
@@ -154,6 +154,9 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 
 	if params.Title != nil {
 		digestRule.Title = *params.Title
+	}
+	if params.Enabled != nil {
+		digestRule.Enabled = *params.Enabled
 	}
 	if params.Hour != nil {
 		digestRule.Hour = *params.Hour

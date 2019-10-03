@@ -28,6 +28,7 @@ import ui from './ui/reducers';
 import route from './route/reducers';
 import notes from './notes/reducers';
 import filters from './filters/reducers';
+import digestRules from './digestRules/reducers';
 
 const rootReducer = combineReducers({
   auth,
@@ -38,7 +39,8 @@ const rootReducer = combineReducers({
   note,
   ui,
   route,
-  filters
+  filters,
+  digestRules
 });
 
 // configuruStore returns a new store that contains the appliation state
