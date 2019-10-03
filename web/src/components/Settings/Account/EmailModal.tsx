@@ -123,19 +123,20 @@ const EmailModal: React.SFC<Props> = ({ currentEmail, isOpen, onDismiss }) => {
               htmlFor="email-form-email-input"
             >
               New email
-              <input
-                id="email-form-email-input"
-                type="email"
-                placeholder="your@email.com"
-                value={emailVal}
-                onChange={e => {
-                  const val = e.target.value;
-                  setEmailVal(val);
-                }}
-                className="form-control"
-                autoComplete="new-password"
-              />
             </label>
+
+            <input
+              id="email-form-email-input"
+              type="email"
+              placeholder="your@email.com"
+              value={emailVal}
+              onChange={e => {
+                const val = e.target.value;
+                setEmailVal(val);
+              }}
+              className="form-control"
+              autoComplete="new-password"
+            />
           </div>
 
           <div className={settingsStyles['input-row']}>
@@ -144,19 +145,20 @@ const EmailModal: React.SFC<Props> = ({ currentEmail, isOpen, onDismiss }) => {
               htmlFor="email-form-password-input"
             >
               Current password
-              <input
-                id="email-form-password-input"
-                type="password"
-                placeholder="********"
-                value={passwordVal}
-                onChange={e => {
-                  const val = e.target.value;
-                  setPasswordVal(val);
-                }}
-                className="form-control"
-                autoComplete="off"
-              />
             </label>
+
+            <input
+              id="email-form-password-input"
+              type="password"
+              placeholder="********"
+              value={passwordVal}
+              onChange={e => {
+                const val = e.target.value;
+                setPasswordVal(val);
+              }}
+              className="form-control"
+              autoComplete="off"
+            />
           </div>
 
           <div className={settingsStyles.actions}>

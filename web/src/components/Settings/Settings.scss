@@ -45,13 +45,14 @@
 }
 
 .actions {
-  margin-top: rem(12px);
+  margin-top: rem(18px);
   text-align: right;
 }
 
 .input-row {
-  &:not(:first-child) {
-    margin-top: rem(8px);
+  & ~ .input-row,
+  .input-row {
+    margin-top: rem(16px);
   }
 }
 
@@ -73,6 +74,8 @@ button.edit {
 
 .input-label {
   width: 100%;
+  font-weight: 600;
+  margin-bottom: rem(8px);
 }
 
 .verification-banner {

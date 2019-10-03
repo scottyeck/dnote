@@ -23,15 +23,15 @@ import { RouteComponentProps } from 'react-router-dom';
 import { SettingSections } from 'web/libs/paths';
 import Account from './Account';
 import Sidebar from './Sidebar';
-import Notification from './Notification';
+import SpacedRepetition from './SpacedRepetition';
 import Billing from './Billing';
 
 function renderContent(section: string): React.ReactNode {
   if (section === SettingSections.account) {
     return <Account />;
   }
-  if (section === SettingSections.notification) {
-    return <Notification />;
+  if (section === SettingSections.spacedRepeition) {
+    return <SpacedRepetition />;
   }
   if (section === SettingSections.billing) {
     return <Billing />;

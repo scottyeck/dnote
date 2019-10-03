@@ -36,6 +36,7 @@ export const verifyEmailPathDef = '/verify-email/:token';
 export const classicMigrationPathDef = '/classic/:step?';
 export const passwordResetRequestPathDef = '/password-reset';
 export const passwordResetConfirmPathDef = '/password-reset/:token';
+export const repetitionPathDef = '/repetition';
 
 // layout definitions
 export const noHeaderPaths = [
@@ -129,6 +130,12 @@ export function getBooksPath(searchObj = {}): Location {
   return getLocation({ pathname: basePath, searchObj });
 }
 
+export function getRepetitionPath(searchObj = {}): Location {
+  const basePath = '/repetition';
+
+  return getLocation({ pathname: basePath, searchObj });
+}
+
 export function getNotePath(noteUUID: string, searchObj = {}): Location {
   const path = `/notes/${noteUUID}`;
 
@@ -172,7 +179,7 @@ export function getPasswordResetConfirmPath(searchObj = {}): Location {
 
 export enum SettingSections {
   account = 'account',
-  notification = 'notification',
+  spacedRepeition = 'spaced-repetition',
   billing = 'billing'
 }
 

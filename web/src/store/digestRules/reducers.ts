@@ -20,6 +20,7 @@ import {
   DigestRulesState,
   DigestRulesActionType,
   RECEIVE,
+  RECEIVE_ERROR,
   ADD,
   REMOVE,
   START_FETCHING,
@@ -56,6 +57,12 @@ export default function(
       return {
         ...state,
         data: action.data.digestRules
+      };
+    }
+    case RECEIVE_ERROR: {
+      return {
+        ...state,
+        errorMessage: action.data.err
       };
     }
     case REMOVE: {

@@ -38,7 +38,7 @@ func (a *App) getDigestRules(w http.ResponseWriter, r *http.Request) {
 
 	db := database.DBConn
 	var digestRules []database.DigestRule
-	if err := db.Where("user_id = ?", user.ID).Find(&digestRules).Error; err != nil {
+	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&digestRules).Error; err != nil {
 		handleError(w, "getting digest rules", nil, http.StatusInternalServerError)
 		return
 	}
@@ -147,7 +147,7 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 
 	db := database.DBConn
 	var digestRule database.DigestRule
-	if err := db.Where("user_id = ? AND uuid = ?", user.ID, digestRuleUUID).First(&digestRule).Error; err != nil {
+	if err := db.Where("user_id = ? AND uuid = ?", user.ID, digestRuleUUID).Preload("Books").First(&digestRule).Error; err != nil {
 		handleError(w, "finding record", nil, http.StatusInternalServerError)
 		return
 	}

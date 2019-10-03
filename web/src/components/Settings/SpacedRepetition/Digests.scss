@@ -16,40 +16,52 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// .form-container {
-//   .actions {
-//     margin-top: 12px;
-//   }
-// }
-//
-// .input-help {
-//   font-size: 1.3rem;
-//   color: gray;
-//   margin-top: 5px;
-// }
-//
-// .input-group {
-//   .copy-button {
-//     border-width: 1px;
-//     background: transparent;
-//     border-color: #ced4da;
-//     color: #333744;
-//     width: 85px;
-//
-//     &:hover {
-//       box-shadow: 0px 0px 4px 2px #eaeaea;
-//       background: #fbfbfb;
-//     }
-//
-//     &.copied {
-//     }
-//   }
-// }
-//
-// .danger-zone {
-//   margin-top: 26px;
-//
-//   .danger-zone-heading {
-//     margin-bottom: 18px;
-//   }
-// }
+@import '../../App/rem';
+@import '../../App/font';
+@import '../../App/theme';
+
+.help {
+  color: $gray;
+  @include font-size('small');
+  margin-top: rem(4px);
+  margin-bottom: 0;
+}
+
+.schedule-input-row {
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+  }
+}
+
+.schedule-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  & ~ .schedule-wrapper {
+    margin-left: rem(24px);
+  }
+}
+
+.form {
+  .time-row {
+    display: flex;
+
+    @include breakpoint(md) {
+      margin-top: 0;
+      flex-grow: 1;
+      margin-left: rem(24px);
+    }
+  }
+}
+
+.timezone {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  margin-left: 12px;
+  @include font-size('small');
+}

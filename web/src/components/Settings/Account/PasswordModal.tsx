@@ -123,20 +123,20 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
               htmlFor="old-password-input"
             >
               Old password
-              <input
-                id="old-password-input"
-                type="password"
-                placeholder="********"
-                value={oldPassword}
-                onChange={e => {
-                  const val = e.target.value;
-
-                  setOldPassword(val);
-                }}
-                className="form-control"
-                autoComplete={false.toString()}
-              />
             </label>
+            <input
+              id="old-password-input"
+              type="password"
+              placeholder="********"
+              value={oldPassword}
+              onChange={e => {
+                const val = e.target.value;
+
+                setOldPassword(val);
+              }}
+              className="form-control"
+              autoComplete={false.toString()}
+            />
           </div>
           <div className={settingsStyles['input-row']}>
             <label
@@ -144,19 +144,19 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
               htmlFor="new-password-input"
             >
               New Password
-              <input
-                id="new-password-input"
-                type="password"
-                placeholder="********"
-                value={newPassword}
-                onChange={e => {
-                  const val = e.target.value;
-
-                  setNewPassword(val);
-                }}
-                className="form-control"
-              />
             </label>
+            <input
+              id="new-password-input"
+              type="password"
+              placeholder="********"
+              value={newPassword}
+              onChange={e => {
+                const val = e.target.value;
+
+                setNewPassword(val);
+              }}
+              className="form-control"
+            />
           </div>
           <div className={settingsStyles['input-row']}>
             <label
@@ -164,19 +164,19 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
               htmlFor="new-password-confirmation-input"
             >
               New Password
-              <input
-                id="new-password-confirmation-input"
-                type="password"
-                placeholder="********"
-                value={newPasswordConfirmation}
-                onChange={e => {
-                  const val = e.target.value;
-
-                  setNewPasswordConfirmation(val);
-                }}
-                className="form-control"
-              />
             </label>
+            <input
+              id="new-password-confirmation-input"
+              type="password"
+              placeholder="********"
+              value={newPasswordConfirmation}
+              onChange={e => {
+                const val = e.target.value;
+
+                setNewPasswordConfirmation(val);
+              }}
+              className="form-control"
+            />
           </div>
 
           <div className={settingsStyles.actions}>

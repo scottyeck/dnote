@@ -42,9 +42,9 @@ const Sidebar: React.SFC<Props> = () => {
           <NavLink
             className={styles.item}
             activeClassName={styles.active}
-            to={getSettingsPath(SettingSections.notification)}
+            to={getSettingsPath(SettingSections.spacedRepeition)}
           >
-            Notification
+            Spaced Repetition
           </NavLink>
         </li>
         <li>

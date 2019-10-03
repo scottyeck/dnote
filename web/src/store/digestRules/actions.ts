@@ -25,7 +25,9 @@ import {
   REMOVE,
   START_FETCHING,
   FINISH_FETCHING,
+  RECEIVE_ERROR,
   ReceiveDigestRulesAction,
+  ReceiveDigestRulesErrorAction,
   StartFetchingDigestRulesAction,
   FinishFetchingDigestRulesAction,
   AddDigestRuleAction,
@@ -39,6 +41,13 @@ function receiveDigestRules(
   return {
     type: RECEIVE,
     data: { digestRules }
+  };
+}
+
+function receiveDigestRulesError(err: string): ReceiveDigestRulesErrorAction {
+  return {
+    type: RECEIVE_ERROR,
+    data: { err }
   };
 }
 
@@ -66,7 +75,7 @@ export const getDigestRules = (): ThunkAction<void> => {
       })
       .catch(err => {
         console.log('getDigestRules error', err);
-        // todo: handle error
+        dispatch(receiveDigestRulesError(err));
       });
   };
 };

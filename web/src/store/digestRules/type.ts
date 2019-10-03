@@ -22,6 +22,7 @@ import { RemoteData } from '../types';
 export type DigestRulesState = RemoteData<DigestRuleData[]>;
 
 export const RECEIVE = 'digestRules/RECEIVE';
+export const RECEIVE_ERROR = 'digestRules/RECEIVE_ERROR';
 export const ADD = 'digestRules/ADD';
 export const REMOVE = 'digestRules/REMOVE';
 export const START_FETCHING = 'digestRules/START_FETCHING';
@@ -31,6 +32,13 @@ export interface ReceiveDigestRulesAction {
   type: typeof RECEIVE;
   data: {
     digestRules: DigestRuleData[];
+  };
+}
+
+export interface ReceiveDigestRulesErrorAction {
+  type: typeof RECEIVE_ERROR;
+  data: {
+    err: string;
   };
 }
 
@@ -58,6 +66,7 @@ export interface RemoveDigestRuleAction {
 
 export type DigestRulesActionType =
   | ReceiveDigestRulesAction
+  | ReceiveDigestRulesErrorAction
   | StartFetchingDigestRulesAction
   | FinishFetchingDigestRulesAction
   | AddDigestRuleAction

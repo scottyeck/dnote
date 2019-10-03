@@ -22,53 +22,45 @@ import classnames from 'classnames';
 import Helmet from 'react-helmet';
 
 import Flash from '../../Common/Flash';
-import { getEmailPreference } from '../../../store/auth';
+import { getDigestRules } from '../../../store/digestRules';
 import { useSelector, useDispatch } from '../../../store';
-import FrequencyModal from './FrequencyModal';
 import SettingRow from '../SettingRow';
 import { SettingSections, getSettingsPath } from 'web/libs/paths';
-import styles from '../Settings.scss';
-
-function getFrequencyLabel(emailPreference) {
-  if (emailPreference.digest_weekly) {
-    return 'Weekly';
-  }
-
-  return 'Never';
-}
+import Button from '../../Common/Button';
+import styles from './Digests.scss';
+import settingsStyles from '../Settings.scss';
 
 interface Props {}
 
-const Email: React.SFC<Props> = () => {
+const Email: React.FunctionComponent<Props> = () => {
   const dispatch = useDispatch();
 
-  const { user, emailPreference } = useSelector(state => {
+  const { user, digestRules } = useSelector(state => {
     return {
       user: state.auth.user.data,
-      emailPreference: state.auth.emailPreference
+      digestRules: state.digestRules
     };
   });
 
   useEffect(() => {
-    if (!emailPreference.isFetched) {
-      dispatch(getEmailPreference());
+    if (!digestRules.isFetched) {
+      dispatch(getDigestRules());
     }
-  }, [dispatch, emailPreference.isFetched]);
+  }, [dispatch, digestRules.isFetched]);
 
   const [successMsg, setSuccessMsg] = useState('');
   const [failureMsg, setFailureMsg] = useState('');
-  const [isFrequencyModalOpen, setIsFrequencyModalOpen] = useState(false);
 
   return (
     <div>
       <Helmet>
-        <title>Notification</title>
+        <title>Spaced Repetition</title>
       </Helmet>
 
       <Flash
         when={successMsg !== ''}
         kind="success"
-        wrapperClassName={styles.flash}
+        wrapperClassName={settingsStyles.flash}
         onDismiss={() => {
           setSuccessMsg('');
         }}
@@ -79,7 +71,7 @@ const Email: React.SFC<Props> = () => {
       <Flash
         when={failureMsg !== ''}
         kind="danger"
-        wrapperClassName={styles.flash}
+        wrapperClassName={settingsStyles.flash}
         onDismiss={() => {
           setFailureMsg('');
         }}
@@ -88,19 +80,19 @@ const Email: React.SFC<Props> = () => {
       </Flash>
 
       <Flash
-        when={emailPreference.errorMessage !== ''}
+        when={digestRules.errorMessage !== ''}
         kind="danger"
-        wrapperClassName={styles.flash}
+        wrapperClassName={settingsStyles.flash}
       >
         <div>Error fetching notification preference:</div>
-        {emailPreference.errorMessage}
+        {digestRules.errorMessage}
       </Flash>
 
       <Flash
         when={!user.emailVerified}
         kind="info"
-        wrapperClassName={styles.flash}
-        contentClassName={styles['verification-banner']}
+        wrapperClassName={settingsStyles.flash}
+        contentClassName={settingsStyles['verification-banner']}
       >
         <div>
           You need to verify your email before Dnote can send you digests.
@@ -109,44 +101,25 @@ const Email: React.SFC<Props> = () => {
           to={getSettingsPath(SettingSections.account)}
           className={classnames(
             'button button-normal button-second',
-            styles['verification-banner-cta']
+            settingsStyles['verification-banner-cta']
           )}
         >
           Go to account settings
         </Link>
       </Flash>
 
-      <div className={styles.wrapper}>
-        <section className={styles.section}>
-          <h2 className={styles['section-heading']}>Email digest</h2>
+      <div className={settingsStyles.wrapper}>
+        <section className={settingsStyles.section}>
+          <h2 className={settingsStyles['section-heading']}>Automation</h2>
 
-          <SettingRow
-            name="Frequency"
-            value={getFrequencyLabel(emailPreference.data)}
-            actionContent={
-              <button
-                id="T-edit-frequency-button"
-                className={classnames('button-no-ui', styles.edit)}
-                type="button"
-                onClick={() => {
-                  setIsFrequencyModalOpen(true);
-                }}
-                disabled={!emailPreference.isFetched}
-              >
-                Edit
-              </button>
-            }
-          />
+          <div className={styles.body}>
+            <p>
+              These are the rules for automating the spaced repeition. Customize
+              to keep your knowledge flowing.
+            </p>
+          </div>
         </section>
       </div>
-
-      <FrequencyModal
-        emailPreference={emailPreference}
-        isOpen={isFrequencyModalOpen}
-        onDismiss={() => {
-          setIsFrequencyModalOpen(false);
-        }}
-      />
     </div>
   );
 };
