@@ -16,27 +16,31 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// basic colors
-$black: #2a2a2a;
-$white: #ffffff;
-$light: #f7f9fa;
-$gray: #686868;
-$light-gray: #f3f3f3;
-$dark-gray: #717171;
+import { expect } from 'chai';
 
-// primary colors
-$first: #072a40;
-$second: #e7e7e7;
-$third: #0a4b73;
+import { daysToSec } from './time';
 
-// functional colors
-$border-color: #d8d8d8;
-$border-color-light: $light-gray;
+describe('time.ts', () => {
+  describe('daysToSec', () => {
+    const testCases = [
+      {
+        input: 1,
+        expected: 86400
+      },
 
-$link: #6f53c0;
-$link-hover: darken($link, 5%);
+      {
+        input: 14,
+        expected: 1209600
+      }
+    ];
 
-$danger-text: #cb2431;
-$danger-background: #f8d7da;
+    for (let i = 0; i < testCases.length; i++) {
+      const tc = testCases[i];
 
-$light-blue: #ecf4ff;
+      it(`converts the input ${tc.input}`, () => {
+        const result = daysToSec(tc.input);
+        expect(result).to.equal(tc.expected);
+      });
+    }
+  });
+});

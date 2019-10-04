@@ -11,7 +11,7 @@ const Repetition: React.FunctionComponent = () => {
       <Helmet>
         <title>Repetition</title>
       </Helmet>
-      jo
+      Create
       <CreateModal
         isOpen={isCreateModalOpen}
         onDismiss={() => {

@@ -23,6 +23,7 @@ import Button from '../../Common/Button';
 import Modal, { Header, Body } from '../../Common/Modal';
 import Flash from '../../Common/Flash';
 import settingsStyles from '../Settings.scss';
+import modalStyles from '../../Common/Modal/Modal.scss';
 
 interface Props {
   isOpen: boolean;
@@ -92,7 +93,6 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
         when={successMsg !== ''}
         id="T-password-modal-success"
         kind="success"
-        wrapperClassName={settingsStyles.flash}
         onDismiss={() => {
           setSuccessMsg('');
         }}
@@ -103,7 +103,6 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
       <Flash
         when={failureMsg !== ''}
         kind="danger"
-        wrapperClassName={settingsStyles.flash}
         onDismiss={() => {
           setFailureMsg('');
         }}
@@ -117,12 +116,9 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
           {/* prevent browsers from automatically filling the input fields */}
           <input type="password" style={{ display: 'none' }} readOnly />
 
-          <div className={settingsStyles['input-row']}>
-            <label
-              className={settingsStyles['input-label']}
-              htmlFor="old-password-input"
-            >
-              Old password
+          <div className={modalStyles['input-row']}>
+            <label className="input-label" htmlFor="old-password-input">
+              Current password
             </label>
             <input
               id="old-password-input"
@@ -138,11 +134,8 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
               autoComplete={false.toString()}
             />
           </div>
-          <div className={settingsStyles['input-row']}>
-            <label
-              className={settingsStyles['input-label']}
-              htmlFor="new-password-input"
-            >
+          <div className={modalStyles['input-row']}>
+            <label className="input-label" htmlFor="new-password-input">
               New Password
             </label>
             <input
@@ -158,12 +151,12 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
               className="form-control"
             />
           </div>
-          <div className={settingsStyles['input-row']}>
+          <div className={modalStyles['input-row']}>
             <label
-              className={settingsStyles['input-label']}
+              className="input-label"
               htmlFor="new-password-confirmation-input"
             >
-              New Password
+              New Password Confirmation
             </label>
             <input
               id="new-password-confirmation-input"
@@ -179,7 +172,7 @@ const PasswordModal: React.SFC<Props> = ({ isOpen, onDismiss }) => {
             />
           </div>
 
-          <div className={settingsStyles.actions}>
+          <div className={modalStyles.actions}>
             <Button
               type="submit"
               kind="first"
