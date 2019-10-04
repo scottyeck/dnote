@@ -16,15 +16,15 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import '../App/rem';
-@import '../App/font';
-@import '../App/theme';
+@import '../../App/rem';
+@import '../../App/font';
+@import '../../App/theme';
 
 .help {
-  color: $gray;
-  @include font-size('small');
   margin-top: rem(4px);
   margin-bottom: 0;
+  color: $dark-gray;
+  @include font-size('x-small');
 }
 
 .schedule-wrapper {
@@ -66,8 +66,4 @@
 .timezone {
   display: flex;
   align-items: flex-end;
-  margin-top: rem(8px);
-  color: $dark-gray;
-
-  @include font-size('x-small');
 }
