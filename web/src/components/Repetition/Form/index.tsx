@@ -19,10 +19,13 @@
 import React, { useState, useReducer } from 'react';
 import classnames from 'classnames';
 
+import { Option, booksToOptions } from 'jslib/helpers/select';
 import Modal, { Header, Body } from '../../Common/Modal';
+import { useSelector } from '../../../store';
 import Flash from '../../Common/Flash';
 import { daysToSec } from '../../../helpers/time';
 import Button from '../../Common/Button';
+import MultiSelect from '../../Common/MultiSelect';
 import styles from './Form.scss';
 import modalStyles from '../../Common/Modal/Modal.scss';
 
@@ -39,7 +42,7 @@ export interface FormState {
   minute: number;
   frequency: number;
   noteCount: number;
-  bookUUIDs: string[];
+  books: Option[];
 }
 
 enum Action {
@@ -47,7 +50,8 @@ enum Action {
   setFrequency,
   setHour,
   setMinutes,
-  setNoteCount
+  setNoteCount,
+  setBooks
 }
 
 function formReducer(state, action): FormState {
@@ -77,6 +81,11 @@ function formReducer(state, action): FormState {
         ...state,
         noteCount: action.data
       };
+    case Action.setBooks:
+      return {
+        ...state,
+        books: action.data
+      };
     default:
       return state;
   }
@@ -89,7 +98,7 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
-  bookUUIDs: []
+  books: []
 };
 
 const CreateRuleModal: React.FunctionComponent<Props> = ({
@@ -99,6 +108,12 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
 }) => {
   const [inProgress, setInProgress] = useState(false);
   const [formState, formDispatch] = useReducer(formReducer, initialState);
+  const { books } = useSelector(state => {
+    return {
+      books: state.books.data
+    };
+  });
+  const bookOptions = booksToOptions(books);
 
   return (
     <form onSubmit={onSubmit} className={styles.form}>
@@ -226,13 +241,13 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
       </div>
 
       <div className={modalStyles['input-row']}>
-        <label className="input-label" htmlFor="title">
+        <label className="input-label" htmlFor="num-notes">
           Number of notes
         </label>
 
         <input
           type="number"
-          id="title"
+          id="num-notes"
           className="text-input text-input-small"
           placeholder="10"
           value={formState.noteCount}
@@ -247,8 +262,22 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
         />
 
         <div className={styles.help}>
-          Maximum number of notes to include in each repetition.
+          Maximum number of notes to include in each repetition
         </div>
+      </div>
+
+      <div className={modalStyles['input-row']}>
+        <label className="input-label" htmlFor="num-notes">
+          Books to include
+        </label>
+
+        <MultiSelect
+          options={bookOptions}
+          currentOptions={formState.books}
+          setCurrentOptions={data => {
+            formDispatch({ type: Action.setBooks, data });
+          }}
+        />
       </div>
 
       <div className={modalStyles.actions}>
