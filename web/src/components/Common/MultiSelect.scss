@@ -24,9 +24,54 @@
 
 .wrapper {
   position: relative;
+  border: 1px solid $border-color;
+  position: relative;
+  border-radius: rem(4px);
+  display: flex;
+  cursor: text;
 }
+.input-wrapper {
+  display: inline-block;
+}
+
 .input {
-  margin-top: rem(4px);
+  box-sizing: content-box;
+  background: rgba(0, 0, 0, 0) none repeat scroll 0px center;
+  border: 0px none;
+  font-size: inherit;
+  opacity: 1;
+  outline: currentcolor none 0px;
+  padding: 0px;
+  color: inherit;
+  margin-left: rem(8px);
+}
+
+.current-options {
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+.current-option-item {
+  display: inline-flex;
+  background-color: rgb(230, 230, 230);
+  border-radius: 2px;
+  margin-left: rem(4px);
+  min-width: 0px;
+  box-sizing: border-box;
+}
+.current-option-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: rem(2px) rem(4px) rem(2px) rem(8px);
+  @include font-size('small');
+  border-radius: 4px;
+}
+.dismiss-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 rem(8px);
 }
 
 .suggestion-wrapper {
@@ -36,10 +81,6 @@
   border: 1px solid $border-color;
   border-radius: rem(4px);
   display: none;
-
-  @include breakpoint(md) {
-    width: 50%;
-  }
 
   &.suggestions-wrapper-shown {
     display: block;

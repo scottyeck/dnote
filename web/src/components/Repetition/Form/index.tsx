@@ -98,7 +98,7 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
-  books: []
+  books: [{ label: 'Ableton', value: 'a' }, { label: 'Music', value: 'q' }]
 };
 
 const CreateRuleModal: React.FunctionComponent<Props> = ({
@@ -114,9 +114,16 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
     };
   });
   const bookOptions = booksToOptions(books);
+  const booksSelectTextId = 'book-select-text-input';
 
   return (
-    <form onSubmit={onSubmit} className={styles.form}>
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        onSubmit(formState);
+      }}
+      className={styles.form}
+    >
       <div className={modalStyles['input-row']}>
         <label className="input-label" htmlFor="title">
           Name
@@ -136,6 +143,21 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
               type: Action.setTitle,
               data
             });
+          }}
+        />
+      </div>
+
+      <div className={modalStyles['input-row']}>
+        <label className="input-label" htmlFor={booksSelectTextId}>
+          Books to include
+        </label>
+
+        <MultiSelect
+          textInputId={booksSelectTextId}
+          options={bookOptions}
+          currentOptions={formState.books}
+          setCurrentOptions={data => {
+            formDispatch({ type: Action.setBooks, data });
           }}
         />
       </div>
@@ -264,20 +286,6 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
         <div className={styles.help}>
           Maximum number of notes to include in each repetition
         </div>
-      </div>
-
-      <div className={modalStyles['input-row']}>
-        <label className="input-label" htmlFor="num-notes">
-          Books to include
-        </label>
-
-        <MultiSelect
-          options={bookOptions}
-          currentOptions={formState.books}
-          setCurrentOptions={data => {
-            formDispatch({ type: Action.setBooks, data });
-          }}
-        />
       </div>
 
       <div className={modalStyles.actions}>

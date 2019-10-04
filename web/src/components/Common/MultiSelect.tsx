@@ -20,9 +20,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'classnames';
 
 import { booksToOptions, filterOptions, Option } from 'jslib/helpers/select';
-import { useSearchMenuKeydown } from 'web/libs/hooks/dom';
+import { useSearchMenuKeydown, useScrollToFocused } from 'web/libs/hooks/dom';
 import { useSelector } from '../../store';
 import PopoverContent from '../Common/Popover/PopoverContent';
+import CloseIcon from '../Icons/Close';
 import { usePrevious } from 'web/libs/hooks';
 import styles from './MultiSelect.scss';
 
@@ -31,6 +32,7 @@ interface Props {
   currentOptions: Option[];
   setCurrentOptions: (Option) => void;
   disabled?: boolean;
+  textInputId?: string;
 }
 
 // TODO: Make a generic Select component that works for both single and multiple selection
@@ -39,9 +41,10 @@ const MultiSelect: React.SFC<Props> = ({
   options,
   currentOptions,
   setCurrentOptions,
+  textInputId,
   disabled
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [focusedIdx, setFocusedIdx] = useState(0);
   const [focusedOptEl, setFocusedOptEl] = useState(null);
   const [term, setTerm] = useState('');
@@ -58,9 +61,17 @@ const MultiSelect: React.SFC<Props> = ({
   });
 
   const filteredOptions = filterOptions(possibleOptions, term, false);
-  function appendSelected(o: Option) {
+
+  function appendOption(o: Option) {
     setTerm('');
     const newVal = [...currentOptions, o];
+    setCurrentOptions(newVal);
+  }
+  function removeOption(o: Option) {
+    setTerm('');
+    const newVal = currentOptions.filter(opt => {
+      return opt.value !== o.value;
+    });
     setCurrentOptions(newVal);
   }
 
@@ -69,42 +80,82 @@ const MultiSelect: React.SFC<Props> = ({
     containerEl: wrapperRef.current,
     focusedIdx,
     setFocusedIdx,
-    onKeydownSelect: appendSelected,
+    onKeydownSelect: appendOption,
     disabled: !isOpen || disabled
   });
+  useScrollToFocused({
+    shouldScroll: true,
+    focusedOptEl,
+    containerEl: listRef.current
+  });
+
+  useEffect(() => {
+    if (!isOpen) {
+      triggerRef.current.blur();
+      console.log('active', document.activeElement);
+    }
+  }, [isOpen]);
+
+  const textInputWidth = 14 + term.length * 4;
 
   return (
-    <section className={styles.wrapper} ref={wrapperRef}>
-      <ul>
+    <div
+      className={classnames('form-select', styles.wrapper)}
+      ref={wrapperRef}
+      onClick={() => {
+        if (triggerRef.current) {
+          triggerRef.current.focus();
+        }
+      }}
+    >
+      <ul className={styles['current-options']}>
         {currentOptions.map(o => {
-          return <li key={o.value}>{o.label}</li>;
+          return (
+            <li className={styles['current-option-item']} key={o.value}>
+              <div className={styles['current-option-label']}>{o.label}</div>
+              <button
+                type="button"
+                className={classnames('button-no-ui', styles['dismiss-option'])}
+                aria-label="Remove the option"
+                onClick={() => {
+                  removeOption(o);
+                }}
+              >
+                <CloseIcon width={12} height={12} />
+              </button>
+            </li>
+          );
         })}
+        <li className={styles['input-wrapper']}>
+          <input
+            autoComplete="off"
+            type="text"
+            id={textInputId}
+            ref={triggerRef}
+            className={styles.input}
+            value={term}
+            disabled={disabled}
+            onChange={e => {
+              const val = e.target.value;
+
+              setTerm(val);
+            }}
+            onFocus={() => {
+              setIsOpen(true);
+            }}
+            onBlur={e => {
+              if (listRef.current.contains(e.relatedTarget)) {
+                console.log('containes', listRef.current, e.relatedTarget);
+                return;
+              }
+              setIsOpen(false);
+            }}
+            style={{
+              width: `${textInputWidth}px`
+            }}
+          />
+        </li>
       </ul>
-
-      <input
-        autoComplete="off"
-        type="text"
-        id="in-book"
-        ref={triggerRef}
-        className={classnames(
-          'text-input text-input-small text-input-stretch',
-          styles.input
-        )}
-        value={term}
-        disabled={disabled}
-        onChange={e => {
-          const val = e.target.value;
-
-          setTerm(val);
-        }}
-        onFocus={() => {
-          setIsOpen(true);
-        }}
-        onBlur={() => {
-          setTerm('');
-          setIsOpen(false);
-        }}
-      />
 
       <PopoverContent
         contentId="advanced-search-panel-book-list"
@@ -140,6 +191,7 @@ const MultiSelect: React.SFC<Props> = ({
               >
                 <button
                   type="button"
+                  tabIndex={-1}
                   className={classnames(
                     'button-no-ui',
                     styles['suggestion-item-button'],
@@ -148,7 +200,7 @@ const MultiSelect: React.SFC<Props> = ({
                     }
                   )}
                   onClick={() => {
-                    appendSelected(o);
+                    appendOption(o);
                   }}
                 >
                   {o.label}
@@ -158,7 +210,7 @@ const MultiSelect: React.SFC<Props> = ({
           })}
         </ul>
       </PopoverContent>
-    </section>
+    </div>
   );
 };
 

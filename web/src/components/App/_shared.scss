@@ -189,7 +189,8 @@ html body {
 }
 
 .input-label {
-  width: 100%;
+  // width: 100%;
+  width: auto;
   font-weight: 600;
   margin-bottom: rem(4px);
   @include font-size('small');

@@ -48,6 +48,7 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
   return (
     <Modal
       modalId="T-create-rule-modal"
+      modalClassName={styles.content}
       isOpen={isOpen}
       onDismiss={onDismiss}
       ariaLabelledBy={labelId}
