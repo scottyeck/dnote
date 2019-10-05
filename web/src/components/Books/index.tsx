@@ -39,15 +39,17 @@ const Books: React.SFC = () => {
 
       <PayWall>
         <div className="page page-mobile-full">
-          <Flash
-            kind="success"
-            when={Boolean(successMessage)}
-            onDismiss={() => {
-              setSuccessMessage('');
-            }}
-          >
-            {successMessage}
-          </Flash>
+          <div className="container mobile-nopadding">
+            <Flash
+              kind="success"
+              when={Boolean(successMessage)}
+              onDismiss={() => {
+                setSuccessMessage('');
+              }}
+            >
+              {successMessage}
+            </Flash>
+          </div>
           <Content setSuccessMessage={setSuccessMessage} />;
         </div>
       </PayWall>

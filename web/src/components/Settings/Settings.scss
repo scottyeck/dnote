@@ -25,6 +25,12 @@
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.14);
 }
 
+.header {
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
 .section {
   margin-top: rem(24px);
 
