@@ -28,7 +28,7 @@ import { NotesState } from './notes/type';
 import { UIState } from './ui/type';
 import { RouteState } from './route/type';
 import { FiltersState } from './filters/type';
-import { DigestRulesState } from './digestRules/type';
+import { DigestRulesState } from './repetitionRules/type';
 
 // RemoteData represents a data in Redux store that is fetched from a remote source.
 // It contains the state related to the fetching of the data as well as the data itself.
@@ -50,7 +50,7 @@ export interface AppState {
   ui: UIState;
   route: RouteState;
   filters: FiltersState;
-  digestRules: DigestRulesState;
+  repetitionRules: DigestRulesState;
 }
 
 // ThunkAction is a thunk action type

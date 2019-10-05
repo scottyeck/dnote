@@ -145,6 +145,6 @@ type DigestRule struct {
 	Minute     int    `json:"minute" gorm:"index"`
 	Frequency  int    `json:"frequency"`
 	LastActive int    `json:"-"`
-	Books      []Book `gorm:"many2many:digest_rule_books;"`
+	Books      []Book `gorm:"many2many:repetition_rule_books;"`
 	NoteCount  int    `json:"note_count"`
 }

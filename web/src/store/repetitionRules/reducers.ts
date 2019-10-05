@@ -56,7 +56,7 @@ export default function(
     case RECEIVE: {
       return {
         ...state,
-        data: action.data.digestRules
+        data: action.data.repetitionRules
       };
     }
     case RECEIVE_ERROR: {
@@ -74,7 +74,7 @@ export default function(
       };
     }
     case ADD: {
-      const data = [...state.data, action.data.digestRule];
+      const data = [...state.data, action.data.repetitionRule];
 
       return {
         ...state,

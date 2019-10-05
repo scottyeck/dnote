@@ -21,17 +21,17 @@ import { RemoteData } from '../types';
 
 export type DigestRulesState = RemoteData<DigestRuleData[]>;
 
-export const RECEIVE = 'digestRules/RECEIVE';
-export const RECEIVE_ERROR = 'digestRules/RECEIVE_ERROR';
-export const ADD = 'digestRules/ADD';
-export const REMOVE = 'digestRules/REMOVE';
-export const START_FETCHING = 'digestRules/START_FETCHING';
-export const FINISH_FETCHING = 'digestRules/FINISH_FETCHING';
+export const RECEIVE = 'repetitionRules/RECEIVE';
+export const RECEIVE_ERROR = 'repetitionRules/RECEIVE_ERROR';
+export const ADD = 'repetitionRules/ADD';
+export const REMOVE = 'repetitionRules/REMOVE';
+export const START_FETCHING = 'repetitionRules/START_FETCHING';
+export const FINISH_FETCHING = 'repetitionRules/FINISH_FETCHING';
 
 export interface ReceiveDigestRulesAction {
   type: typeof RECEIVE;
   data: {
-    digestRules: DigestRuleData[];
+    repetitionRules: DigestRuleData[];
   };
 }
 
@@ -53,7 +53,7 @@ export interface FinishFetchingDigestRulesAction {
 export interface AddDigestRuleAction {
   type: typeof ADD;
   data: {
-    digestRule: DigestRuleData;
+    repetitionRule: DigestRuleData;
   };
 }
 

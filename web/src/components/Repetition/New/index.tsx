@@ -3,13 +3,13 @@ import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
-import { getNewRepetitionPath } from 'web/libs/paths';
-import { getDigestRules } from '../../store/repetitionRules';
-import { useDispatch } from '../../store';
-import CreateModal from './CreateModal';
-import styles from './Repetition.scss';
+import { getRepetitionsPath } from 'web/libs/paths';
+import { getDigestRules } from '../../../store/repetitionRules';
+import { useDispatch } from '../../../store';
+import CreateModal from '../CreateModal';
+import repetitionStyles from '../Repetition.scss';
 
-const Repetition: React.FunctionComponent = () => {
+const NewRepetition: React.FunctionComponent = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -20,19 +20,14 @@ const Repetition: React.FunctionComponent = () => {
   return (
     <div className="page page-mobile-full">
       <Helmet>
-        <title>Repetition</title>
+        <title>New Repetition</title>
       </Helmet>
 
       <div className="container mobile-fw">
-        <div className={classnames('page-header', styles.header)}>
-          <h1 className="page-heading">Repetition</h1>
+        <div className={classnames('page-header', repetitionStyles.header)}>
+          <h1 className="page-heading">New Repetition</h1>
 
-          <Link
-            className="button button-first button-normal"
-            to={getNewRepetitionPath()}
-          >
-            New
-          </Link>
+          <Link to={getRepetitionsPath()}>Cancel</Link>
         </div>
       </div>
 
@@ -48,4 +43,4 @@ const Repetition: React.FunctionComponent = () => {
   );
 };
 
-export default Repetition;
+export default NewRepetition;

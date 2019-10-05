@@ -36,7 +36,10 @@ export const verifyEmailPathDef = '/verify-email/:token';
 export const classicMigrationPathDef = '/classic/:step?';
 export const passwordResetRequestPathDef = '/password-reset';
 export const passwordResetConfirmPathDef = '/password-reset/:token';
-export const repetitionPathDef = '/repetition';
+export const repetitionsPathDef = '/repetition';
+export const repetitionPathDef = '/repetition/:repetitionUUID';
+export const newRepetitionRulePathDef = '/repetition/new';
+export const editRepetitionRulePathDef = '/repetition/:repetitionUUID/edit';
 
 // layout definitions
 export const noHeaderPaths = [
@@ -113,7 +116,7 @@ function getLocation({
 }
 
 export function getNewPath(searchObj = {}): Location {
-  return getLocation({ pathname: '/new', searchObj });
+  return getLocation({ pathname: noteNewPathDef, searchObj });
 }
 
 export function getRandomPath(searchObj = {}): Location {
@@ -125,15 +128,15 @@ export function getHomePath(searchObj = {}): Location {
 }
 
 export function getBooksPath(searchObj = {}): Location {
-  const basePath = '/books';
-
-  return getLocation({ pathname: basePath, searchObj });
+  return getLocation({ pathname: booksPathDef, searchObj });
 }
 
-export function getRepetitionPath(searchObj = {}): Location {
-  const basePath = '/repetition';
+export function getRepetitionsPath(searchObj = {}): Location {
+  return getLocation({ pathname: repetitionsPathDef, searchObj });
+}
 
-  return getLocation({ pathname: basePath, searchObj });
+export function getNewRepetitionPath(searchObj = {}): Location {
+  return getLocation({ pathname: newRepetitionRulePathDef, searchObj });
 }
 
 export function getNotePath(noteUUID: string, searchObj = {}): Location {

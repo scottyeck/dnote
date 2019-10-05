@@ -44,17 +44,17 @@ export default function init(config: HttpClientConfig) {
 
   return {
     fetchAll: () => {
-      const endpoint = '/digest_rules';
+      const endpoint = '/repetition_rules';
 
       return client.get<DigestRuleData[]>(endpoint);
     },
     create: (params: CreateParams) => {
-      const endpoint = '/digest_rules';
+      const endpoint = '/repetition_rules';
 
       return client.post<DigestRuleData>(endpoint, params);
     },
     update: (uuid: string, params: UpdateParams) => {
-      const endpoint = `/digest_rules/${uuid}`;
+      const endpoint = `/repetition_rules/${uuid}`;
 
       return client.patch<DigestRuleData>(endpoint, params);
     }

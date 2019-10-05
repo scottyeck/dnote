@@ -37,13 +37,13 @@ func (a *App) getDigestRules(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := database.DBConn
-	var digestRules []database.DigestRule
-	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&digestRules).Error; err != nil {
+	var repetitionRules []database.DigestRule
+	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&repetitionRules).Error; err != nil {
 		handleError(w, "getting digest rules", nil, http.StatusInternalServerError)
 		return
 	}
 
-	resp := presenters.PresentDigestRules(digestRules)
+	resp := presenters.PresentDigestRules(repetitionRules)
 	respondJSON(w, resp)
 }
 
@@ -137,7 +137,7 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	vars := mux.Vars(r)
-	digestRuleUUID := vars["digestRuleUUID"]
+	repetitionRuleUUID := vars["repetitionRuleUUID"]
 
 	params, err := parseUpdateDigestParams(r)
 	if err != nil {
@@ -146,26 +146,26 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := database.DBConn
-	var digestRule database.DigestRule
-	if err := db.Where("user_id = ? AND uuid = ?", user.ID, digestRuleUUID).Preload("Books").First(&digestRule).Error; err != nil {
+	var repetitionRule database.DigestRule
+	if err := db.Where("user_id = ? AND uuid = ?", user.ID, repetitionRuleUUID).Preload("Books").First(&repetitionRule).Error; err != nil {
 		handleError(w, "finding record", nil, http.StatusInternalServerError)
 		return
 	}
 
 	if params.Title != nil {
-		digestRule.Title = *params.Title
+		repetitionRule.Title = *params.Title
 	}
 	if params.Enabled != nil {
-		digestRule.Enabled = *params.Enabled
+		repetitionRule.Enabled = *params.Enabled
 	}
 	if params.Hour != nil {
-		digestRule.Hour = *params.Hour
+		repetitionRule.Hour = *params.Hour
 	}
 	if params.Minute != nil {
-		digestRule.Minute = *params.Minute
+		repetitionRule.Minute = *params.Minute
 	}
 	if params.Frequency != nil {
-		digestRule.Frequency = *params.Frequency
+		repetitionRule.Frequency = *params.Frequency
 	}
 	if params.BookUUIDs != nil {
 		var books []database.Book
@@ -174,16 +174,16 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		digestRule.Books = books
+		repetitionRule.Books = books
 	}
 
-	if err := db.Save(&digestRule).Error; err != nil {
+	if err := db.Save(&repetitionRule).Error; err != nil {
 		handleError(w, "creating a digest rule", nil, http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 
-	resp := presenters.PresentDigestRule(digestRule)
+	resp := presenters.PresentDigestRule(repetitionRule)
 	respondJSON(w, resp)
 }

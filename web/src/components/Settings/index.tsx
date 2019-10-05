@@ -24,7 +24,6 @@ import classnames from 'classnames';
 import { SettingSections } from 'web/libs/paths';
 import Account from './Account';
 import Sidebar from './Sidebar';
-import SpacedRepetition from './SpacedRepetition';
 import Billing from './Billing';
 import styles from './Settings.scss';
 

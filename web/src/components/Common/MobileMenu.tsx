@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import {
   SettingSections,
   getSettingsPath,
-  getRepetitionPath
+  getRepetitionsPath
 } from 'web/libs/paths';
 import services from 'web/libs/services';
 import styles from './MobileMenu.scss';
@@ -69,7 +69,7 @@ const MobileMenu: React.SFC<Props> = ({ onDismiss, isOpen }) => {
             </Link>
           </li>
           <li className={styles.item}>
-            <Link className={styles.link} to={getRepetitionPath()}>
+            <Link className={styles.link} to={getRepetitionsPath()}>
               Repetition
             </Link>
           </li>

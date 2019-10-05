@@ -18,7 +18,7 @@
 
 import services from 'web/libs/services';
 import { DigestRuleData } from 'jslib/operations/types';
-import { CreateParams } from 'jslib/services/digestRules';
+import { CreateParams } from 'jslib/services/repetitionRules';
 import {
   RECEIVE,
   ADD,
@@ -36,11 +36,11 @@ import {
 import { ThunkAction } from '../types';
 
 function receiveDigestRules(
-  digestRules: DigestRuleData[]
+  repetitionRules: DigestRuleData[]
 ): ReceiveDigestRulesAction {
   return {
     type: RECEIVE,
-    data: { digestRules }
+    data: { repetitionRules }
   };
 }
 
@@ -67,7 +67,7 @@ export const getDigestRules = (): ThunkAction<void> => {
   return dispatch => {
     dispatch(startFetchingDigestRules());
 
-    return services.digestRules
+    return services.repetitionRules
       .fetchAll()
       .then(data => {
         dispatch(receiveDigestRules(data));
@@ -80,10 +80,10 @@ export const getDigestRules = (): ThunkAction<void> => {
   };
 };
 
-export function addDigestRule(digestRule: DigestRuleData): AddDigestRuleAction {
+export function addDigestRule(repetitionRule: DigestRuleData): AddDigestRuleAction {
   return {
     type: ADD,
-    data: { digestRule }
+    data: { repetitionRule }
   };
 }
 
@@ -91,7 +91,7 @@ export const createDigestRule = (
   p: CreateParams
 ): ThunkAction<DigestRuleData> => {
   return dispatch => {
-    return services.digestRules.create(p).then(data => {
+    return services.repetitionRules.create(p).then(data => {
       dispatch(addDigestRule(data));
 
       return data;
