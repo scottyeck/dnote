@@ -32,9 +32,6 @@ function renderContent(section: string): React.ReactNode {
   if (section === SettingSections.account) {
     return <Account />;
   }
-  if (section === SettingSections.spacedRepeition) {
-    return <SpacedRepetition />;
-  }
   if (section === SettingSections.billing) {
     return <Billing />;
   }
@@ -62,9 +59,7 @@ const Settings: React.SFC<Props> = ({ match }) => {
         <div className={classnames('page-header', styles.header)}>
           <h1 className="page-heading">Settings</h1>
         </div>
-      </div>
 
-      <div className="container">
         <div className="row">
           <div className="col-12 col-md-12 col-lg-3">
             <Sidebar />
