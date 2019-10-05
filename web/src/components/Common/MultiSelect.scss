@@ -29,7 +29,13 @@
   border-radius: rem(4px);
   display: flex;
   cursor: text;
+  user-select: none;
 }
+
+.hidden {
+  display: none;
+}
+
 .input-wrapper {
   display: inline-block;
 }
@@ -43,6 +49,8 @@
   outline: currentcolor none 0px;
   padding: 0px;
   color: inherit;
+}
+.active-input {
   margin-left: rem(8px);
 }
 
@@ -55,9 +63,10 @@
   display: inline-flex;
   background-color: rgb(230, 230, 230);
   border-radius: 2px;
-  margin-left: rem(4px);
+  margin: rem(2px);
   min-width: 0px;
   box-sizing: border-box;
+  cursor: default;
 }
 .current-option-label {
   display: flex;
@@ -108,4 +117,14 @@
   &:hover {
     background: $light-blue;
   }
+}
+
+.placeholder {
+  color: rgb(128, 128, 128);
+  margin-left: 2px;
+  margin-right: 2px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
 }

@@ -6,16 +6,16 @@ import classnames from 'classnames';
 import { getRepetitionsPath } from 'web/libs/paths';
 import { getDigestRules } from '../../../store/repetitionRules';
 import { useDispatch } from '../../../store';
-import CreateModal from '../CreateModal';
+import Form, { FormState } from '../Form';
 import repetitionStyles from '../Repetition.scss';
 
 const NewRepetition: React.FunctionComponent = () => {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getDigestRules());
   }, [dispatch]);
+
+  function handleSubmit(state: FormState) {}
 
   return (
     <div className="page page-mobile-full">
@@ -27,18 +27,11 @@ const NewRepetition: React.FunctionComponent = () => {
         <div className={classnames('page-header', repetitionStyles.header)}>
           <h1 className="page-heading">New Repetition</h1>
 
-          <Link to={getRepetitionsPath()}>Cancel</Link>
+          <Link to={getRepetitionsPath()}>Back</Link>
         </div>
+
+        <Form onSubmit={handleSubmit} />
       </div>
-
-      <div className="container">content</div>
-
-      <CreateModal
-        isOpen={isCreateModalOpen}
-        onDismiss={() => {
-          setIsCreateModalOpen(false);
-        }}
-      />
     </div>
   );
 };

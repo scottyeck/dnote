@@ -27,10 +27,20 @@ import CloseIcon from '../Icons/Close';
 import { usePrevious } from 'web/libs/hooks';
 import styles from './MultiSelect.scss';
 
+function getTextInputWidth(term: string, active: boolean) {
+  if (!active && term === '') {
+    return '100%';
+  }
+
+  const val = 14 + term.length * 4;
+  return `${val}px`;
+}
+
 interface Props {
   options: Option[];
   currentOptions: Option[];
   setCurrentOptions: (Option) => void;
+  placeholder?: string;
   disabled?: boolean;
   textInputId?: string;
 }
@@ -42,9 +52,10 @@ const MultiSelect: React.SFC<Props> = ({
   currentOptions,
   setCurrentOptions,
   textInputId,
+  placeholder,
   disabled
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [focusedIdx, setFocusedIdx] = useState(0);
   const [focusedOptEl, setFocusedOptEl] = useState(null);
   const [term, setTerm] = useState('');
@@ -92,11 +103,19 @@ const MultiSelect: React.SFC<Props> = ({
   useEffect(() => {
     if (!isOpen) {
       triggerRef.current.blur();
-      console.log('active', document.activeElement);
+      setTerm('');
     }
   }, [isOpen]);
 
-  const textInputWidth = 14 + term.length * 4;
+  // useEffect(() => {
+  //   if (term !== '' && !isOpen) {
+  //     setIsOpen(true);
+  //   }
+  // }, [term, isOpen]);
+
+  const active = currentOptions.length > 0;
+  const textInputWidth = getTextInputWidth(term, active);
+  console.log(textInputWidth);
 
   return (
     <div
@@ -106,9 +125,18 @@ const MultiSelect: React.SFC<Props> = ({
         if (triggerRef.current) {
           triggerRef.current.focus();
         }
+
+        // setIsOpen(!isOpen);
       }}
     >
       <ul className={styles['current-options']}>
+        <span
+          className={classnames(styles.placeholder, {
+            [styles.hidden]: active
+          })}
+        >
+          {placeholder}
+        </span>
         {currentOptions.map(o => {
           return (
             <li className={styles['current-option-item']} key={o.value}>
@@ -117,7 +145,13 @@ const MultiSelect: React.SFC<Props> = ({
                 type="button"
                 className={classnames('button-no-ui', styles['dismiss-option'])}
                 aria-label="Remove the option"
-                onClick={() => {
+                onClick={e => {
+                  if (!isOpen) {
+                    e.stopPropagation();
+                    if (triggerRef.current) {
+                      triggerRef.current.focus();
+                    }
+                  }
                   removeOption(o);
                 }}
               >
@@ -132,7 +166,9 @@ const MultiSelect: React.SFC<Props> = ({
             type="text"
             id={textInputId}
             ref={triggerRef}
-            className={styles.input}
+            className={classnames(styles.input, {
+              [styles['active-input']]: active
+            })}
             value={term}
             disabled={disabled}
             onChange={e => {
@@ -140,18 +176,14 @@ const MultiSelect: React.SFC<Props> = ({
 
               setTerm(val);
             }}
+            onClick={e => {
+              e.preventDefault();
+            }}
             onFocus={() => {
               setIsOpen(true);
             }}
-            onBlur={e => {
-              if (listRef.current.contains(e.relatedTarget)) {
-                console.log('containes', listRef.current, e.relatedTarget);
-                return;
-              }
-              setIsOpen(false);
-            }}
             style={{
-              width: `${textInputWidth}px`
+              width: textInputWidth
             }}
           />
         </li>

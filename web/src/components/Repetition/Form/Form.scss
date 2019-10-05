@@ -20,6 +20,12 @@
 @import '../../App/font';
 @import '../../App/theme';
 
+.form {
+  background: white;
+  border: 1px solid $border-color;
+  padding: rem(12px) rem(20px);
+}
+
 .help {
   margin-top: rem(4px);
   margin-bottom: 0;
@@ -46,13 +52,11 @@
   display: flex;
   flex-direction: column;
 
-  & ~ .schedule-input-wrapper {
-    margin-left: rem(24px);
+  @include breakpoint(md) {
+    & ~ .schedule-input-wrapper {
+      margin-left: rem(24px);
+    }
   }
-}
-
-// nest rules under .form to make them override the shared css rules
-.form {
 }
 
 .time-select {

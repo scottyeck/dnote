@@ -18,7 +18,9 @@
 
 import React, { useState, useReducer } from 'react';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
+import { getRepetitionsPath } from 'web/libs/paths';
 import { Option, booksToOptions } from 'jslib/helpers/select';
 import Modal, { Header, Body } from '../../Common/Modal';
 import { useSelector } from '../../../store';
@@ -31,7 +33,7 @@ import modalStyles from '../../Common/Modal/Modal.scss';
 
 interface Props {
   onSubmit: (formState) => void;
-  onCancel: () => void;
+  cancelPath?: string;
   initialState?: FormState;
 }
 
@@ -98,12 +100,12 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
-  books: [{ label: 'Ableton', value: 'a' }, { label: 'Music', value: 'q' }]
+  books: []
 };
 
-const CreateRuleModal: React.FunctionComponent<Props> = ({
+const Form: React.FunctionComponent<Props> = ({
   onSubmit,
-  onCancel,
+  cancelPath = getRepetitionsPath(),
   initialState = formInitialState
 }) => {
   const [inProgress, setInProgress] = useState(false);
@@ -159,6 +161,7 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
           setCurrentOptions={data => {
             formDispatch({ type: Action.setBooks, data });
           }}
+          placeholder="Select books"
         />
       </div>
 
@@ -293,18 +296,22 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
           Create
         </Button>
 
-        <Button
-          type="button"
-          kind="second"
-          size="normal"
-          isBusy={inProgress}
-          onClick={onCancel}
+        <Link
+          to={cancelPath}
+          onClick={e => {
+            const ok = window.confirm('Are you sure?');
+            if (!ok) {
+              e.preventDefault();
+              return;
+            }
+          }}
+          className="button button-second button-normal"
         >
           Cancel
-        </Button>
+        </Link>
       </div>
     </form>
   );
 };
 
-export default CreateRuleModal;
+export default Form;

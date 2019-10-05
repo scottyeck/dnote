@@ -6,12 +6,9 @@ import classnames from 'classnames';
 import { getNewRepetitionPath } from 'web/libs/paths';
 import { getDigestRules } from '../../store/repetitionRules';
 import { useDispatch } from '../../store';
-import CreateModal from './CreateModal';
 import styles from './Repetition.scss';
 
 const Repetition: React.FunctionComponent = () => {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getDigestRules());
@@ -37,13 +34,6 @@ const Repetition: React.FunctionComponent = () => {
       </div>
 
       <div className="container">content</div>
-
-      <CreateModal
-        isOpen={isCreateModalOpen}
-        onDismiss={() => {
-          setIsCreateModalOpen(false);
-        }}
-      />
     </div>
   );
 };

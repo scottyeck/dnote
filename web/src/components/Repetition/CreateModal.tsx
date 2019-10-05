@@ -81,9 +81,7 @@ const CreateRuleModal: React.FunctionComponent<Props> = ({
         {failureMsg}
       </Flash>
 
-      <Body>
-        <Form onSubmit={handleSubmit} onCancel={onDismiss} />
-      </Body>
+      <Body></Body>
     </Modal>
   );
 };
