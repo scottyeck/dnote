@@ -20,6 +20,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'classnames';
 
 import { booksToOptions, filterOptions, Option } from 'jslib/helpers/select';
+import { KEYCODE_BACKSPACE } from 'jslib/helpers/keyboard';
 import { useSearchMenuKeydown, useScrollToFocused } from 'web/libs/hooks/dom';
 import { useSelector } from '../../store';
 import PopoverContent from '../Common/Popover/PopoverContent';
@@ -85,6 +86,14 @@ const MultiSelect: React.SFC<Props> = ({
     });
     setCurrentOptions(newVal);
   }
+  function popOption() {
+    if (currentOptions.length === 0) {
+      return;
+    }
+
+    const newVal = currentOptions.slice(0, -1);
+    setCurrentOptions(newVal);
+  }
 
   useSearchMenuKeydown({
     options: filteredOptions,
@@ -115,7 +124,6 @@ const MultiSelect: React.SFC<Props> = ({
 
   const active = currentOptions.length > 0;
   const textInputWidth = getTextInputWidth(term, active);
-  console.log(textInputWidth);
 
   return (
     <div
@@ -132,7 +140,7 @@ const MultiSelect: React.SFC<Props> = ({
       <ul className={styles['current-options']}>
         <span
           className={classnames(styles.placeholder, {
-            [styles.hidden]: active
+            [styles.hidden]: active || term !== ''
           })}
         >
           {placeholder}
@@ -171,6 +179,13 @@ const MultiSelect: React.SFC<Props> = ({
             })}
             value={term}
             disabled={disabled}
+            onKeyDown={e => {
+              if (e.keyCode === KEYCODE_BACKSPACE) {
+                if (term === '') {
+                  popOption();
+                }
+              }
+            }}
             onChange={e => {
               const val = e.target.value;
 
