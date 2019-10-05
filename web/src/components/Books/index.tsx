@@ -38,9 +38,7 @@ const Books: React.SFC = () => {
       <HeadData />
 
       <PayWall>
-        <h1 className="sr-only">Books</h1>
-
-        <div className="container mobile-nopadding page page-mobile-full">
+        <div className="page page-mobile-full">
           <Flash
             kind="success"
             when={Boolean(successMessage)}

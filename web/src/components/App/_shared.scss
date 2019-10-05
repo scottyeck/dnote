@@ -124,11 +124,12 @@ h6 {
 }
 
 // grid
-.container.mobile-nopadding {
-  @include breakpoint(mdonly) {
+.container.mobile-fw {
+  @include breakpoint(mddown) {
     max-width: 100%;
   }
-
+}
+.container.mobile-nopadding {
   @include breakpoint(mddown) {
     padding-left: 0;
     padding-right: 0;
@@ -157,9 +158,19 @@ html body {
     padding-bottom: 0;
 
     @include breakpoint(lg) {
-      padding-top: rem(20px);
-      padding-bottom: rem(20px);
+      padding-top: rem(32px);
+      padding-bottom: rem(32px);
     }
+  }
+}
+
+.page-header {
+  margin-top: rem(20px);
+  margin-bottom: rem(20px);
+
+  @include breakpoint(lg) {
+    padding: 0;
+    margin-top: 0;
   }
 }
 
@@ -194,4 +205,8 @@ html body {
   font-weight: 600;
   margin-bottom: rem(4px);
   @include font-size('small');
+}
+
+.page-heading {
+  @include font-size('x-large');
 }

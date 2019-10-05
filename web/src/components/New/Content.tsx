@@ -88,12 +88,9 @@ const New: React.SFC<Props> = ({ editor, persisted, history }) => {
             Error: {errMessage}
           </Flash>
 
-          <div className={styles.wrapper}>
-            <div className={classnames(styles.overlay, {})} />
-            <div className={styles.header}>
-              <h2 className={styles.heading}>New note</h2>
-            </div>
+          <h1>New note</h1>
 
+          <div className={styles.wrapper}>
             <Editor
               isNew
               editor={editor}

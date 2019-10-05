@@ -19,41 +19,18 @@
 @import '../App/rem';
 @import '../App/responsive';
 @import '../App/theme';
+@import '../App/font';
 
-.header {
-  display: flex;
-  flex-direction: column;
-
-  @include breakpoint(md) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+button.create-button {
+  padding: 0;
+  @include font-size('small');
 }
 
-.header-left {
+.create-button-content {
   display: flex;
-  flex-grow: 1;
   align-items: center;
-  justify-content: space-between;
 }
 
-.search-input-wrapper {
-  width: 100%;
-  margin-top: rem(12px);
-
-  @include breakpoint(md) {
-    width: auto;
-    margin-top: 0;
-  }
-}
-
-.search-input {
-  width: 100%;
-
-  @include breakpoint(md) {
-    margin-top: 0;
-    width: auto;
-    margin-left: rem(24px);
-  }
+.create-button-text {
+  margin-left: rem(4px);
 }
