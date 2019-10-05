@@ -4,15 +4,21 @@ import Helmet from 'react-helmet';
 import CreateModal from './CreateModal';
 
 const Repetition: React.FunctionComponent = () => {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
-    <div className="container page">
+    <div className="page page-mobile-full">
       <Helmet>
         <title>Repetition</title>
       </Helmet>
 
-      <h1>Repetition</h1>
+      <div className="container mobile-fw">
+        <div className="page-header">
+          <h1 className="page-heading">Repetition</h1>
+        </div>
+      </div>
+
+      <div className="container">content</div>
 
       <CreateModal
         isOpen={isCreateModalOpen}

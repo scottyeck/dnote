@@ -118,9 +118,6 @@ const Editor: React.SFC<Props> = ({
     >
       <div className={classnames(styles.row, styles['editor-header'])}>
         <div>
-          <label htmlFor="asdf" className="input-label">
-            Book
-          </label>
           <BooksSelector
             editor={editor}
             isReady={books.isFetched}

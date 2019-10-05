@@ -45,3 +45,18 @@ $border-radius: rem(4px);
     border: 1px solid $border-color;
   }
 }
+
+.header {
+  padding: rem(16px) rem(20px);
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+
+  @include breakpoint(lg) {
+    background-color: #f7f9fa;
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+.heading {
+  @include font-size('regular');
+}

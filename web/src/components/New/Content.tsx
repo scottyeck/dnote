@@ -80,17 +80,19 @@ const New: React.SFC<Props> = ({ editor, persisted, history }) => {
       <PayWall>
         <div
           className={classnames(
-            styles.container,
-            'container mobile-nopadding page page-mobile-full'
+            'page page-mobile-full container mobile-nopadding',
+            styles.container
           )}
         >
           <Flash kind="danger" when={Boolean(errMessage)}>
             Error: {errMessage}
           </Flash>
 
-          <h1>New note</h1>
-
           <div className={styles.wrapper}>
+            <div className={styles.header}>
+              <h2 className={styles.heading}>New notes</h2>
+            </div>
+
             <Editor
               isNew
               editor={editor}
@@ -134,12 +136,12 @@ const New: React.SFC<Props> = ({ editor, persisted, history }) => {
               }}
             />
           </div>
-        </div>
 
-        <Prompt
-          message="You have unsaved changes. Continue?"
-          when={!persisted}
-        />
+          <Prompt
+            message="You have unsaved changes. Continue?"
+            when={!persisted}
+          />
+        </div>
       </PayWall>
     </Fragment>
   );
