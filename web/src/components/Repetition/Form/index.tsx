@@ -53,7 +53,8 @@ enum Action {
   setHour,
   setMinutes,
   setNoteCount,
-  setBooks
+  setBooks,
+  toggleEnabled
 }
 
 function formReducer(state, action): FormState {
@@ -87,6 +88,11 @@ function formReducer(state, action): FormState {
       return {
         ...state,
         books: action.data
+      };
+    case Action.toggleEnabled:
+      return {
+        ...state,
+        enabled: !state.enabled
       };
     default:
       return state;
@@ -288,6 +294,28 @@ const Form: React.FunctionComponent<Props> = ({
 
         <div className={styles.help}>
           Maximum number of notes to include in each repetition
+        </div>
+      </div>
+
+      <div className={modalStyles['input-row']}>
+        <label className="input-label" htmlFor="enabled">
+          Enabled?
+        </label>
+
+        <div>
+          <input
+            type="checkbox"
+            id="enabled"
+            checked={formState.enabled}
+            onChange={e => {
+              const data = e.target.value;
+
+              formDispatch({
+                type: Action.toggleEnabled,
+                data
+              });
+            }}
+          />
         </div>
       </div>
 

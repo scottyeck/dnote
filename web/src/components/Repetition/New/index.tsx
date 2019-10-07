@@ -1,21 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import Helmet from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 
-import { getRepetitionsPath } from 'web/libs/paths';
-import { getDigestRules } from '../../../store/repetitionRules';
+import { getRepetitionsPath, repetitionsPathDef } from 'web/libs/paths';
+import {
+  getDigestRules,
+  createDigestRule
+} from '../../../store/repetitionRules';
 import { useDispatch } from '../../../store';
 import Form, { FormState } from '../Form';
+import Flash from '../../Common/Flash';
+import { setMessage } from '../../../store/ui';
 import repetitionStyles from '../Repetition.scss';
 
-const NewRepetition: React.FunctionComponent = () => {
+interface Props extends RouteComponentProps {}
+
+const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
   const dispatch = useDispatch();
+  const [errMsg, setErrMsg] = useState('');
+
   useEffect(() => {
     dispatch(getDigestRules());
   }, [dispatch]);
 
-  function handleSubmit(state: FormState) {}
+  async function handleSubmit(state: FormState) {
+    const bookUUIDs = state.books.map(b => {
+      return b.value;
+    });
+
+    try {
+      await dispatch(
+        createDigestRule({
+          title: state.title,
+          hour: state.hour,
+          minute: state.minute,
+          frequency: state.frequency,
+          book_uuids: bookUUIDs
+        })
+      );
+
+      const dest = getRepetitionsPath();
+      history.push(dest);
+
+      dispatch(
+        setMessage({
+          message: 'Created a repetition rule',
+          kind: 'info',
+          path: repetitionsPathDef
+        })
+      );
+    } catch (e) {
+      setErrMsg(e.message);
+    }
+  }
 
   return (
     <div className="page page-mobile-full">
@@ -30,10 +68,20 @@ const NewRepetition: React.FunctionComponent = () => {
           <Link to={getRepetitionsPath()}>Back</Link>
         </div>
 
+        <Flash
+          kind="danger"
+          when={errMsg !== ''}
+          onDismiss={() => {
+            setErrMsg('');
+          }}
+        >
+          Error creating a rule: {errMsg}
+        </Flash>
+
         <Form onSubmit={handleSubmit} />
       </div>
     </div>
   );
 };
 
-export default NewRepetition;
+export default withRouter(NewRepetition);
