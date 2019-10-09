@@ -48,14 +48,22 @@ func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 }
 
 type createRepetitionRuleParams struct {
-	Title     string   `json:"title"`
-	Hour      int      `json:"hour"`
-	Minute    int      `json:"minute"`
-	Frequency int      `json:"frequency"`
-	Global    bool     `json:"global"`
-	BookUUIDs []string `json:"book_uuids"`
-	NoteCount int      `json:"note_count"`
-	Enabled   bool     `json:"enabled"`
+	Title      string   `json:"title"`
+	Hour       int      `json:"hour"`
+	Minute     int      `json:"minute"`
+	Frequency  int      `json:"frequency"`
+	BookDomain string   `json:"book_domain"`
+	BookUUIDs  []string `json:"book_uuids"`
+	NoteCount  int      `json:"note_count"`
+	Enabled    bool     `json:"enabled"`
+}
+
+func validateBookDomain(val string) error {
+	if val == database.BookDomainAll || val == database.BookDomainIncluding || val == database.BookDomainExluding {
+		return nil
+	}
+
+	return errors.Errorf("invalid book_domain %s", val)
 }
 
 func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParams, error) {
@@ -67,15 +75,17 @@ func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParam
 	if err := d.Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
 	}
-
 	if ret.Frequency == 0 {
 		return ret, errors.New("frequency is required")
 	}
-	if len(ret.BookUUIDs) == 0 && !ret.Global {
+
+	if err := validateBookDomain(ret.BookDomain); err != nil {
+		return ret, err
+	}
+	if len(ret.BookUUIDs) == 0 && ret.BookDomain != database.BookDomainAll {
 		return ret, errors.New("book_uuids is required")
 	}
-
-	if len(ret.BookUUIDs) > 0 && ret.Global {
+	if len(ret.BookUUIDs) > 0 && ret.BookDomain == database.BookDomainAll {
 		return ret, errors.New("a global repetition should not specify book_uuids")
 	}
 
@@ -103,15 +113,15 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	record := database.RepetitionRule{
-		UserID:    user.ID,
-		Title:     params.Title,
-		Hour:      params.Hour,
-		Minute:    params.Minute,
-		Frequency: params.Frequency,
-		Global:    params.Global,
-		Books:     books,
-		NoteCount: params.NoteCount,
-		Enabled:   params.Enabled,
+		UserID:     user.ID,
+		Title:      params.Title,
+		Hour:       params.Hour,
+		Minute:     params.Minute,
+		Frequency:  params.Frequency,
+		BookDomain: params.BookDomain,
+		Books:      books,
+		NoteCount:  params.NoteCount,
+		Enabled:    params.Enabled,
 	}
 	if err := db.Create(&record).Error; err != nil {
 		handleError(w, "creating a repetition rule", err, http.StatusInternalServerError)
@@ -125,13 +135,14 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 }
 
 type updateRepetitionRuleParams struct {
-	Title     *string   `json:"title"`
-	Enabled   *bool     `json:"enabled"`
-	Hour      *int      `json:"hour"`
-	Minute    *int      `json:"minute"`
-	Frequency *int      `json:"frequency"`
-	BookUUIDs *[]string `json:"book_uuids"`
-	NoteCount *int      `json:"note_count"`
+	Title      *string   `json:"title"`
+	Enabled    *bool     `json:"enabled"`
+	Hour       *int      `json:"hour"`
+	Minute     *int      `json:"minute"`
+	Frequency  *int      `json:"frequency"`
+	BookDomain bool      `json:"book_domain"`
+	BookUUIDs  *[]string `json:"book_uuids"`
+	NoteCount  *int      `json:"note_count"`
 }
 
 func parseUpdateDigestParams(r *http.Request) (updateRepetitionRuleParams, error) {

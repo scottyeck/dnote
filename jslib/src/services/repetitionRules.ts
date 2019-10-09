@@ -16,7 +16,7 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BookData, RepetitionRuleData } from '../operations/types';
+import { BookData, RepetitionRuleData, BookDomain } from '../operations/types';
 import { getHttpClient, HttpClientConfig } from '../helpers/http';
 import { getPath } from '../helpers/url';
 
@@ -26,7 +26,7 @@ export interface CreateParams {
   title: string;
   hour: number;
   minute: number;
-  global: boolean;
+  book_domain: BookDomain;
   frequency: number;
   note_count: number;
   book_uuids: string[];
@@ -38,7 +38,7 @@ export interface UpdateParams {
   hour?: number;
   minute?: number;
   frequency?: number;
-  global?: boolean;
+  book_domain?: BookDomain;
   note_count?: number;
   book_uuids?: string[];
   enabled?: boolean;

@@ -4,6 +4,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import classnames from 'classnames';
 
 import { getRepetitionsPath, repetitionsPathDef } from 'web/libs/paths';
+import { BookDomain } from 'jslib/operations/types';
 import {
   getRepetitionRules,
   createRepetitionRule
@@ -25,9 +26,14 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
   }, [dispatch]);
 
   async function handleSubmit(state: FormState) {
-    const bookUUIDs = state.books.map(b => {
-      return b.value;
-    });
+    let bookUUIDs = [];
+    if (state.bookDomain === BookDomain.All) {
+      bookUUIDs = [];
+    } else {
+      bookUUIDs = state.books.map(b => {
+        return b.value;
+      });
+    }
 
     try {
       await dispatch(
@@ -36,7 +42,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
           hour: state.hour,
           minute: state.minute,
           frequency: state.frequency,
-          global: state.global,
+          book_domain: state.bookDomain,
           book_uuids: bookUUIDs,
           note_count: state.noteCount,
           enabled: state.enabled
@@ -81,7 +87,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
           Error creating a rule: {errMsg}
         </Flash>
 
-        <Form onSubmit={handleSubmit} />
+        <Form onSubmit={handleSubmit} setErrMsg={setErrMsg} />
       </div>
     </div>
   );

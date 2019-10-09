@@ -56,13 +56,24 @@ export type BookData = {
   label: string;
 };
 
+// BookDomain is the possible values for the field in the repetition_rule
+// indicating how to derive the source books for the repetition_rule.
+export enum BookDomain {
+  // All incidates that all books are eligible to be the source books
+  All = 'all',
+  // Including incidates that some specified books are eligible to be the source books
+  Including = 'including',
+  // Excluding incidates that all books except for some specified books are eligible to be the source books
+  Excluding = 'excluding'
+}
+
 export interface RepetitionRuleData {
   uuid: string;
   title: string;
   enabled: boolean;
   hour: number;
   minute: number;
-  global: boolean;
+  book_domain: BookDomain;
   frequency: number;
   books: BookData[];
   created_at: number;

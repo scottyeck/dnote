@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 
 import { getRepetitionsPath } from 'web/libs/paths';
 import { Option, booksToOptions } from 'jslib/helpers/select';
+import { BookDomain } from 'jslib/operations/types';
 import Modal, { Header, Body } from '../../Common/Modal';
 import { useSelector } from '../../../store';
 import Flash from '../../Common/Flash';
@@ -33,6 +34,7 @@ import modalStyles from '../../Common/Modal/Modal.scss';
 
 interface Props {
   onSubmit: (formState) => void;
+  setErrMsg: (string) => void;
   cancelPath?: string;
   initialState?: FormState;
 }
@@ -44,7 +46,7 @@ export interface FormState {
   minute: number;
   frequency: number;
   noteCount: number;
-  global: boolean;
+  bookDomain: BookDomain;
   books: Option[];
 }
 
@@ -54,7 +56,7 @@ enum Action {
   setHour,
   setMinutes,
   setNoteCount,
-  setGlobal,
+  setBookDomain,
   setBooks,
   toggleEnabled
 }
@@ -91,10 +93,10 @@ function formReducer(state, action): FormState {
         ...state,
         books: action.data
       };
-    case Action.setGlobal:
+    case Action.setBookDomain:
       return {
         ...state,
-        global: action.data
+        bookDomain: action.data
       };
     case Action.toggleEnabled:
       return {
@@ -113,12 +115,27 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
-  global: true,
+  bookDomain: BookDomain.All,
   books: []
 };
 
+function validateForm(state: FormState): Error | null {
+  if (state.title === '') {
+    return new Error('Title is required.');
+  }
+  if (state.bookDomain !== BookDomain.All && state.books.length === 0) {
+    return new Error('Please select books.');
+  }
+  if (state.noteCount <= 0) {
+    return new Error('Please specify note count greater than 0.');
+  }
+
+  return null;
+}
+
 const Form: React.FunctionComponent<Props> = ({
   onSubmit,
+  setErrMsg,
   cancelPath = getRepetitionsPath(),
   initialState = formInitialState
 }) => {
@@ -134,31 +151,44 @@ const Form: React.FunctionComponent<Props> = ({
   const booksSelectTextId = 'book-select-text-input';
 
   let bookSelectorPlaceholder;
-  if (formState.global) {
-    bookSelectorPlaceholder = 'Including all books';
-  } else {
-    bookSelectorPlaceholder = 'Select books';
+  if (formState.bookDomain === BookDomain.All) {
+    bookSelectorPlaceholder = 'All books';
+  } else if (formState.bookDomain === BookDomain.Including) {
+    bookSelectorPlaceholder = 'Select books to include';
+  } else if (formState.bookDomain === BookDomain.Excluding) {
+    bookSelectorPlaceholder = 'Select books to exclude';
   }
 
   let bookSelectorCurrentOptions;
-  if (formState.global) {
+  if (formState.bookDomain === BookDomain.All) {
     bookSelectorCurrentOptions = [];
   } else {
     bookSelectorCurrentOptions = formState.books;
   }
 
   useEffect(() => {
-    if (!formState.global) {
+    if (formState.bookDomain === BookDomain.All) {
+      if (bookSelectorInputRef.current) {
+        bookSelectorInputRef.current.blur();
+      }
+    } else {
       if (bookSelectorInputRef.current) {
         bookSelectorInputRef.current.focus();
       }
     }
-  }, [formState.global]);
+  }, [formState.bookDomain]);
 
   return (
     <form
       onSubmit={e => {
         e.preventDefault();
+
+        const err = validateForm(formState);
+        if (err !== null) {
+          setErrMsg(err.message);
+          return;
+        }
+
         onSubmit(formState);
       }}
       className={styles.form}
@@ -188,61 +218,85 @@ const Form: React.FunctionComponent<Props> = ({
 
       <div className={styles['input-row']}>
         <label className="input-label" htmlFor={booksSelectTextId}>
-          Books to include
+          Eligible books
         </label>
 
         <div className={styles['book-domain-wrapper']}>
           <div className={styles['book-domain-option']}>
             <input
               type="radio"
-              id="global-repetition-true"
-              name="global-repetition"
-              value="true"
-              checked={formState.global}
+              id="book-domain-all"
+              name="book-domain"
+              value="all"
+              checked={formState.bookDomain === BookDomain.All}
               onChange={e => {
                 const data = e.target.value;
 
                 formDispatch({
-                  type: Action.setGlobal,
-                  data: true
+                  type: Action.setBookDomain,
+                  data
                 });
               }}
             />
             <label
               className={styles['book-domain-label']}
-              htmlFor="global-repetition-true"
+              htmlFor="book-domain-all"
             >
-              Include all books
+              All
             </label>
           </div>
 
           <div className={styles['book-domain-option']}>
             <input
               type="radio"
-              id="global-repetition-false"
-              name="global-repetition"
-              value="false"
-              checked={!formState.global}
+              id="book-domain-including"
+              name="book-domain"
+              value="including"
+              checked={formState.bookDomain === BookDomain.Including}
               onChange={e => {
                 const data = e.target.value;
 
                 formDispatch({
-                  type: Action.setGlobal,
-                  data: false
+                  type: Action.setBookDomain,
+                  data
                 });
               }}
             />
             <label
               className={styles['book-domain-label']}
-              htmlFor="global-repetition-false"
+              htmlFor="book-domain-including"
             >
-              Specify books
+              Including
+            </label>
+          </div>
+
+          <div className={styles['book-domain-option']}>
+            <input
+              type="radio"
+              id="book-domain-excluding"
+              name="book-domain"
+              value="excluding"
+              checked={formState.bookDomain === BookDomain.Excluding}
+              onChange={e => {
+                const data = e.target.value;
+
+                formDispatch({
+                  type: Action.setBookDomain,
+                  data
+                });
+              }}
+            />
+            <label
+              className={styles['book-domain-label']}
+              htmlFor="book-domain-excluding"
+            >
+              Excluding
             </label>
           </div>
         </div>
 
         <MultiSelect
-          disabled={formState.global}
+          disabled={formState.bookDomain === BookDomain.All}
           textInputId={booksSelectTextId}
           options={bookOptions}
           currentOptions={bookSelectorCurrentOptions}
@@ -359,6 +413,7 @@ const Form: React.FunctionComponent<Props> = ({
 
         <input
           type="number"
+          min="1"
           id="num-notes"
           className="text-input text-input-small"
           placeholder="10"
@@ -366,9 +421,16 @@ const Form: React.FunctionComponent<Props> = ({
           onChange={e => {
             const { value } = e.target;
 
+            let data;
+            if (value === '') {
+              data = '';
+            } else {
+              data = Number.parseInt(value);
+            }
+
             formDispatch({
               type: Action.setNoteCount,
-              data: Number.parseInt(value)
+              data
             });
           }}
         />

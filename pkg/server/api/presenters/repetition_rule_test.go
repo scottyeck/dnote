@@ -30,13 +30,13 @@ func TestPresentRepetitionRule(t *testing.T) {
 	b1 := database.Book{UUID: "1cf8794f-4d61-4a9d-a9da-18f8db9e53cc", Label: "foo"}
 	b2 := database.Book{UUID: "ede00f3b-eab1-469c-ae12-c60cebeeef17", Label: "bar"}
 	d1 := database.RepetitionRule{
-		UUID:    "c725afb5-8bf1-4581-a0e7-0f683c15f3d0",
-		Title:   "test title",
-		Enabled: true,
-		Hour:    1,
-		Minute:  2,
-		Global:  false,
-		Books:   []database.Book{b1, b2},
+		UUID:       "c725afb5-8bf1-4581-a0e7-0f683c15f3d0",
+		Title:      "test title",
+		Enabled:    true,
+		Hour:       1,
+		Minute:     2,
+		BookDomain: database.BookDomainAll,
+		Books:      []database.Book{b1, b2},
 	}
 
 	testCases := []struct {
@@ -46,12 +46,12 @@ func TestPresentRepetitionRule(t *testing.T) {
 		{
 			input: d1,
 			expected: RepetitionRule{
-				UUID:    d1.UUID,
-				Title:   d1.Title,
-				Enabled: d1.Enabled,
-				Hour:    d1.Hour,
-				Minute:  d1.Minute,
-				Global:  d1.Global,
+				UUID:       d1.UUID,
+				Title:      d1.Title,
+				Enabled:    d1.Enabled,
+				Hour:       d1.Hour,
+				Minute:     d1.Minute,
+				BookDomain: d1.BookDomain,
 				Books: []Book{
 					{
 						UUID:      b1.UUID,
