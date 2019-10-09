@@ -17,7 +17,7 @@
  */
 
 import services from 'web/libs/services';
-import { DigestRuleData } from 'jslib/operations/types';
+import { RepetitionRuleData } from 'jslib/operations/types';
 import { CreateParams } from 'jslib/services/repetitionRules';
 import {
   RECEIVE,
@@ -26,80 +26,80 @@ import {
   START_FETCHING,
   FINISH_FETCHING,
   RECEIVE_ERROR,
-  ReceiveDigestRulesAction,
-  ReceiveDigestRulesErrorAction,
-  StartFetchingDigestRulesAction,
-  FinishFetchingDigestRulesAction,
-  AddDigestRuleAction,
-  RemoveDigestRuleAction
+  ReceiveRepetitionRulesAction,
+  ReceiveRepetitionRulesErrorAction,
+  StartFetchingRepetitionRulesAction,
+  FinishFetchingRepetitionRulesAction,
+  AddRepetitionRuleAction,
+  RemoveRepetitionRuleAction
 } from './type';
 import { ThunkAction } from '../types';
 
-function receiveDigestRules(
-  repetitionRules: DigestRuleData[]
-): ReceiveDigestRulesAction {
+function receiveRepetitionRules(
+  repetitionRules: RepetitionRuleData[]
+): ReceiveRepetitionRulesAction {
   return {
     type: RECEIVE,
     data: { repetitionRules }
   };
 }
 
-function receiveDigestRulesError(err: string): ReceiveDigestRulesErrorAction {
+function receiveRepetitionRulesError(err: string): ReceiveRepetitionRulesErrorAction {
   return {
     type: RECEIVE_ERROR,
     data: { err }
   };
 }
 
-function startFetchingDigestRules(): StartFetchingDigestRulesAction {
+function startFetchingRepetitionRules(): StartFetchingRepetitionRulesAction {
   return {
     type: START_FETCHING
   };
 }
 
-function finishFetchingDigestRules(): FinishFetchingDigestRulesAction {
+function finishFetchingRepetitionRules(): FinishFetchingRepetitionRulesAction {
   return {
     type: FINISH_FETCHING
   };
 }
 
-export const getDigestRules = (): ThunkAction<void> => {
+export const getRepetitionRules = (): ThunkAction<void> => {
   return dispatch => {
-    dispatch(startFetchingDigestRules());
+    dispatch(startFetchingRepetitionRules());
 
     return services.repetitionRules
       .fetchAll()
       .then(data => {
-        dispatch(receiveDigestRules(data));
-        dispatch(finishFetchingDigestRules());
+        dispatch(receiveRepetitionRules(data));
+        dispatch(finishFetchingRepetitionRules());
       })
       .catch(err => {
-        console.log('getDigestRules error', err);
-        dispatch(receiveDigestRulesError(err));
+        console.log('getRepetitionRules error', err);
+        dispatch(receiveRepetitionRulesError(err));
       });
   };
 };
 
-export function addDigestRule(repetitionRule: DigestRuleData): AddDigestRuleAction {
+export function addRepetitionRule(repetitionRule: RepetitionRuleData): AddRepetitionRuleAction {
   return {
     type: ADD,
     data: { repetitionRule }
   };
 }
 
-export const createDigestRule = (
+export const createRepetitionRule = (
   p: CreateParams
-): ThunkAction<DigestRuleData> => {
+): ThunkAction<RepetitionRuleData> => {
   return dispatch => {
     return services.repetitionRules.create(p).then(data => {
-      dispatch(addDigestRule(data));
+      dispatch(addRepetitionRule(data));
 
       return data;
     });
   };
 };
 
-export function removeDigestRule(uuid: string): RemoveDigestRuleAction {
+export function removeRepetitionRule(uuid: string): RemoveRepetitionRuleAction {
   return {
     type: REMOVE,
     data: { uuid }

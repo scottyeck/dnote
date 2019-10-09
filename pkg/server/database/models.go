@@ -134,8 +134,8 @@ type Digest struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// DigestRule is the rules for sending digest emails
-type DigestRule struct {
+// RepetitionRule is the rules for sending digest emails
+type RepetitionRule struct {
 	Model
 	UUID       string `json:"uuid" gorm:"type:uuid;index;default:uuid_generate_v4()"`
 	UserID     int    `json:"user_id" gorm:"index"`

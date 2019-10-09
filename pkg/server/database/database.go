@@ -143,7 +143,7 @@ func InitSchema() {
 		EmailPreference{},
 		Session{},
 		Digest{},
-		DigestRule{},
+		RepetitionRule{},
 	).Error; err != nil {
 		panic(err)
 	}

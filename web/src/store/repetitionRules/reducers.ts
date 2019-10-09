@@ -17,8 +17,8 @@
  */
 
 import {
-  DigestRulesState,
-  DigestRulesActionType,
+  RepetitionRulesState,
+  RepetitionRulesActionType,
   RECEIVE,
   RECEIVE_ERROR,
   ADD,
@@ -27,7 +27,7 @@ import {
   FINISH_FETCHING
 } from './type';
 
-const initialState: DigestRulesState = {
+const initialState: RepetitionRulesState = {
   data: [],
   isFetching: false,
   isFetched: false,
@@ -36,8 +36,8 @@ const initialState: DigestRulesState = {
 
 export default function(
   state = initialState,
-  action: DigestRulesActionType
-): DigestRulesState {
+  action: RepetitionRulesActionType
+): RepetitionRulesState {
   switch (action.type) {
     case START_FETCHING: {
       return {

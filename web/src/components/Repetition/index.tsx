@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
 import { getNewRepetitionPath } from 'web/libs/paths';
-import { getDigestRules } from '../../store/repetitionRules';
+import { getRepetitionRules } from '../../store/repetitionRules';
 import { useDispatch } from '../../store';
 import styles from './Repetition.scss';
 
 const Repetition: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getDigestRules());
+    dispatch(getRepetitionRules());
   }, [dispatch]);
 
   return (

@@ -24,8 +24,8 @@ import (
 	"github.com/dnote/dnote/pkg/server/database"
 )
 
-// DigestRule is a presented digest rule
-type DigestRule struct {
+// RepetitionRule is a presented digest rule
+type RepetitionRule struct {
 	UUID      string    `json:"uuid"`
 	Title     string    `json:"title"`
 	Enabled   bool      `json:"enabled"`
@@ -37,9 +37,9 @@ type DigestRule struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// PresentDigestRule presents a digest rule
-func PresentDigestRule(d database.DigestRule) DigestRule {
-	ret := DigestRule{
+// PresentRepetitionRule presents a digest rule
+func PresentRepetitionRule(d database.RepetitionRule) RepetitionRule {
+	ret := RepetitionRule{
 		UUID:      d.UUID,
 		Title:     d.Title,
 		Enabled:   d.Enabled,
@@ -54,12 +54,12 @@ func PresentDigestRule(d database.DigestRule) DigestRule {
 	return ret
 }
 
-// PresentDigestRules presents a slice of digest rules
-func PresentDigestRules(ds []database.DigestRule) []DigestRule {
-	ret := []DigestRule{}
+// PresentRepetitionRules presents a slice of digest rules
+func PresentRepetitionRules(ds []database.RepetitionRule) []RepetitionRule {
+	ret := []RepetitionRule{}
 
 	for _, d := range ds {
-		p := PresentDigestRule(d)
+		p := PresentRepetitionRule(d)
 		ret = append(ret, p)
 	}
 

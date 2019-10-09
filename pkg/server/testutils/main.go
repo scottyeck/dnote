@@ -181,7 +181,7 @@ func ClearData() {
 	if err := db.Delete(&database.Digest{}).Error; err != nil {
 		panic(errors.Wrap(err, "Failed to clear digests"))
 	}
-	if err := db.Delete(&database.DigestRule{}).Error; err != nil {
+	if err := db.Delete(&database.RepetitionRule{}).Error; err != nil {
 		panic(errors.Wrap(err, "Failed to clear digests"))
 	}
 }

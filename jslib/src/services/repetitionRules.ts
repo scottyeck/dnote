@@ -16,11 +16,11 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BookData, DigestRuleData } from '../operations/types';
+import { BookData, RepetitionRuleData } from '../operations/types';
 import { getHttpClient, HttpClientConfig } from '../helpers/http';
 import { getPath } from '../helpers/url';
 
-export type FetchResponse = DigestRuleData[];
+export type FetchResponse = RepetitionRuleData[];
 
 export interface CreateParams {
   title: string;
@@ -46,17 +46,17 @@ export default function init(config: HttpClientConfig) {
     fetchAll: () => {
       const endpoint = '/repetition_rules';
 
-      return client.get<DigestRuleData[]>(endpoint);
+      return client.get<RepetitionRuleData[]>(endpoint);
     },
     create: (params: CreateParams) => {
       const endpoint = '/repetition_rules';
 
-      return client.post<DigestRuleData>(endpoint, params);
+      return client.post<RepetitionRuleData>(endpoint, params);
     },
     update: (uuid: string, params: UpdateParams) => {
       const endpoint = `/repetition_rules/${uuid}`;
 
-      return client.patch<DigestRuleData>(endpoint, params);
+      return client.patch<RepetitionRuleData>(endpoint, params);
     }
   };
 }

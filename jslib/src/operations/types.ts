@@ -56,7 +56,7 @@ export type BookData = {
   label: string;
 };
 
-export interface DigestRuleData {
+export interface RepetitionRuleData {
   uuid: string;
   title: string;
   enabled: boolean;

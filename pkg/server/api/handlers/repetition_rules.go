@@ -29,7 +29,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (a *App) getDigestRules(w http.ResponseWriter, r *http.Request) {
+func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
 	if !ok {
 		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
@@ -37,17 +37,17 @@ func (a *App) getDigestRules(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := database.DBConn
-	var repetitionRules []database.DigestRule
+	var repetitionRules []database.RepetitionRule
 	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&repetitionRules).Error; err != nil {
 		handleError(w, "getting digest rules", nil, http.StatusInternalServerError)
 		return
 	}
 
-	resp := presenters.PresentDigestRules(repetitionRules)
+	resp := presenters.PresentRepetitionRules(repetitionRules)
 	respondJSON(w, resp)
 }
 
-type createDigestRuleParams struct {
+type createRepetitionRuleParams struct {
 	Title     string   `json:"title"`
 	Hour      int      `json:"hour"`
 	Minute    int      `json:"minute"`
@@ -55,8 +55,8 @@ type createDigestRuleParams struct {
 	BookUUIDs []string `json:"book_uuids"`
 }
 
-func parseCreateDigestRuleParams(r *http.Request) (createDigestRuleParams, error) {
-	var ret createDigestRuleParams
+func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParams, error) {
+	var ret createRepetitionRuleParams
 
 	if err := json.NewDecoder(r.Body).Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
@@ -72,14 +72,14 @@ func parseCreateDigestRuleParams(r *http.Request) (createDigestRuleParams, error
 	return ret, nil
 }
 
-func (a *App) createDigestRule(w http.ResponseWriter, r *http.Request) {
+func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
 	if !ok {
 		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
 		return
 	}
 
-	params, err := parseCreateDigestRuleParams(r)
+	params, err := parseCreateRepetitionRuleParams(r)
 	if err != nil {
 		http.Error(w, "parsing params", http.StatusBadRequest)
 		return
@@ -92,7 +92,7 @@ func (a *App) createDigestRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	record := database.DigestRule{
+	record := database.RepetitionRule{
 		Title:     params.Title,
 		Hour:      params.Hour,
 		Minute:    params.Minute,
@@ -104,13 +104,13 @@ func (a *App) createDigestRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := presenters.PresentDigestRule(record)
+	resp := presenters.PresentRepetitionRule(record)
 
 	w.WriteHeader(http.StatusCreated)
 	respondJSON(w, resp)
 }
 
-type updateDigestRuleParams struct {
+type updateRepetitionRuleParams struct {
 	Title     *string   `json:"title"`
 	Enabled   *bool     `json:"enabled"`
 	Hour      *int      `json:"hour"`
@@ -119,8 +119,8 @@ type updateDigestRuleParams struct {
 	BookUUIDs *[]string `json:"book_uuids"`
 }
 
-func parseUpdateDigestParams(r *http.Request) (updateDigestRuleParams, error) {
-	var ret updateDigestRuleParams
+func parseUpdateDigestParams(r *http.Request) (updateRepetitionRuleParams, error) {
+	var ret updateRepetitionRuleParams
 
 	if err := json.NewDecoder(r.Body).Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
@@ -129,7 +129,7 @@ func parseUpdateDigestParams(r *http.Request) (updateDigestRuleParams, error) {
 	return ret, nil
 }
 
-func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
+func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
 	if !ok {
 		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
@@ -146,7 +146,7 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := database.DBConn
-	var repetitionRule database.DigestRule
+	var repetitionRule database.RepetitionRule
 	if err := db.Where("user_id = ? AND uuid = ?", user.ID, repetitionRuleUUID).Preload("Books").First(&repetitionRule).Error; err != nil {
 		handleError(w, "finding record", nil, http.StatusInternalServerError)
 		return
@@ -184,6 +184,6 @@ func (a *App) updateDigestRule(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	resp := presenters.PresentDigestRule(repetitionRule)
+	resp := presenters.PresentRepetitionRule(repetitionRule)
 	respondJSON(w, resp)
 }

@@ -26,10 +26,10 @@ import (
 	"github.com/dnote/dnote/pkg/server/database"
 )
 
-func TestPresentDigestRule(t *testing.T) {
+func TestPresentRepetitionRule(t *testing.T) {
 	b1 := database.Book{UUID: "1cf8794f-4d61-4a9d-a9da-18f8db9e53cc", Label: "foo"}
 	b2 := database.Book{UUID: "ede00f3b-eab1-469c-ae12-c60cebeeef17", Label: "bar"}
-	d1 := database.DigestRule{
+	d1 := database.RepetitionRule{
 		UUID:    "c725afb5-8bf1-4581-a0e7-0f683c15f3d0",
 		Title:   "test title",
 		Enabled: true,
@@ -39,12 +39,12 @@ func TestPresentDigestRule(t *testing.T) {
 	}
 
 	testCases := []struct {
-		input    database.DigestRule
-		expected DigestRule
+		input    database.RepetitionRule
+		expected RepetitionRule
 	}{
 		{
 			input: d1,
-			expected: DigestRule{
+			expected: RepetitionRule{
 				UUID:    d1.UUID,
 				Title:   d1.Title,
 				Enabled: d1.Enabled,
@@ -74,7 +74,7 @@ func TestPresentDigestRule(t *testing.T) {
 
 	for idx, tc := range testCases {
 		t.Run(fmt.Sprintf("test case %d", idx), func(t *testing.T) {
-			result := PresentDigestRule(tc.input)
+			result := PresentRepetitionRule(tc.input)
 
 			assert.DeepEqual(t, result, tc.expected, "result mismatch")
 		})

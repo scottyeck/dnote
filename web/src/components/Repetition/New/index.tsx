@@ -5,8 +5,8 @@ import classnames from 'classnames';
 
 import { getRepetitionsPath, repetitionsPathDef } from 'web/libs/paths';
 import {
-  getDigestRules,
-  createDigestRule
+  getRepetitionRules,
+  createRepetitionRule
 } from '../../../store/repetitionRules';
 import { useDispatch } from '../../../store';
 import Form, { FormState } from '../Form';
@@ -21,7 +21,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
   const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
-    dispatch(getDigestRules());
+    dispatch(getRepetitionRules());
   }, [dispatch]);
 
   async function handleSubmit(state: FormState) {
@@ -31,7 +31,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
 
     try {
       await dispatch(
-        createDigestRule({
+        createRepetitionRule({
           title: state.title,
           hour: state.hour,
           minute: state.minute,
