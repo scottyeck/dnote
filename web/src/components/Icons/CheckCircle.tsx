@@ -16,28 +16,32 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// basic colors
-$black: #2a2a2a;
-$white: #ffffff;
-$light: #f7f9fa;
-$gray: #686868;
-$light-gray: #f3f3f3;
-$dark-gray: #717171;
+import React from 'react';
 
-// primary colors
-$first: #072a40;
-$second: #e7e7e7;
-$third: #0a4b73;
+import { IconProps } from './types';
 
-// functional colors
-$border-color: #d8d8d8;
-$border-color-light: $light-gray;
+const Icon = ({ fill, width, height, className }: IconProps) => {
+  const h = `${height}px`;
+  const w = `${width}px`;
 
-$link: #6f53c0;
-$link-hover: darken($link, 5%);
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="16" cy="16" r="15" stroke={fill} strokeWidth="3" />
+      <path d="M24.5 11L14.5 19.5L9 13.7857" stroke={fill} strokeWidth="4" />
+    </svg>
+  );
+};
 
-$danger-text: #cb2431;
-$danger-background: #f8d7da;
+Icon.defaultProps = {
+  fill: '#0FA040',
+  width: 32,
+  height: 32
+};
 
-$light-blue: #ecf4ff;
-$green: #28a755;
+export default Icon;
