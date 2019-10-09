@@ -35,6 +35,7 @@ func TestPresentRepetitionRule(t *testing.T) {
 		Enabled: true,
 		Hour:    1,
 		Minute:  2,
+		Global:  false,
 		Books:   []database.Book{b1, b2},
 	}
 
@@ -50,6 +51,7 @@ func TestPresentRepetitionRule(t *testing.T) {
 				Enabled: d1.Enabled,
 				Hour:    d1.Hour,
 				Minute:  d1.Minute,
+				Global:  d1.Global,
 				Books: []Book{
 					{
 						UUID:      b1.UUID,

@@ -36,6 +36,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
           hour: state.hour,
           minute: state.minute,
           frequency: state.frequency,
+          global: state.global,
           book_uuids: bookUUIDs
         })
       );

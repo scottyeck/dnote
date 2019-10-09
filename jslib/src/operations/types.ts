@@ -62,6 +62,7 @@ export interface RepetitionRuleData {
   enabled: boolean;
   hour: number;
   minute: number;
+  global: boolean;
   frequency: number;
   books: BookData[];
   created_at: number;

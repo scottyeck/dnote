@@ -37,11 +37,6 @@ interface Props {
   initialState?: FormState;
 }
 
-enum BookDomain {
-  Global = 'global',
-  Subset = 'subset'
-}
-
 export interface FormState {
   title: string;
   enabled: boolean;
@@ -49,7 +44,7 @@ export interface FormState {
   minute: number;
   frequency: number;
   noteCount: number;
-  bookDomain: BookDomain;
+  global: boolean;
   books: Option[];
 }
 
@@ -59,7 +54,7 @@ enum Action {
   setHour,
   setMinutes,
   setNoteCount,
-  setBookDomain,
+  setGlobal,
   setBooks,
   toggleEnabled
 }
@@ -96,10 +91,10 @@ function formReducer(state, action): FormState {
         ...state,
         books: action.data
       };
-    case Action.setBookDomain:
+    case Action.setGlobal:
       return {
         ...state,
-        bookDomain: action.data
+        global: action.data
       };
     case Action.toggleEnabled:
       return {
@@ -118,7 +113,7 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
-  bookDomain: BookDomain.Global,
+  global: true,
   books: []
 };
 
@@ -138,28 +133,27 @@ const Form: React.FunctionComponent<Props> = ({
   const bookOptions = booksToOptions(books);
   const booksSelectTextId = 'book-select-text-input';
 
-  const includeAllBooks = formState.bookDomain === BookDomain.Global;
   let bookSelectorPlaceholder;
-  if (includeAllBooks) {
+  if (formState.global) {
     bookSelectorPlaceholder = 'Including all books';
   } else {
     bookSelectorPlaceholder = 'Select books';
   }
 
   let bookSelectorCurrentOptions;
-  if (formState.bookDomain === BookDomain.Global) {
+  if (formState.global) {
     bookSelectorCurrentOptions = [];
   } else {
     bookSelectorCurrentOptions = formState.books;
   }
 
   useEffect(() => {
-    if (formState.bookDomain === BookDomain.Subset) {
+    if (!formState.global) {
       if (bookSelectorInputRef.current) {
         bookSelectorInputRef.current.focus();
       }
     }
-  }, [formState.bookDomain]);
+  }, [formState.global]);
 
   return (
     <form
@@ -201,22 +195,22 @@ const Form: React.FunctionComponent<Props> = ({
           <div className={styles['book-domain-option']}>
             <input
               type="radio"
-              id="book-domain-global"
-              name="book-domain"
-              value={BookDomain.Global}
-              checked={formState.bookDomain === BookDomain.Global}
+              id="global-repetition-true"
+              name="global-repetition"
+              value="true"
+              checked={formState.global}
               onChange={e => {
                 const data = e.target.value;
 
                 formDispatch({
-                  type: Action.setBookDomain,
-                  data
+                  type: Action.setGlobal,
+                  data: true
                 });
               }}
             />
             <label
               className={styles['book-domain-label']}
-              htmlFor="book-domain-global"
+              htmlFor="global-repetition-true"
             >
               Include all books
             </label>
@@ -225,22 +219,22 @@ const Form: React.FunctionComponent<Props> = ({
           <div className={styles['book-domain-option']}>
             <input
               type="radio"
-              id="book-domain-subset"
-              name="book-domain"
-              value={BookDomain.Subset}
-              checked={formState.bookDomain === BookDomain.Subset}
+              id="global-repetition-false"
+              name="global-repetition"
+              value="false"
+              checked={!formState.global}
               onChange={e => {
                 const data = e.target.value;
 
                 formDispatch({
-                  type: Action.setBookDomain,
-                  data
+                  type: Action.setGlobal,
+                  data: false
                 });
               }}
             />
             <label
               className={styles['book-domain-label']}
-              htmlFor="book-domain-subset"
+              htmlFor="global-repetition-false"
             >
               Specify books
             </label>
@@ -248,7 +242,7 @@ const Form: React.FunctionComponent<Props> = ({
         </div>
 
         <MultiSelect
-          disabled={includeAllBooks}
+          disabled={formState.global}
           textInputId={booksSelectTextId}
           options={bookOptions}
           currentOptions={bookSelectorCurrentOptions}

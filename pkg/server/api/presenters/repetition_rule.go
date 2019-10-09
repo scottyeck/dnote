@@ -32,6 +32,7 @@ type RepetitionRule struct {
 	Hour      int       `json:"hour" gorm:"index"`
 	Minute    int       `json:"minute" gorm:"index"`
 	Frequency int       `json:"frequency"`
+	Global    bool      `json:"global"`
 	Books     []Book    `json:"books"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -46,6 +47,7 @@ func PresentRepetitionRule(d database.RepetitionRule) RepetitionRule {
 		Hour:      d.Hour,
 		Minute:    d.Minute,
 		Frequency: d.Frequency,
+		Global:    d.Global,
 		Books:     PresentBooks(d.Books),
 		CreatedAt: FormatTS(d.CreatedAt),
 		UpdatedAt: FormatTS(d.UpdatedAt),

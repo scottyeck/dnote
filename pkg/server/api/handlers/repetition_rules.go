@@ -52,6 +52,7 @@ type createRepetitionRuleParams struct {
 	Hour      int      `json:"hour"`
 	Minute    int      `json:"minute"`
 	Frequency int      `json:"frequency"`
+	Global    bool     `json:"global"`
 	BookUUIDs []string `json:"book_uuids"`
 }
 
@@ -69,6 +70,10 @@ func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParam
 		return ret, errors.New("book_uuids is required")
 	}
 
+	if ret.Global && len(ret.BookUUIDs) > 0 {
+		return ret, errors.New("a global repetition should not specify book_uuids")
+	}
+
 	return ret, nil
 }
 
@@ -81,7 +86,7 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 
 	params, err := parseCreateRepetitionRuleParams(r)
 	if err != nil {
-		http.Error(w, "parsing params", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -97,6 +102,7 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 		Hour:      params.Hour,
 		Minute:    params.Minute,
 		Frequency: params.Frequency,
+		Global:    params.Global,
 		Books:     books,
 	}
 	if err := db.Create(&record).Error; err != nil {

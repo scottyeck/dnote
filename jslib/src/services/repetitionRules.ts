@@ -26,6 +26,7 @@ export interface CreateParams {
   title: string;
   hour: number;
   minute: number;
+  global: boolean;
   frequency: number;
   book_uuids: string[];
 }
@@ -35,6 +36,7 @@ export interface UpdateParams {
   hour?: number;
   minute?: number;
   frequency?: number;
+  global?: boolean;
   book_uuids?: string[];
   enabled?: boolean;
 }
