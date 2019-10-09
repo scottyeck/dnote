@@ -16,7 +16,7 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useRef, useEffect } from 'react';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
@@ -37,6 +37,11 @@ interface Props {
   initialState?: FormState;
 }
 
+enum BookDomain {
+  Global = 'global',
+  Subset = 'subset'
+}
+
 export interface FormState {
   title: string;
   enabled: boolean;
@@ -44,6 +49,7 @@ export interface FormState {
   minute: number;
   frequency: number;
   noteCount: number;
+  bookDomain: BookDomain;
   books: Option[];
 }
 
@@ -53,6 +59,7 @@ enum Action {
   setHour,
   setMinutes,
   setNoteCount,
+  setBookDomain,
   setBooks,
   toggleEnabled
 }
@@ -89,6 +96,11 @@ function formReducer(state, action): FormState {
         ...state,
         books: action.data
       };
+    case Action.setBookDomain:
+      return {
+        ...state,
+        bookDomain: action.data
+      };
     case Action.toggleEnabled:
       return {
         ...state,
@@ -106,6 +118,7 @@ const formInitialState: FormState = {
   minute: 0,
   frequency: daysToSec(7),
   noteCount: 20,
+  bookDomain: BookDomain.Global,
   books: []
 };
 
@@ -115,6 +128,7 @@ const Form: React.FunctionComponent<Props> = ({
   initialState = formInitialState
 }) => {
   const [inProgress, setInProgress] = useState(false);
+  const bookSelectorInputRef = useRef(null);
   const [formState, formDispatch] = useReducer(formReducer, initialState);
   const { books } = useSelector(state => {
     return {
@@ -124,6 +138,29 @@ const Form: React.FunctionComponent<Props> = ({
   const bookOptions = booksToOptions(books);
   const booksSelectTextId = 'book-select-text-input';
 
+  const includeAllBooks = formState.bookDomain === BookDomain.Global;
+  let bookSelectorPlaceholder;
+  if (includeAllBooks) {
+    bookSelectorPlaceholder = 'Including all books';
+  } else {
+    bookSelectorPlaceholder = 'Select books';
+  }
+
+  let bookSelectorCurrentOptions;
+  if (formState.bookDomain === BookDomain.Global) {
+    bookSelectorCurrentOptions = [];
+  } else {
+    bookSelectorCurrentOptions = formState.books;
+  }
+
+  useEffect(() => {
+    if (formState.bookDomain === BookDomain.Subset) {
+      if (bookSelectorInputRef.current) {
+        bookSelectorInputRef.current.focus();
+      }
+    }
+  }, [formState.bookDomain]);
+
   return (
     <form
       onSubmit={e => {
@@ -132,7 +169,7 @@ const Form: React.FunctionComponent<Props> = ({
       }}
       className={styles.form}
     >
-      <div className={modalStyles['input-row']}>
+      <div className={styles['input-row']}>
         <label className="input-label" htmlFor="title">
           Name
         </label>
@@ -155,27 +192,77 @@ const Form: React.FunctionComponent<Props> = ({
         />
       </div>
 
-      <div className={modalStyles['input-row']}>
+      <div className={styles['input-row']}>
         <label className="input-label" htmlFor={booksSelectTextId}>
           Books to include
         </label>
 
+        <div className={styles['book-domain-wrapper']}>
+          <div className={styles['book-domain-option']}>
+            <input
+              type="radio"
+              id="book-domain-global"
+              name="book-domain"
+              value={BookDomain.Global}
+              checked={formState.bookDomain === BookDomain.Global}
+              onChange={e => {
+                const data = e.target.value;
+
+                formDispatch({
+                  type: Action.setBookDomain,
+                  data
+                });
+              }}
+            />
+            <label
+              className={styles['book-domain-label']}
+              htmlFor="book-domain-global"
+            >
+              Include all books
+            </label>
+          </div>
+
+          <div className={styles['book-domain-option']}>
+            <input
+              type="radio"
+              id="book-domain-subset"
+              name="book-domain"
+              value={BookDomain.Subset}
+              checked={formState.bookDomain === BookDomain.Subset}
+              onChange={e => {
+                const data = e.target.value;
+
+                formDispatch({
+                  type: Action.setBookDomain,
+                  data
+                });
+              }}
+            />
+            <label
+              className={styles['book-domain-label']}
+              htmlFor="book-domain-subset"
+            >
+              Specify books
+            </label>
+          </div>
+        </div>
+
         <MultiSelect
+          disabled={includeAllBooks}
           textInputId={booksSelectTextId}
           options={bookOptions}
-          currentOptions={formState.books}
+          currentOptions={bookSelectorCurrentOptions}
           setCurrentOptions={data => {
             formDispatch({ type: Action.setBooks, data });
           }}
-          placeholder="Select books"
+          placeholder={bookSelectorPlaceholder}
+          wrapperClassName={styles['book-selector']}
+          inputInnerRef={bookSelectorInputRef}
         />
       </div>
 
       <div
-        className={classnames(
-          modalStyles['input-row'],
-          styles['schedule-wrapper']
-        )}
+        className={classnames(styles['input-row'], styles['schedule-wrapper'])}
       >
         <div className={styles['schedule-content']}>
           <div className={classnames(styles['schedule-input-wrapper'])}>
@@ -271,7 +358,7 @@ const Form: React.FunctionComponent<Props> = ({
         </div>
       </div>
 
-      <div className={modalStyles['input-row']}>
+      <div className={styles['input-row']}>
         <label className="input-label" htmlFor="num-notes">
           Number of notes
         </label>
@@ -297,7 +384,7 @@ const Form: React.FunctionComponent<Props> = ({
         </div>
       </div>
 
-      <div className={modalStyles['input-row']}>
+      <div className={styles['input-row']}>
         <label className="input-label" htmlFor="enabled">
           Enabled?
         </label>

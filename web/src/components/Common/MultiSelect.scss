@@ -30,6 +30,15 @@
   display: flex;
   cursor: text;
   user-select: none;
+
+  &.disabled {
+    cursor: not-allowed;
+    background-color: $light-gray;
+  }
+
+  .input:disabled {
+    background: inherit;
+  }
 }
 
 .hidden {

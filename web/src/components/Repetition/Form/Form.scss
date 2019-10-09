@@ -71,3 +71,43 @@
   display: flex;
   align-items: flex-end;
 }
+
+.book-domain-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: rem(4px);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    margin-top: 0;
+  }
+}
+.book-domain-option {
+  & ~ .book-domain-option {
+    margin-left: 0;
+    margin-top: rem(4px);
+
+    @include breakpoint(md) {
+      margin-left: rem(8px);
+      margin-top: 0;
+    }
+  }
+}
+.book-domain-label {
+  margin-left: rem(4px);
+  margin-bottom: 0;
+}
+
+.input-row {
+  & ~ .input-row {
+    margin-top: rem(16px);
+  }
+}
+
+.book-selector {
+  margin-top: rem(12px);
+
+  @include breakpoint(md) {
+    margin-top: rem(8px);
+  }
+}

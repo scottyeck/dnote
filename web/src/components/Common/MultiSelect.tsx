@@ -44,6 +44,8 @@ interface Props {
   placeholder?: string;
   disabled?: boolean;
   textInputId?: string;
+  wrapperClassName?: string;
+  inputInnerRef?: React.MutableRefObject<any>;
 }
 
 // TODO: Make a generic Select component that works for both single and multiple selection
@@ -54,7 +56,9 @@ const MultiSelect: React.SFC<Props> = ({
   setCurrentOptions,
   textInputId,
   placeholder,
-  disabled
+  disabled,
+  wrapperClassName,
+  inputInnerRef
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIdx, setFocusedIdx] = useState(0);
@@ -62,7 +66,7 @@ const MultiSelect: React.SFC<Props> = ({
   const [term, setTerm] = useState('');
 
   const wrapperRef = useRef(null);
-  const triggerRef = useRef(null);
+  const inputRef = useRef(null);
   const listRef = useRef(null);
 
   const currentValues = currentOptions.map(o => {
@@ -111,7 +115,7 @@ const MultiSelect: React.SFC<Props> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      triggerRef.current.blur();
+      inputRef.current.blur();
       setTerm('');
     }
   }, [isOpen]);
@@ -127,11 +131,14 @@ const MultiSelect: React.SFC<Props> = ({
 
   return (
     <div
-      className={classnames('form-select', styles.wrapper)}
+      className={classnames('form-select', styles.wrapper, wrapperClassName, {
+        [styles.disabled]: disabled,
+        'form-select-disabled': disabled
+      })}
       ref={wrapperRef}
       onClick={() => {
-        if (triggerRef.current) {
-          triggerRef.current.focus();
+        if (inputRef.current) {
+          inputRef.current.focus();
         }
 
         // setIsOpen(!isOpen);
@@ -156,8 +163,8 @@ const MultiSelect: React.SFC<Props> = ({
                 onClick={e => {
                   if (!isOpen) {
                     e.stopPropagation();
-                    if (triggerRef.current) {
-                      triggerRef.current.focus();
+                    if (inputRef.current) {
+                      inputRef.current.focus();
                     }
                   }
                   removeOption(o);
@@ -173,7 +180,13 @@ const MultiSelect: React.SFC<Props> = ({
             autoComplete="off"
             type="text"
             id={textInputId}
-            ref={triggerRef}
+            ref={el => {
+              inputRef.current = el;
+
+              if (inputInnerRef) {
+                inputInnerRef.current = el;
+              }
+            }}
             className={classnames(styles.input, {
               [styles['active-input']]: active
             })}
@@ -211,7 +224,7 @@ const MultiSelect: React.SFC<Props> = ({
         }}
         alignment="left"
         direction="bottom"
-        triggerEl={triggerRef.current}
+        triggerEl={inputRef.current}
         wrapperEl={wrapperRef.current}
         contentClassName={classnames(styles['suggestion-wrapper'], {
           [styles['suggestions-wrapper-shown']]: isOpen
