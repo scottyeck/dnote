@@ -28,7 +28,9 @@ export interface CreateParams {
   minute: number;
   global: boolean;
   frequency: number;
+  note_count: number;
   book_uuids: string[];
+  enabled: boolean;
 }
 
 export interface UpdateParams {
@@ -37,6 +39,7 @@ export interface UpdateParams {
   minute?: number;
   frequency?: number;
   global?: boolean;
+  note_count?: number;
   book_uuids?: string[];
   enabled?: boolean;
 }
@@ -52,6 +55,8 @@ export default function init(config: HttpClientConfig) {
     },
     create: (params: CreateParams) => {
       const endpoint = '/repetition_rules';
+
+      console.log(params);
 
       return client.post<RepetitionRuleData>(endpoint, params);
     },

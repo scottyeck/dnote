@@ -33,7 +33,7 @@ function getTextInputWidth(term: string, active: boolean) {
     return '100%';
   }
 
-  const val = 14 + term.length * 4;
+  const val = 14 + term.length * 8;
   return `${val}px`;
 }
 
@@ -78,7 +78,11 @@ const MultiSelect: React.SFC<Props> = ({
 
   const filteredOptions = filterOptions(possibleOptions, term, false);
 
-  function appendOption(o: Option) {
+  function appendOption(o: Option | undefined) {
+    if (!o) {
+      return;
+    }
+
     setTerm('');
     const newVal = [...currentOptions, o];
     setCurrentOptions(newVal);

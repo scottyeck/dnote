@@ -269,11 +269,11 @@ const Form: React.FunctionComponent<Props> = ({
               className="form-select"
               value={formState.frequency}
               onChange={e => {
-                const data = e.target.value;
+                const { value } = e.target;
 
                 formDispatch({
                   type: Action.setFrequency,
-                  data
+                  data: Number.parseInt(value)
                 });
               }}
             >
@@ -300,11 +300,11 @@ const Form: React.FunctionComponent<Props> = ({
               className={classnames('form-select', styles['time-select'])}
               value={formState.hour}
               onChange={e => {
-                const data = e.target.value;
+                const { value } = e.target;
 
                 formDispatch({
                   type: Action.setHour,
-                  data
+                  data: Number.parseInt(value, 10)
                 });
               }}
             >
@@ -328,11 +328,11 @@ const Form: React.FunctionComponent<Props> = ({
               className={classnames('form-select', styles['time-select'])}
               value={formState.minute}
               onChange={e => {
-                const data = e.target.value;
+                const { value } = e.target;
 
                 formDispatch({
                   type: Action.setMinutes,
-                  data
+                  data: Number.parseInt(value, 10)
                 });
               }}
             >
@@ -364,11 +364,11 @@ const Form: React.FunctionComponent<Props> = ({
           placeholder="10"
           value={formState.noteCount}
           onChange={e => {
-            const data = e.target.value;
+            const { value } = e.target;
 
             formDispatch({
               type: Action.setNoteCount,
-              data
+              data: Number.parseInt(value)
             });
           }}
         />

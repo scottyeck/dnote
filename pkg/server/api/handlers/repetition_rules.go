@@ -39,7 +39,7 @@ func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 	db := database.DBConn
 	var repetitionRules []database.RepetitionRule
 	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&repetitionRules).Error; err != nil {
-		handleError(w, "getting digest rules", nil, http.StatusInternalServerError)
+		handleError(w, "getting repetition rules", err, http.StatusInternalServerError)
 		return
 	}
 
@@ -54,23 +54,28 @@ type createRepetitionRuleParams struct {
 	Frequency int      `json:"frequency"`
 	Global    bool     `json:"global"`
 	BookUUIDs []string `json:"book_uuids"`
+	NoteCount int      `json:"note_count"`
+	Enabled   bool     `json:"enabled"`
 }
 
 func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParams, error) {
 	var ret createRepetitionRuleParams
 
-	if err := json.NewDecoder(r.Body).Decode(&ret); err != nil {
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
+
+	if err := d.Decode(&ret); err != nil {
 		return ret, errors.Wrap(err, "decoding json")
 	}
 
 	if ret.Frequency == 0 {
 		return ret, errors.New("frequency is required")
 	}
-	if len(ret.BookUUIDs) == 0 {
+	if len(ret.BookUUIDs) == 0 && !ret.Global {
 		return ret, errors.New("book_uuids is required")
 	}
 
-	if ret.Global && len(ret.BookUUIDs) > 0 {
+	if len(ret.BookUUIDs) > 0 && ret.Global {
 		return ret, errors.New("a global repetition should not specify book_uuids")
 	}
 
@@ -98,15 +103,18 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	record := database.RepetitionRule{
+		UserID:    user.ID,
 		Title:     params.Title,
 		Hour:      params.Hour,
 		Minute:    params.Minute,
 		Frequency: params.Frequency,
 		Global:    params.Global,
 		Books:     books,
+		NoteCount: params.NoteCount,
+		Enabled:   params.Enabled,
 	}
 	if err := db.Create(&record).Error; err != nil {
-		handleError(w, "creating a digest rule", nil, http.StatusInternalServerError)
+		handleError(w, "creating a repetition rule", err, http.StatusInternalServerError)
 		return
 	}
 
@@ -123,6 +131,7 @@ type updateRepetitionRuleParams struct {
 	Minute    *int      `json:"minute"`
 	Frequency *int      `json:"frequency"`
 	BookUUIDs *[]string `json:"book_uuids"`
+	NoteCount *int      `json:"note_count"`
 }
 
 func parseUpdateDigestParams(r *http.Request) (updateRepetitionRuleParams, error) {
@@ -173,10 +182,13 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	if params.Frequency != nil {
 		repetitionRule.Frequency = *params.Frequency
 	}
+	if params.NoteCount != nil {
+		repetitionRule.NoteCount = *params.NoteCount
+	}
 	if params.BookUUIDs != nil {
 		var books []database.Book
 		if err := db.Where("user_id = ? AND uuid IN (?)", user.ID, params.BookUUIDs).Find(&books).Error; err != nil {
-			handleError(w, "finding books", nil, http.StatusInternalServerError)
+			handleError(w, "finding books", err, http.StatusInternalServerError)
 			return
 		}
 
@@ -184,7 +196,7 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.Save(&repetitionRule).Error; err != nil {
-		handleError(w, "creating a digest rule", nil, http.StatusInternalServerError)
+		handleError(w, "creating a repetition rule", err, http.StatusInternalServerError)
 		return
 	}
 
