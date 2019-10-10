@@ -25,14 +25,19 @@ import Popover from '../Popover';
 import { Direction, Alignment } from './types';
 import styles from './Menu.scss';
 
+export interface MenuOption {
+  name: string;
+  value: React.ReactElement;
+}
+
 interface ContentProps {
-  options: any[];
+  options: MenuOption[];
   menuId: string;
   setContentEl: (any) => void;
   headerContent?: React.ReactNode;
 }
 
-const Content: React.SFC<ContentProps> = ({
+const Content: React.FunctionComponent<ContentProps> = ({
   options,
   menuId,
   setContentEl,
@@ -62,7 +67,7 @@ const Content: React.SFC<ContentProps> = ({
 };
 
 interface MenuProps {
-  options: any[];
+  options: MenuOption[];
   isOpen: boolean;
   setIsOpen: (boolean) => void;
   optRefs: React.MutableRefObject<any>[];
@@ -78,7 +83,7 @@ interface MenuProps {
   disabled?: boolean;
 }
 
-const Menu: React.SFC<MenuProps> = ({
+const Menu: React.FunctionComponent<MenuProps> = ({
   options,
   isOpen,
   setIsOpen,

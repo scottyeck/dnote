@@ -19,18 +19,20 @@
 import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
 
-import Menu from '../../Common/Menu';
+import ItemActions from '../../Common/ItemActions';
 import DotsIcon from '../../Icons/Dots';
-import styles from './BookItem.scss';
+import ItemActionsStyles from '../../Common/ItemActions/ItemActions.scss';
 
 interface Props {
   bookUUID: string;
   onDeleteBook: (string) => void;
+  isActive: boolean;
 }
 
-const MobileActions: React.FunctionComponent<Props> = ({
+const Actions: React.FunctionComponent<Props> = ({
   bookUUID,
-  onDeleteBook
+  onDeleteBook,
+  isActive
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -42,7 +44,10 @@ const MobileActions: React.FunctionComponent<Props> = ({
         <button
           ref={optRefs[0]}
           type="button"
-          className={classnames('button-no-ui button-stretch', styles.action)}
+          className={classnames(
+            'button-no-ui button-stretch',
+            ItemActionsStyles.action
+          )}
           onClick={() => {
             setIsOpen(false);
             onDeleteBook(bookUUID);
@@ -55,26 +60,16 @@ const MobileActions: React.FunctionComponent<Props> = ({
   ];
 
   return (
-    <div
-      className={classnames(styles.actions, {
-        [styles['actions-active']]: isOpen
-      })}
-    >
-      <Menu
-        options={options}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        optRefs={optRefs}
-        menuId="mobile-book-actions"
-        triggerId="mobile-book-actions-trigger"
-        triggerContent={<DotsIcon width={12} height={12} />}
-        triggerClassName={styles['action-trigger']}
-        contentClassName={styles['action-content']}
-        alignment="right"
-        direction="bottom"
-      />
-    </div>
+    <ItemActions
+      id="mobile-book-actions"
+      triggerId="mobile-book-actions-trigger"
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      isActive={isActive}
+      options={options}
+      optRefs={optRefs}
+    />
   );
 };
 
-export default MobileActions;
+export default Actions;

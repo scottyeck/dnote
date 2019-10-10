@@ -3,6 +3,7 @@ import classnames from 'classnames';
 
 import { RepetitionRuleData } from 'jslib/operations/types';
 import { secondsToDuration, secondsToHTMLTimeDuration } from 'web/helpers/time';
+import Actions from './Actions';
 import styles from './RepetitionItem.scss';
 
 interface Props {
@@ -29,7 +30,9 @@ const RepetitionItem: React.SFC<Props> = ({ item }) => {
 
       <div className={styles['col-content']}>content</div>
 
-      <div>actions</div>
+      <div>
+        <Actions />
+      </div>
     </li>
   );
 };

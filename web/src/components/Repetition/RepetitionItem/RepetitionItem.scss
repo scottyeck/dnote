@@ -20,58 +20,52 @@
 @import '../../App/font';
 @import '../../App/theme';
 
-.item {
+.wrapper {
+  background: #fff;
   position: relative;
+  display: flex;
+  padding: rem(16px) rem(24px);
 
-  &:not(:first-child) {
-    border-top: 1px solid $border-color-light;
+  &:not(:last-child) {
+    border-bottom: 1px solid #d8d8d8;
   }
 }
 
-.link {
-  padding: rem(12px) rem(20px);
-  display: block;
-  color: inherit;
-
-  &:hover {
-    text-decoration: none;
-  }
+.col-meta {
+}
+.col-content {
+  flex-grow: 1;
 }
 
-.icon {
-  vertical-align: middle;
+.meta {
+  @include font-size('small');
+  margin-top: rem(4px);
+  color: $dark-gray;
 }
 
-.label {
-  @include font-size('medium');
+.sep {
+  margin: 0 rem(4px);
+}
 
+.item {
+  background: #fff;
+  position: relative;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.title {
+  @include font-size('regular');
+}
+
+.status {
+  @include font-size('x-small');
+  border: 1px solid $green;
+  border-radius: rem(4px);
   display: inline-block;
-  font-weight: 400;
-  margin-bottom: 0;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  width: rem(200px);
-  display: block;
+  padding: rem(2px) rem(4px);
+  font-weight: 600;
 
-  @include breakpoint(sm) {
-    width: rem(240px);
-  }
-
-  @include breakpoint(md) {
-    width: rem(440px);
-  }
-  @include breakpoint(lg) {
-    width: rem(700px);
-  }
-  @include breakpoint(xl) {
-    width: rem(852px);
-  }
-}
-
-.active {
-  .link {
-    background: $light-blue;
-    color: $black;
+  &.active {
+    color: $green;
   }
 }
