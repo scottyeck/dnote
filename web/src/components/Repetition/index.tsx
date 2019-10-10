@@ -42,7 +42,7 @@ const Repetition: React.FunctionComponent = () => {
           </div>
         </div>
 
-        <div className="container">
+        <div className="container mobile-nopadding">
           <RepetitionList
             isFetching={repetitionRules.isFetching}
             isFetched={repetitionRules.isFetched}

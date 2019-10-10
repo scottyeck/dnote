@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 
 import { RepetitionRuleData } from 'jslib/operations/types';
@@ -11,8 +11,18 @@ interface Props {
 }
 
 const RepetitionItem: React.SFC<Props> = ({ item }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <li className={styles.wrapper}>
+    <li
+      className={styles.wrapper}
+      onMouseEnter={() => {
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
+    >
       <div className={styles['col-meta']}>
         <h2 className={styles.title}>{item.title}</h2>
 
@@ -31,7 +41,7 @@ const RepetitionItem: React.SFC<Props> = ({ item }) => {
       <div className={styles['col-content']}>content</div>
 
       <div>
-        <Actions />
+        <Actions isActive={isHovered} />
       </div>
     </li>
   );
