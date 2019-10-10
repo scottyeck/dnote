@@ -50,7 +50,7 @@ const Books: React.SFC = () => {
               {successMessage}
             </Flash>
           </div>
-          <Content setSuccessMessage={setSuccessMessage} />
+          <Content setSuccessMessage={setSuccessMessage} />;
         </div>
       </PayWall>
     </Fragment>

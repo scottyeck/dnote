@@ -25,9 +25,10 @@ import ItemActionsStyles from '../../Common/ItemActions/ItemActions.scss';
 
 interface Props {
   isActive: boolean;
+  onDelete: () => void;
 }
 
-const Actions: React.FunctionComponent<Props> = ({ isActive }) => {
+const Actions: React.FunctionComponent<Props> = ({ isActive, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const optRefs = [useRef(null), useRef(null)];
@@ -61,6 +62,7 @@ const Actions: React.FunctionComponent<Props> = ({ isActive }) => {
             ItemActionsStyles.action
           )}
           onClick={() => {
+            onDelete();
             setIsOpen(false);
           }}
         >

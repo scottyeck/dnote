@@ -64,6 +64,11 @@ export default function init(config: HttpClientConfig) {
       const endpoint = `/repetition_rules/${uuid}`;
 
       return client.patch<RepetitionRuleData>(endpoint, params);
+    },
+    remove: (uuid: string) => {
+      const endpoint = `/repetition_rules/${uuid}`;
+
+      return client.del(endpoint);
     }
   };
 }

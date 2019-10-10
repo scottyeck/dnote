@@ -9,9 +9,15 @@ interface Props {
   isFetching: boolean;
   isFetched: boolean;
   items: RepetitionRuleData[];
+  setRuleUUIDToDelete: React.Dispatch<any>;
 }
 
-const ReptitionList: React.SFC<Props> = ({ isFetching, isFetched, items }) => {
+const ReptitionList: React.SFC<Props> = ({
+  isFetching,
+  isFetched,
+  items,
+  setRuleUUIDToDelete
+}) => {
   if (isFetching && !isFetched) {
     return <div>loading</div>;
   }
@@ -19,7 +25,13 @@ const ReptitionList: React.SFC<Props> = ({ isFetching, isFetched, items }) => {
   return (
     <ul className={classnames('list-unstyled', styles.wrapper)}>
       {items.map(i => {
-        return <RepetitionItem key={i.uuid} item={i} />;
+        return (
+          <RepetitionItem
+            key={i.uuid}
+            item={i}
+            setRuleUUIDToDelete={setRuleUUIDToDelete}
+          />
+        );
       })}
     </ul>
   );

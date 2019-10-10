@@ -8,9 +8,10 @@ import styles from './RepetitionItem.scss';
 
 interface Props {
   item: RepetitionRuleData;
+  setRuleUUIDToDelete: React.Dispatch<any>;
 }
 
-const RepetitionItem: React.SFC<Props> = ({ item }) => {
+const RepetitionItem: React.SFC<Props> = ({ item, setRuleUUIDToDelete }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -41,7 +42,12 @@ const RepetitionItem: React.SFC<Props> = ({ item }) => {
       <div className={styles['col-content']}>content</div>
 
       <div>
-        <Actions isActive={isHovered} />
+        <Actions
+          isActive={isHovered}
+          onDelete={() => {
+            setRuleUUIDToDelete(item.uuid);
+          }}
+        />
       </div>
     </li>
   );
