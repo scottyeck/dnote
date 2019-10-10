@@ -22,12 +22,14 @@ import classnames from 'classnames';
 import { KEYCODE_UP, KEYCODE_DOWN } from 'jslib/helpers/keyboard';
 import { useEventListener } from 'web/libs/hooks';
 import Popover from '../Popover';
+import { Direction, Alignment } from './types';
+import styles from './Menu.scss';
 
 interface ContentProps {
   options: any[];
   menuId: string;
   setContentEl: (any) => void;
-  headerContent: React.ReactNode;
+  headerContent?: React.ReactNode;
 }
 
 const Content: React.SFC<ContentProps> = ({
@@ -59,21 +61,18 @@ const Content: React.SFC<ContentProps> = ({
   );
 };
 
-type Direction = 'top' | 'bottom';
-type Alignment = 'top' | 'bottom' | 'left' | 'right';
-
 interface MenuProps {
   options: any[];
   isOpen: boolean;
   setIsOpen: (boolean) => void;
-  optRefs: any;
+  optRefs: React.MutableRefObject<any>[];
   triggerContent: React.ReactNode;
   triggerClassName?: string;
   contentClassName: string;
   alignment: Alignment;
   direction: Direction;
-  headerContent: React.ReactNode;
-  wrapperClassName: string;
+  headerContent?: React.ReactNode;
+  wrapperClassName?: string;
   menuId: string;
   triggerId: string;
   disabled?: boolean;
@@ -115,6 +114,11 @@ const Menu: React.SFC<MenuProps> = ({
     const { keyCode } = e;
 
     if (keyCode === KEYCODE_UP || keyCode === KEYCODE_DOWN) {
+      // Avoid scrolling the whole page down
+      e.preventDefault();
+      // Stop event propagation in case any parent is also listening on the same set of keys.
+      e.stopPropagation();
+
       let nextOptionIdx;
       if (currentOptionIdx === 0 && keyCode === KEYCODE_UP) {
         nextOptionIdx = options.length - 1;
@@ -163,7 +167,7 @@ const Menu: React.SFC<MenuProps> = ({
           </button>
         );
       }}
-      contentClassName={contentClassName}
+      contentClassName={classnames(styles.content, contentClassName)}
       wrapperClassName={wrapperClassName}
       isOpen={isOpen}
       setIsOpen={setIsOpen}

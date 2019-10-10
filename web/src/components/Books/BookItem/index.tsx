@@ -70,12 +70,6 @@ const BookItem: React.SFC<Props> = ({
       </Link>
 
       <MobileActions bookUUID={book.uuid} onDeleteBook={onDeleteBook} />
-
-      <Actions
-        bookUUID={book.uuid}
-        onDeleteBook={onDeleteBook}
-        shown={isActive}
-      />
     </li>
   );
 };

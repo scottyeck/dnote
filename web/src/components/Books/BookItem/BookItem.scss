@@ -26,6 +26,12 @@
   &:not(:first-child) {
     border-top: 1px solid $border-color-light;
   }
+
+  &:hover {
+    .action-trigger {
+      border: 1px solid $border-color;
+    }
+  }
 }
 
 .link {
@@ -74,4 +80,52 @@
     background: $light-blue;
     color: $black;
   }
+}
+
+// actions
+.actions {
+  position: absolute;
+  right: rem(8px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+
+  @include breakpoint(md) {
+    &:hover {
+      button.action-trigger {
+        border: 1px solid $border-color;
+      }
+    }
+  }
+}
+
+.actions-active {
+  z-index: 1;
+
+  button.action-trigger {
+    border: 1px solid $border-color;
+  }
+}
+
+button.action-trigger {
+  padding: rem(12px) rem(12px);
+  transition: none;
+  border-radius: 4px;
+
+  @include breakpoint(mddown) {
+    border: 1px solid $border-color;
+  }
+}
+
+.action-content {
+  background: $white;
+  z-index: 99;
+  width: rem(120px);
+}
+
+button.action {
+  text-align: center;
+  padding: rem(4px) 0;
+  @include font-size('small');
 }

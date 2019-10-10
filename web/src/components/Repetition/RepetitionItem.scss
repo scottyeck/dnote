@@ -24,15 +24,29 @@
   background: #fff;
   position: relative;
   display: flex;
+  padding: rem(16px) rem(24px);
 
   &:not(:last-child) {
     border-bottom: 1px solid #d8d8d8;
   }
 }
 
-.left {
-  padding: rem(20px) rem(12px);
+.col-meta {
 }
+.col-content {
+  flex-grow: 1;
+}
+
+.meta {
+  @include font-size('small');
+  margin-top: rem(4px);
+  color: $dark-gray;
+}
+
+.sep {
+  margin: 0 rem(4px);
+}
+
 .item {
   background: #fff;
   position: relative;
@@ -40,7 +54,7 @@
 }
 
 .title {
-  @include font-size('medium');
+  @include font-size('regular');
 }
 
 .status {

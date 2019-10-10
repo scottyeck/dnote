@@ -17,6 +17,7 @@
  */
 
 import moment from 'moment';
+import { pluralize } from 'web/libs/string';
 
 const shortMonthNames = [
   'Jan',
@@ -49,7 +50,11 @@ const fullMonthNames = [
 ];
 
 /******* durations in milliseconds */
-export const DAY = 86400000;
+export const SECOND = 1000;
+export const MINUTE = 60 * SECOND;
+export const HOUR = 60 * MINUTE;
+export const DAY = 24 * HOUR;
+export const WEEK = 7 * DAY;
 
 // nanosecToSec converts a given nanoseconds to seconds by dropping surplus digits
 export function nanosecToSec(t: number): number {
@@ -133,4 +138,77 @@ export function daysToSec(numDays: number) {
   const dayInSeconds = DAY / 1000;
 
   return dayInSeconds * numDays;
+}
+
+function parseSeconds(s: number) {
+  const weekInSeconds = WEEK / 1000;
+  const dayInSeconds = DAY / 1000;
+  const hourInSeconds = HOUR / 1000;
+  const minuteInSeconds = MINUTE / 1000;
+
+  const weeks = Math.floor(s / weekInSeconds);
+  const days = Math.floor((s % weekInSeconds) / dayInSeconds);
+  const hours = Math.floor(
+    ((s % weekInSeconds) % dayInSeconds) / hourInSeconds
+  );
+  const minutes = Math.floor(
+    (((s % weekInSeconds) % dayInSeconds) % hourInSeconds) / minuteInSeconds
+  );
+  const seconds =
+    (((s % weekInSeconds) % dayInSeconds) % hourInSeconds) % minuteInSeconds;
+
+  return {
+    weeks,
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+}
+
+// secondsToHTMLTimeDuration converts the given number of seconds into a valid
+// time duration string as defined by the W3C HTML5 recommendation
+export function secondsToHTMLTimeDuration(s: number): string {
+  const { weeks, days, hours, minutes, seconds } = parseSeconds(s);
+
+  let ret = 'P';
+
+  const numDays = weeks * 7 + days;
+  if (numDays > 0) {
+    ret += `${numDays}D`;
+  }
+
+  if (hours > 0) {
+    ret += `${hours}H`;
+  }
+  if (minutes > 0) {
+    ret += `${minutes}M`;
+  }
+  if (seconds > 0) {
+    ret += `${seconds}S`;
+  }
+
+  return ret;
+}
+
+// secondsToDuration translates the given time in seconds into a human-readable duration
+export function secondsToDuration(s: number): string {
+  const { weeks, days, hours, minutes, seconds } = parseSeconds(s);
+
+  let ret = '';
+
+  if (weeks > 0) {
+    ret += `${weeks} ${pluralize('week', weeks)} `;
+  }
+  if (days > 0) {
+    ret += `${days} ${pluralize('day', days)} `;
+  }
+  if (hours > 0) {
+    ret += `${hours} ${pluralize('hour', hours)} `;
+  }
+  if (minutes > 0) {
+    ret += `${minutes} ${pluralize('minute', minutes)} `;
+  }
+
+  return ret.trim();
 }

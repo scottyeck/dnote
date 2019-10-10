@@ -11,7 +11,11 @@ interface Props {
   items: RepetitionRuleData[];
 }
 
-const ReptitionList: React.SFC<Props> = ({ items }) => {
+const ReptitionList: React.SFC<Props> = ({ isFetching, isFetched, items }) => {
+  if (isFetching && !isFetched) {
+    return <div>loading</div>;
+  }
+
   return (
     <ul className={classnames('list-unstyled', styles.wrapper)}>
       {items.map(i => {
