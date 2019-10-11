@@ -19,6 +19,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -153,6 +154,34 @@ func parseUpdateDigestParams(r *http.Request) (updateRepetitionRuleParams, error
 	}
 
 	return ret, nil
+}
+
+func (a *App) deleteRepetitionRule(w http.ResponseWriter, r *http.Request) {
+	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
+	if !ok {
+		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
+		return
+	}
+
+	vars := mux.Vars(r)
+	repetitionRuleUUID := vars["repetitionRuleUUID"]
+
+	db := database.DBConn
+
+	var rule database.RepetitionRule
+	err := db.Where("uuid = ? AND user_id = ?", repetitionRuleUUID, user.ID).First(&rule).Error
+
+	if err == sql.ErrNoRows {
+		http.Error(w, "Not found", http.StatusNotFound)
+	} else if err != nil {
+		handleError(w, "finding the repetition rule", err, http.StatusInternalServerError)
+	}
+
+	if err := db.Exec("DELETE from repetition_rules WHERE uuid = ?", rule.UUID).Error; err != nil {
+		handleError(w, "deleting the repetition rule", err, http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {

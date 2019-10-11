@@ -29,3 +29,18 @@
 .title {
   @include font-size('medium');
 }
+
+.label {
+  width: 100%;
+}
+.input {
+  width: 100%;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: rem(8px);
+}
+.rule-label {
+  font-weight: 600;
+}

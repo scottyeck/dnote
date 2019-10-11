@@ -58,7 +58,6 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
   repetitionRuleUUID
 }) => {
   const [inProgress, setInProgress] = useState(false);
-  const [bookLabel, setBookLabel] = useState('');
   const [errMessage, setErrMessage] = useState('');
   const dispatch = useDispatch();
 
@@ -79,12 +78,11 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setBookLabel('');
       setErrMessage('');
     }
   }, [isOpen]);
 
-  if (!isOpen) {
+  if (rule === null) {
     return null;
   }
 
@@ -117,7 +115,7 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
 
       <Flash kind="warning" id={descId} noMargin>
         <span>
-          This action will permanently remove the following repetition rule:
+          This action will permanently remove the following repetition rule:{' '}
         </span>
         <span className={styles['rule-label']}>{rule.title}</span>
       </Flash>
@@ -130,12 +128,6 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
             setSuccessMessage('');
             setInProgress(true);
 
-            if (bookLabel !== rule.title) {
-              setErrMessage('The rule label did not match');
-              setInProgress(false);
-              return;
-            }
-
             services.repetitionRules
               .remove(repetitionRuleUUID)
               .then(() => {
@@ -145,7 +137,7 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
 
                 // Scroll to top so that the message is visible.
                 setSuccessMessage(
-                  `Successfully removed the rule: ${rule.title}`
+                  `Successfully removed the rule "${rule.title}"`
                 );
                 window.scrollTo(0, 0);
               })
@@ -156,24 +148,6 @@ const DeleteRepetitionModal: React.FunctionComponent<Props> = ({
               });
           }}
         >
-          <label htmlFor={nameInputId} className={styles.label}>
-            <div className={styles['label-text']}>
-              To confirm, please enter the label of the rule.
-            </div>
-            <input
-              id={nameInputId}
-              autoFocus
-              type="text"
-              placeholder="Wisdom"
-              className={classnames('text-input', styles.input)}
-              value={bookLabel}
-              onChange={e => {
-                const val = e.target.value;
-                setBookLabel(val);
-              }}
-            />
-          </label>
-
           <div className={styles.actions}>
             <Button
               type="button"
