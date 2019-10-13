@@ -17,4 +17,4 @@
  */
 
 export type Alignment = 'left' | 'right' | 'top' | 'bottom' | 'center';
-export type Direction = 'left' | 'right' | 'top' | 'bottom' | 'center';
+export type Direction = 'left' | 'right' | 'top' | 'bottom';

@@ -32,9 +32,6 @@ interface Props {
   direction: Direction;
 }
 
-const verticalArrowHeight = 4;
-const horizontalArrowWidth = 4;
-
 function cumulativeOffset(element) {
   let top = 0;
   let left = 0;
@@ -53,21 +50,23 @@ function cumulativeOffset(element) {
   };
 }
 
-function calcY(
+function calcOverlayY(
   offsetY: number,
   triggerRect: ClientRect,
   overlayRect: ClientRect,
+  arrowRect: ClientRect,
   alignment: Alignment,
   direction: Direction
 ): number {
   const triggerHeight = triggerRect.height;
   const overlayHeight = overlayRect.height;
+  const arrowHeight = arrowRect.height / 2;
 
   if (direction === 'bottom') {
-    return offsetY + triggerHeight + verticalArrowHeight;
+    return offsetY + triggerHeight + arrowHeight;
   }
   if (direction === 'top') {
-    return offsetY - overlayHeight - verticalArrowHeight;
+    return offsetY - overlayHeight - arrowHeight;
   }
   if (alignment === 'bottom') {
     return offsetY + (triggerHeight - overlayHeight);
@@ -82,16 +81,24 @@ function calcY(
   return 0;
 }
 
-function calcX(
+function calcOverlayX(
   offsetX: number,
   triggerRect: ClientRect,
   overlayRect: ClientRect,
+  arrowRect: ClientRect,
   alignment: Alignment,
   direction: Direction
 ): number {
   const triggerWidth = triggerRect.width;
   const overlayWidth = overlayRect.width;
+  const arrowWidth = arrowRect.width / 2;
 
+  if (direction === 'left') {
+    return offsetX - overlayWidth - arrowWidth;
+  }
+  if (direction === 'right') {
+    return offsetX + triggerWidth + arrowWidth * 2;
+  }
   if (alignment === 'left') {
     return offsetX;
   }
@@ -101,12 +108,6 @@ function calcX(
   if (alignment === 'center') {
     return offsetX + (triggerWidth - overlayWidth) / 2;
   }
-  if (direction === 'left') {
-    return offsetX - overlayWidth - horizontalArrowWidth;
-  }
-  if (direction === 'right') {
-    return offsetX + triggerWidth + horizontalArrowWidth;
-  }
 
   return 0;
 }
@@ -114,6 +115,7 @@ function calcX(
 function calcOverlayPosition(
   triggerEl: HTMLElement,
   overlayEl: HTMLElement,
+  arrowEl: HTMLElement,
   direction: Direction,
   alignment: Alignment
 ): { top: number; left: number } {
@@ -127,23 +129,85 @@ function calcOverlayPosition(
   const triggerOffset = cumulativeOffset(triggerEl);
   const triggerRect = triggerEl.getBoundingClientRect();
   const overlayRect = overlayEl.getBoundingClientRect();
+  const arrowRect = arrowEl.getBoundingClientRect();
 
-  console.log(triggerOffset, triggerRect.left);
-
-  const x = calcX(
+  const x = calcOverlayX(
     triggerOffset.left,
     triggerRect,
     overlayRect,
+    arrowRect,
     alignment,
     direction
   );
-  const y = calcY(
+  const y = calcOverlayY(
     triggerOffset.top,
     triggerRect,
     overlayRect,
+    arrowRect,
     alignment,
     direction
   );
+
+  return { top: y, left: x };
+}
+
+function calcArrowX(
+  offsetX: number,
+  triggerRect: ClientRect,
+  arrowRect: ClientRect,
+  direction: Direction
+) {
+  const arrowWidth = arrowRect.width / 2;
+
+  if (direction === 'top' || direction === 'bottom') {
+    return offsetX + triggerRect.width / 2;
+  } else if (direction === 'left') {
+    return offsetX - arrowWidth;
+  } else if (direction === 'right') {
+    return offsetX + triggerRect.width;
+  }
+
+  return 0;
+}
+
+function calcArrowY(
+  offsetY: number,
+  triggerRect: ClientRect,
+  arrowRect: ClientRect,
+  direction: Direction
+) {
+  const arrowHeight = arrowRect.height / 2;
+
+  if (direction === 'left' || direction === 'right') {
+    return offsetY + triggerRect.height / 2;
+  } else if (direction === 'top') {
+    return offsetY + arrowRect.height / 2;
+  } else if (direction === 'bottom') {
+    return offsetY + triggerRect.height - arrowHeight;
+  }
+
+  return 0;
+}
+
+function calcArrowPosition(
+  triggerEl: HTMLElement,
+  arrowEl: HTMLElement,
+  direction: Direction,
+  alignment: Alignment
+) {
+  if (triggerEl === null) {
+    return null;
+  }
+  if (arrowEl === null) {
+    return { top: -999, left: -999 };
+  }
+
+  const triggerOffset = cumulativeOffset(triggerEl);
+  const triggerRect = triggerEl.getBoundingClientRect();
+  const arrowRect = arrowEl.getBoundingClientRect();
+
+  const x = calcArrowX(triggerOffset.left, triggerRect, arrowRect, direction);
+  const y = calcArrowY(triggerOffset.top, triggerRect, arrowRect, direction);
 
   return { top: y, left: x };
 }
@@ -156,28 +220,45 @@ const Overlay: React.FunctionComponent<Props> = ({
   direction
 }) => {
   const [overlayEl, setOverlayEl] = useState(null);
+  const [arrowEl, setArrowEl] = useState(null);
 
   if (!isOpen) {
     return null;
   }
 
   const overlayRoot = document.getElementById('overlay-root');
-  const pos = calcOverlayPosition(triggerEl, overlayEl, direction, alignment);
+  const overlayPos = calcOverlayPosition(
+    triggerEl,
+    overlayEl,
+    arrowEl,
+    direction,
+    alignment
+  );
+  const arrowPos = calcArrowPosition(triggerEl, arrowEl, direction, alignment);
 
   return ReactDOM.createPortal(
-    <div
-      className={classnames(styles.overlay, {
-        [styles.top]: direction === 'top',
-        [styles.bottom]: direction === 'bottom',
-        [styles.right]: direction === 'right',
-        [styles.left]: direction === 'left'
-      })}
-      style={{ top: pos.top, left: pos.left }}
-      ref={el => {
-        setOverlayEl(el);
-      }}
-    >
-      {children}
+    <div>
+      <div
+        className={classnames(styles.arrow, {
+          [styles.top]: direction === 'top',
+          [styles.bottom]: direction === 'bottom',
+          [styles.left]: direction === 'left',
+          [styles.right]: direction === 'right'
+        })}
+        style={{ top: arrowPos.top, left: arrowPos.left }}
+        ref={el => {
+          setArrowEl(el);
+        }}
+      />
+      <div
+        className={styles.overlay}
+        style={{ top: overlayPos.top, left: overlayPos.left }}
+        ref={el => {
+          setOverlayEl(el);
+        }}
+      >
+        {children}
+      </div>
     </div>,
     overlayRoot
   );

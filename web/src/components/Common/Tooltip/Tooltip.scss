@@ -33,39 +33,23 @@
   padding: rem(4px) rem(8px);
   border-radius: 4px;
   z-index: 7;
+}
 
-  &:before {
-    border: 6px solid transparent;
-    border-bottom-color: #2a2a2a;
-    position: absolute;
-    content: '';
-  }
+.arrow {
+  border: 6px solid transparent;
+  position: absolute;
+  content: '';
 
   &.bottom {
-    &:before {
-      left: 50%;
-      top: -12px;
-    }
+    border-bottom-color: #2a2a2a;
   }
   &.top {
-    &:before {
-      left: 50%;
-      bottom: -12px;
-      transform: rotate(180deg);
-    }
+    border-top-color: #2a2a2a;
   }
-  //   &.left {
-  //     &:before {
-  //       top: 50%;
-  //       right: -12px;
-  //       transform: rotate(180deg);
-  //     }
-  //   }
-  //   &.right {
-  //     &:before {
-  //       top: 50%;
-  //       left: -12px;
-  //       transform: rotate(270deg);
-  //     }
-  //   }
+  &.left {
+    border-left-color: #2a2a2a;
+  }
+  &.right {
+    border-right-color: #2a2a2a;
+  }
 }

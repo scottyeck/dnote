@@ -93,7 +93,7 @@ const Time: React.FunctionComponent<Props> = ({
     <Tooltip
       id={id}
       alignment="center"
-      direction="right"
+      direction="left"
       overlay={overlay}
       wrapperClassName={wrapperClassName}
     >
