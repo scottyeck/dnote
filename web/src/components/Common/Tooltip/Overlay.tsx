@@ -35,47 +35,75 @@ interface Props {
 const verticalArrowHeight = 4;
 const horizontalArrowWidth = 4;
 
+function cumulativeOffset(element) {
+  let top = 0;
+  let left = 0;
+
+  while (element) {
+    top += element.offsetTop || 0;
+    left += element.offsetLeft || 0;
+    element = element.offsetParent;
+  }
+
+  return {
+    top,
+    left
+  };
+}
+
 function calcY(
+  offsetY: number,
   triggerRect: ClientRect,
-  alignemnt: Alignment,
+  overlayRect: ClientRect,
+  alignment: Alignment,
   direction: Direction
 ): number {
+  const triggerHeight = triggerRect.height;
+  const overlayHeight = overlayRect.height;
+
   if (direction === 'bottom') {
-    return triggerRect.bottom + verticalArrowHeight;
+    return offsetY + triggerHeight + verticalArrowHeight;
   }
   if (direction === 'top') {
-    return triggerRect.top - verticalArrowHeight;
+    return offsetY - overlayHeight - verticalArrowHeight;
   }
-  if (alignemnt === 'bottom') {
-    return triggerRect.bottom;
+  if (alignment === 'bottom') {
+    return offsetY + (triggerHeight - overlayHeight);
   }
-  if (alignemnt === 'top') {
-    return triggerRect.top;
+  if (alignment === 'center') {
+    return offsetY + (triggerHeight - overlayHeight) / 2;
+  }
+  if (alignment === 'top') {
+    return offsetY;
   }
 
   return 0;
 }
 
 function calcX(
+  offsetX: number,
   triggerRect: ClientRect,
   overlayRect: ClientRect,
   alignment: Alignment,
   direction: Direction
 ): number {
+  const triggerWidth = triggerRect.width;
+  const overlayWidth = overlayRect.width;
+
   if (alignment === 'left') {
-    return triggerRect.left;
+    return offsetX;
   }
   if (alignment === 'right') {
-    return triggerRect.right - overlayRect.width;
+    return offsetX + triggerWidth - overlayWidth;
   }
   if (alignment === 'center') {
-    return triggerRect.left + (triggerRect.width - overlayRect.width) / 2;
+    return offsetX + (triggerWidth - overlayWidth) / 2;
   }
   if (direction === 'left') {
-    return triggerRect.left - horizontalArrowWidth;
+    return offsetX - overlayWidth - horizontalArrowWidth;
   }
   if (direction === 'right') {
-    return triggerRect.right + horizontalArrowWidth;
+    return offsetX + triggerWidth + horizontalArrowWidth;
   }
 
   return 0;
@@ -86,7 +114,7 @@ function calcOverlayPosition(
   overlayEl: HTMLElement,
   direction: Direction,
   alignment: Alignment
-) {
+): { top: number; left: number } {
   if (triggerEl === null) {
     return null;
   }
@@ -94,11 +122,24 @@ function calcOverlayPosition(
     return { top: -999, left: -999 };
   }
 
+  const triggerOffset = cumulativeOffset(triggerEl);
   const triggerRect = triggerEl.getBoundingClientRect();
   const overlayRect = overlayEl.getBoundingClientRect();
 
-  const x = calcX(triggerRect, overlayRect, alignment, direction);
-  const y = calcY(triggerRect, alignment, direction);
+  const x = calcX(
+    triggerOffset.left,
+    triggerRect,
+    overlayRect,
+    alignment,
+    direction
+  );
+  const y = calcY(
+    triggerOffset.top,
+    triggerRect,
+    overlayRect,
+    alignment,
+    direction
+  );
 
   return { top: y, left: x };
 }
