@@ -41,7 +41,9 @@ function cumulativeOffset(element) {
 
   while (element) {
     top += element.offsetTop || 0;
+    console.log(element.offsetLeft);
     left += element.offsetLeft || 0;
+
     element = element.offsetParent;
   }
 
@@ -126,6 +128,8 @@ function calcOverlayPosition(
   const triggerRect = triggerEl.getBoundingClientRect();
   const overlayRect = overlayEl.getBoundingClientRect();
 
+  console.log(triggerOffset, triggerRect.left);
+
   const x = calcX(
     triggerOffset.left,
     triggerRect,
@@ -162,7 +166,12 @@ const Overlay: React.FunctionComponent<Props> = ({
 
   return ReactDOM.createPortal(
     <div
-      className={styles.overlay}
+      className={classnames(styles.overlay, {
+        [styles.top]: direction === 'top',
+        [styles.bottom]: direction === 'bottom',
+        [styles.right]: direction === 'right',
+        [styles.left]: direction === 'left'
+      })}
       style={{ top: pos.top, left: pos.left }}
       ref={el => {
         setOverlayEl(el);
