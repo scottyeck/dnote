@@ -121,16 +121,21 @@ export function getUTCOffset(): string {
 
   let sign;
   if (date.getTimezoneOffset() > 0) {
-    sign = '+';
-  } else {
     sign = '-';
+  } else {
+    sign = '+';
   }
 
   const offset = Math.abs(date.getTimezoneOffset());
-  const hours = pad(Math.floor(offset / 60));
-  const minutes = pad(offset % 60);
+  const hours = Math.floor(offset / 60);
 
-  return sign + hours + ':' + minutes;
+  const rawMinutes = offset % 60;
+  if (rawMinutes === 0) {
+    return `${sign}${hours}`;
+  }
+
+  const minutes = pad(rawMinutes);
+  return `${sign}${hours}:${minutes}`;
 }
 
 // daysToSec translates the given number of days to seconds
@@ -211,4 +216,57 @@ export function secondsToDuration(s: number): string {
   }
 
   return ret.trim();
+}
+
+export function timeAgo(ms: number, simple: boolean = false): string {
+  const shortNounMap = {
+    year: 'y',
+    week: 'w',
+    month: 'm',
+    day: 'd',
+    hour: 'h',
+    minute: 'min'
+  };
+
+  function getStr(interval: number, noun: string): string {
+    if (simple) {
+      // return `${interval} ${noun}`;
+    }
+
+    return `${interval} ${pluralize(noun, interval)} ago`;
+  }
+
+  const ts = Math.floor(new Date().getTime() - ms);
+
+  let interval = Math.floor(ts / (52 * WEEK));
+  if (interval > 1) {
+    return getStr(interval, 'year');
+  }
+
+  interval = Math.floor(ts / (4 * WEEK));
+  if (interval >= 1) {
+    return getStr(interval, 'month');
+  }
+
+  interval = Math.floor(ts / WEEK);
+  if (interval >= 1) {
+    return getStr(interval, 'week');
+  }
+
+  interval = Math.floor(ts / DAY);
+  if (interval >= 1) {
+    return getStr(interval, 'day');
+  }
+
+  interval = Math.floor(ts / HOUR);
+  if (interval >= 1) {
+    return getStr(interval, 'hour');
+  }
+
+  interval = Math.floor(ts / MINUTE);
+  if (interval >= 1) {
+    return getStr(interval, 'minute');
+  }
+
+  return 'Just now';
 }

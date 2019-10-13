@@ -16,48 +16,28 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import '../../App/responsive';
-@import '../../App/theme';
-@import '../../App/rem';
-@import '../../App/font';
+@import '../App/responsive';
+@import '../App/rem';
+@import '../App/theme';
+@import '../App/font';
 
-.wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+.time {
+  border-bottom: 1px dotted $gray;
 
-.active {
-  button.trigger {
-    border-color: $border-color;
+  @include breakpoint(lg) {
+    border-bottom-color: transparent;
   }
 }
 
-.is-open {
-  z-index: 1;
-}
-
-button.trigger {
-  padding: rem(12px) rem(12px);
-  transition: none;
-  border-radius: 4px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-
-  @include breakpoint(mddown) {
-    border-color: $border-color;
+.mobile-text {
+  @include breakpoint(md) {
+    display: none;
   }
 }
+.text {
+  display: none;
 
-.content {
-  background: $white;
-  z-index: 99;
-  width: rem(120px);
-}
-
-button.action {
-  text-align: center;
-  padding: rem(4px) 0;
-  @include font-size('small');
+  @include breakpoint(md) {
+    display: inherit;
+  }
 }

@@ -22,6 +22,7 @@ import classnames from 'classnames';
 import ItemActions from '../../Common/ItemActions';
 import DotsIcon from '../../Icons/Dots';
 import ItemActionsStyles from '../../Common/ItemActions/ItemActions.scss';
+import styles from './Actions.scss';
 
 interface Props {
   bookUUID: string;
@@ -68,6 +69,7 @@ const Actions: React.FunctionComponent<Props> = ({
       isActive={isActive}
       options={options}
       optRefs={optRefs}
+      wrapperClassName={styles.actions}
     />
   );
 };

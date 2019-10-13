@@ -31,6 +31,7 @@ interface Props {
   optRefs: React.MutableRefObject<any>[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<any>;
+  wrapperClassName?: string;
 }
 
 const ItemActions: React.FunctionComponent<Props> = ({
@@ -40,11 +41,12 @@ const ItemActions: React.FunctionComponent<Props> = ({
   options,
   optRefs,
   isOpen,
-  setIsOpen
+  setIsOpen,
+  wrapperClassName
 }) => {
   return (
     <div
-      className={classnames(styles.wrapper, {
+      className={classnames(styles.wrapper, wrapperClassName, {
         [styles['is-open']]: isOpen,
         [styles.active]: isActive
       })}
