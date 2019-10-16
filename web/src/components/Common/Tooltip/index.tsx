@@ -49,7 +49,7 @@ const Tooltip: React.FunctionComponent<Props> = ({
   }
 
   function hide() {
-    // setIsOpen(false);
+    setIsOpen(false);
   }
 
   return (
