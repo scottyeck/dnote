@@ -89,25 +89,25 @@ export function monthNumToFullName(num: number): string {
 
 // presentNoteTS presents a note's added_on timestamp which is in unix nano
 export function presentNoteTS(t: number): string {
-  const time = nanosecToSec(t);
-  const past = moment.unix(time);
+  const past = nanosecToMillisec(t);
+  const now = new Date().getTime();
+  const diff = now - past;
 
-  const now = new Date();
-  const diff = -past.diff(now);
-
-  if (diff < DAY) {
-    return `today ${past.format('h:mm a')}`;
-  }
-
-  if (diff < 2 * DAY) {
-    return `yesterday ${past.format('h:mm a')}`;
-  }
-
-  if (diff < 7 * DAY) {
-    return past.format('dddd h:mm a');
-  }
-
-  return `${past.format('MMM D')} (${past.fromNow()})`;
+  // TODO
+  return '';
+  //  if (diff < DAY) {
+  //    return `today ${past.format('h:mm a')}`;
+  //  }
+  //
+  //  if (diff < 2 * DAY) {
+  //    return `yesterday ${past.format('h:mm a')}`;
+  //  }
+  //
+  //  if (diff < 7 * DAY) {
+  //    return past.format('dddd h:mm a');
+  //  }
+  //
+  //  return `${past.format('MMM D')} (${past.fromNow()})`;
 }
 
 // getUTCOffset returns the UTC offset string for the client. The returned
