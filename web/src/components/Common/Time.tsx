@@ -6,7 +6,6 @@ import {
   getUTCOffset
 } from '../../helpers/time';
 import Tooltip from './Tooltip';
-import { Alignment, Direction } from './Popover/types';
 import styles from './Time.scss';
 
 interface ContentProps {
@@ -93,7 +92,7 @@ const Time: React.FunctionComponent<Props> = ({
     <Tooltip
       id={id}
       alignment="center"
-      direction="left"
+      direction="bottom"
       overlay={overlay}
       wrapperClassName={wrapperClassName}
     >

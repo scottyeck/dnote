@@ -16,11 +16,10 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Fragment, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 
-import Popover from '../Popover';
 import { Alignment, Direction } from '../Popover/types';
 import styles from './Tooltip.scss';
 
@@ -32,16 +31,18 @@ interface Props {
   direction: Direction;
 }
 
-function cumulativeOffset(element) {
+// cumulativeOffset calculates the top and left offsets of the given element
+// while taking into account all of the parents' offsets, if any.
+function cumulativeOffset(element: HTMLElement) {
   let top = 0;
   let left = 0;
 
-  while (element) {
-    top += element.offsetTop || 0;
-    console.log(element.offsetLeft);
-    left += element.offsetLeft || 0;
+  let e = element;
+  while (e) {
+    top += e.offsetTop || 0;
+    left += e.offsetLeft || 0;
 
-    element = element.offsetParent;
+    e = e.offsetParent as HTMLElement;
   }
 
   return {
@@ -161,9 +162,11 @@ function calcArrowX(
 
   if (direction === 'top' || direction === 'bottom') {
     return offsetX + triggerRect.width / 2;
-  } else if (direction === 'left') {
+  }
+  if (direction === 'left') {
     return offsetX - arrowWidth;
-  } else if (direction === 'right') {
+  }
+  if (direction === 'right') {
     return offsetX + triggerRect.width;
   }
 
@@ -179,10 +182,12 @@ function calcArrowY(
   const arrowHeight = arrowRect.height / 2;
 
   if (direction === 'left' || direction === 'right') {
-    return offsetY + triggerRect.height / 2;
-  } else if (direction === 'top') {
-    return offsetY + arrowRect.height / 2;
-  } else if (direction === 'bottom') {
+    return offsetY + triggerRect.height / 2 - arrowRect.height / 2;
+  }
+  if (direction === 'top') {
+    return offsetY - arrowRect.height / 2;
+  }
+  if (direction === 'bottom') {
     return offsetY + triggerRect.height - arrowHeight;
   }
 
@@ -192,8 +197,7 @@ function calcArrowY(
 function calcArrowPosition(
   triggerEl: HTMLElement,
   arrowEl: HTMLElement,
-  direction: Direction,
-  alignment: Alignment
+  direction: Direction
 ) {
   if (triggerEl === null) {
     return null;
@@ -234,7 +238,7 @@ const Overlay: React.FunctionComponent<Props> = ({
     direction,
     alignment
   );
-  const arrowPos = calcArrowPosition(triggerEl, arrowEl, direction, alignment);
+  const arrowPos = calcArrowPosition(triggerEl, arrowEl, direction);
 
   return ReactDOM.createPortal(
     <div>

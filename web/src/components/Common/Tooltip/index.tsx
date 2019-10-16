@@ -17,13 +17,10 @@
  */
 
 import React, { Fragment, useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 
-import Popover from '../Popover';
 import Overlay from './Overlay';
 import { Alignment, Direction } from '../Popover/types';
-import styles from './Tooltip.scss';
 
 interface Props {
   id: string;
@@ -40,9 +37,7 @@ const Tooltip: React.FunctionComponent<Props> = ({
   id,
   alignment,
   direction,
-  contentClassName,
   wrapperClassName,
-  triggerClassName,
   overlay,
   children
 }) => {
@@ -60,7 +55,7 @@ const Tooltip: React.FunctionComponent<Props> = ({
   return (
     <Fragment>
       <span
-        className={classnames(wrapperClassName)}
+        className={wrapperClassName}
         aria-describedby={id}
         tabIndex={-1}
         onFocus={show}
