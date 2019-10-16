@@ -28,6 +28,7 @@ import BookIcon from '../Icons/Book';
 import { parseMarkdown } from '../../helpers/markdown';
 import { nanosecToMillisec, getShortMonthName } from '../../helpers/time';
 import { useSelector } from '../../store';
+import Time from '../Common/Time';
 import styles from './NoteContent.scss';
 
 function formatAddedOn(ts: number): string {
@@ -39,12 +40,6 @@ function formatAddedOn(ts: number): string {
   const year = d.getFullYear();
 
   return `${month} ${date}, ${year}`;
-}
-
-function getDatetimeISOString(ts: number): string {
-  const ms = nanosecToMillisec(ts);
-
-  return new Date(ms).toISOString();
 }
 
 function formatFTSSelection(content: string): string {
@@ -123,12 +118,14 @@ const Content: React.SFC<Props> = ({ onDeleteModalOpen }) => {
       />
 
       <footer className={styles.footer}>
-        <time
-          className={styles.ts}
-          dateTime={getDatetimeISOString(note.added_on)}
-        >
-          {formatAddedOn(note.added_on)}
-        </time>
+        <Time
+          id="note-ts"
+          text={formatAddedOn(note.added_on)}
+          ms={nanosecToMillisec(note.added_on)}
+          wrapperClassName={styles.ts}
+          tooltipAlignment="left"
+          tooltipDirection="bottom"
+        />
 
         {note.user.uuid === user.uuid && (
           <div className={styles.actions}>

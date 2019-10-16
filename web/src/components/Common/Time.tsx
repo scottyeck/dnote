@@ -6,6 +6,7 @@ import {
   getUTCOffset
 } from '../../helpers/time';
 import Tooltip from './Tooltip';
+import { Alignment, Direction } from '../Common/Popover/types';
 import styles from './Time.scss';
 
 interface ContentProps {
@@ -18,7 +19,7 @@ const Content: React.FunctionComponent<ContentProps> = ({
   mobileText
 }) => {
   if (mobileText === undefined) {
-    return <span>text</span>;
+    return <span>{text}</span>;
   }
 
   return (
@@ -36,6 +37,8 @@ interface Props {
   mobileText?: string;
   isDuration?: boolean;
   wrapperClassName?: string;
+  tooltipAlignment?: Alignment;
+  tooltipDirection?: Direction;
 }
 
 function getDatetimeAttr(ms: number, isDuration: boolean = false): string {
@@ -82,17 +85,18 @@ const Time: React.FunctionComponent<Props> = ({
   mobileText,
   ms,
   isDuration,
-  wrapperClassName
+  wrapperClassName,
+  tooltipAlignment = 'center',
+  tooltipDirection = 'bottom'
 }) => {
   const dateTime = getDatetimeAttr(ms, isDuration);
-
   const overlay = <span>{formatOverlayTimeStr(ms)}</span>;
 
   return (
     <Tooltip
       id={id}
-      alignment="center"
-      direction="bottom"
+      alignment={tooltipAlignment}
+      direction={tooltipDirection}
       overlay={overlay}
       wrapperClassName={wrapperClassName}
     >
