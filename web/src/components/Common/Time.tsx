@@ -2,7 +2,7 @@ import React from 'react';
 
 import {
   secondsToHTMLTimeDuration,
-  getShortMonthName,
+  getMonthName,
   getUTCOffset
 } from '../../helpers/time';
 import Tooltip from './Tooltip';
@@ -55,7 +55,7 @@ function formatOverlayTimeStr(ms: number): string {
   const date = new Date(ms);
 
   const y = date.getFullYear();
-  const m = getShortMonthName(date);
+  const m = getMonthName(date, true);
   const d = date.getDate();
   const h = date.getHours();
   const min = date.getMinutes();

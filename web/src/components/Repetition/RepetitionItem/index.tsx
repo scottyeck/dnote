@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { RepetitionRuleData } from 'jslib/operations/types';
 import { secondsToDuration, secondsToHTMLTimeDuration } from 'web/helpers/time';
 import Actions from './Actions';
+import Time from '../../Common/Time';
 import styles from './RepetitionItem.scss';
 
 interface Props {
@@ -47,7 +48,16 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
 
       <div className={styles['col-content']}>
         <ul className={classnames('list-unstyled', styles['detail-list'])}>
-          <li>Last active: blah</li>
+          <li>
+            Last active:
+            <Time
+              id="foo"
+              text="foo"
+              ms={item.lastActive}
+              tooltipAlignment="center"
+              tooltipDirection="bottom"
+            />
+          </li>
           <li>Created: blah</li>
         </ul>
       </div>

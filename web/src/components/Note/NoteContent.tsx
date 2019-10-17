@@ -26,7 +26,7 @@ import { getNoteEditPath, getHomePath } from 'web/libs/paths';
 import { tokenize, TokenKind } from 'web/libs/fts/lexer';
 import BookIcon from '../Icons/Book';
 import { parseMarkdown } from '../../helpers/markdown';
-import { nanosecToMillisec, getShortMonthName } from '../../helpers/time';
+import { nanosecToMillisec, getMonthName } from '../../helpers/time';
 import { useSelector } from '../../store';
 import Time from '../Common/Time';
 import styles from './NoteContent.scss';
@@ -35,7 +35,7 @@ function formatAddedOn(ts: number): string {
   const ms = nanosecToMillisec(ts);
   const d = new Date(ms);
 
-  const month = getShortMonthName(d);
+  const month = getMonthName(d, true);
   const date = d.getDate();
   const year = d.getFullYear();
 

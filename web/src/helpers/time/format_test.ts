@@ -18,27 +18,31 @@
 
 import { expect } from 'chai';
 
-import { daysToSec } from './time';
+import { formatTime } from './format';
 
-describe('time.ts', () => {
-  describe('daysToSec', () => {
+describe('time/format.ts', () => {
+  describe('formatTime', () => {
+    const date = new Date(2017, 2, 30, 8, 30);
     const testCases = [
       {
-        input: 1,
-        expected: 86400
+        format: '%YYYY %MM %DD %hh:%mm',
+        expected: '2017 03 30 08:30'
       },
-
       {
-        input: 14,
-        expected: 1209600
+        format: '%YYYY %MMM %DD %hh:%mm %A',
+        expected: '2017 Mar 30 08:30 AM'
+      },
+      {
+        format: '%YYYY %MMM %DD %h:%mm%a',
+        expected: '2017 Mar 30 8:30am'
       }
     ];
 
     for (let i = 0; i < testCases.length; i++) {
       const tc = testCases[i];
 
-      it(`converts the input ${tc.input}`, () => {
-        const result = daysToSec(tc.input);
+      it(`converts the input ${tc.format}`, () => {
+        const result = formatTime(date, tc.format);
         expect(result).to.equal(tc.expected);
       });
     }

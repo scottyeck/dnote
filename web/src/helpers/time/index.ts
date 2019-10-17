@@ -17,7 +17,7 @@
  */
 
 import moment from 'moment';
-import { pluralize } from 'web/libs/string';
+import { pluralize } from '../../libs/string';
 
 const shortMonthNames = [
   'Jan',
@@ -70,11 +70,15 @@ export function nanosecToMillisec(t: number): number {
   return parseInt(truncated, 10);
 }
 
-// getShortMonthName returns the shortened month name of the given date
-export function getShortMonthName(date: Date) {
+// getMonthName returns the shortened month name of the given date
+export function getMonthName(date: Date, short: boolean = false) {
   const month = date.getMonth();
 
-  return shortMonthNames[month];
+  if (short) {
+    return shortMonthNames[month];
+  }
+
+  return monthNumToFullName(month + 1);
 }
 
 // monthNumToFullName returns a full month name based on the number denoting the month,
@@ -110,13 +114,13 @@ export function presentNoteTS(t: number): string {
   //  return `${past.format('MMM D')} (${past.fromNow()})`;
 }
 
+export function pad(value: number): string {
+  return value < 10 ? `0${value}` : `${value}`;
+}
+
 // getUTCOffset returns the UTC offset string for the client. The returned
 // value is in the format of '+08:00'
 export function getUTCOffset(): string {
-  function pad(value: number): string {
-    return value < 10 ? `0${value}` : `${value}`;
-  }
-
   const date = new Date();
 
   let sign;
