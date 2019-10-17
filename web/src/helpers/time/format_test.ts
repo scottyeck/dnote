@@ -39,6 +39,10 @@ describe('time/format.ts', () => {
       {
         format: '%dddd %M/%D',
         expected: 'Thursday 3/30'
+      },
+      {
+        format: '%MMMM %Do',
+        expected: 'March 30th'
       }
     ];
 

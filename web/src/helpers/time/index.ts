@@ -16,7 +16,6 @@
  * along with Dnote.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import moment from 'moment';
 import { pluralize } from '../../libs/string';
 
 const shortMonthNames = [

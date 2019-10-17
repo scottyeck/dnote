@@ -7,6 +7,7 @@ import {
   timeAgo,
   getDayName
 } from './index';
+import { addOrdinalSuffix } from '../..//libs/string';
 
 // format verbs
 const YYYY = '%YYYY';
@@ -18,6 +19,7 @@ const MM = '%MM';
 const M = '%M';
 const DD = '%DD';
 const D = '%D';
+const Do = '%Do';
 const hh = '%hh';
 const h = '%h';
 const mm = '%mm';
@@ -78,6 +80,12 @@ export default function formatTime(date: Date, format: string): string {
     const newSubstr = pad(day);
 
     ret = ret.replace(new RegExp(DD, 'g'), newSubstr);
+  }
+  if (ret.indexOf(Do) > -1) {
+    const day = date.getDate();
+    const newSubstr = addOrdinalSuffix(day);
+
+    ret = ret.replace(new RegExp(Do, 'g'), newSubstr);
   }
   if (ret.indexOf(D) > -1) {
     ret = ret.replace(new RegExp(D, 'g'), date.getDate().toString());
