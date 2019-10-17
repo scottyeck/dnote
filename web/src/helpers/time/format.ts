@@ -1,5 +1,14 @@
-import { getMonthName, getUTCOffset, pad } from './index';
+import {
+  getMonthName,
+  getUTCOffset,
+  pad,
+  nanosecToMillisec,
+  DAY,
+  timeAgo,
+  getDayName
+} from './index';
 
+// format verbs
 const YYYY = '%YYYY';
 const YYY = '%YYY';
 const YY = '%YY';
@@ -16,9 +25,24 @@ const m = '%m';
 const A = '%A';
 const a = '%a';
 const Z = '%Z';
+const dddd = '%dddd';
+
+// getPeriod returns the period for the time for the given date
+function getPeriod(date: Date) {
+  const h = date.getHours();
+
+  let ret;
+  if (h > 12) {
+    ret = 'PM';
+  } else {
+    ret = 'AM';
+  }
+
+  return ret;
+}
 
 // formatTime formats time to a human readable string based on the given format string
-export function formatTime(date: Date, format: string): string {
+export default function formatTime(date: Date, format: string): string {
   let ret = format;
 
   if (ret.indexOf(YYYY) > -1) {
@@ -56,10 +80,7 @@ export function formatTime(date: Date, format: string): string {
     ret = ret.replace(new RegExp(DD, 'g'), newSubstr);
   }
   if (ret.indexOf(D) > -1) {
-    const day = date.getDate();
-    const newSubstr = pad(day);
-
-    ret = ret.replace(new RegExp(D, 'g'), newSubstr);
+    ret = ret.replace(new RegExp(D, 'g'), date.getDate().toString());
   }
 
   if (ret.indexOf(hh) > -1) {
@@ -85,28 +106,19 @@ export function formatTime(date: Date, format: string): string {
     ret = ret.replace(/m/g, date.getMinutes().toString());
   }
 
-  function getPeriod() {
-    const h = date.getHours();
-
-    let period;
-    if (h > 12) {
-      period = 'PM';
-    } else {
-      period = 'AM';
-    }
-
-    return period;
-  }
-
   if (ret.indexOf(A) > -1) {
-    const period = getPeriod();
+    const period = getPeriod(date);
 
     ret = ret.replace(new RegExp(A, 'g'), period);
   }
   if (ret.indexOf(a) > -1) {
-    const period = getPeriod().toLowerCase();
+    const period = getPeriod(date).toLowerCase();
 
     ret = ret.replace(new RegExp(a, 'g'), period);
+  }
+
+  if (ret.indexOf(dddd) > -1) {
+    ret = ret.replace(new RegExp(dddd, 'g'), getDayName(date, false));
   }
 
   if (ret.indexOf(Z) > -1) {
@@ -116,4 +128,25 @@ export function formatTime(date: Date, format: string): string {
   }
 
   return ret;
+}
+
+// presentNoteTS presents a note's added_on timestamp which is in unix nano
+export function presentNoteTS(d: Date): string {
+  const past = d.getTime();
+  const now = new Date().getTime();
+  const diff = now - past;
+
+  if (diff < DAY) {
+    return `today ${formatTime(d, '%h:%mm %a')}`;
+  }
+
+  if (diff < 2 * DAY) {
+    return `yesterday ${formatTime(d, '%h:%mm %a')}`;
+  }
+
+  if (diff < 7 * DAY) {
+    return formatTime(d, '%dddd %h:%mm %a');
+  }
+
+  return `${formatTime(d, '%MMM %D')} (${timeAgo(past)})`;
 }

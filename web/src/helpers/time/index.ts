@@ -49,6 +49,18 @@ const fullMonthNames = [
   'Dececember'
 ];
 
+const shortDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+
+const fullDayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
+
 /******* durations in milliseconds */
 export const SECOND = 1000;
 export const MINUTE = 60 * SECOND;
@@ -70,6 +82,17 @@ export function nanosecToMillisec(t: number): number {
   return parseInt(truncated, 10);
 }
 
+// getDayName returns the shortened month name of the given date
+export function getDayName(date: Date, short: boolean = false) {
+  const day = date.getDay();
+
+  if (short) {
+    return shortDayNames[day];
+  }
+
+  return fullDayNames[day];
+}
+
 // getMonthName returns the shortened month name of the given date
 export function getMonthName(date: Date, short: boolean = false) {
   const month = date.getMonth();
@@ -89,29 +112,6 @@ export function monthNumToFullName(num: number): string {
   }
 
   return fullMonthNames[num - 1];
-}
-
-// presentNoteTS presents a note's added_on timestamp which is in unix nano
-export function presentNoteTS(t: number): string {
-  const past = nanosecToMillisec(t);
-  const now = new Date().getTime();
-  const diff = now - past;
-
-  // TODO
-  return '';
-  //  if (diff < DAY) {
-  //    return `today ${past.format('h:mm a')}`;
-  //  }
-  //
-  //  if (diff < 2 * DAY) {
-  //    return `yesterday ${past.format('h:mm a')}`;
-  //  }
-  //
-  //  if (diff < 7 * DAY) {
-  //    return past.format('dddd h:mm a');
-  //  }
-  //
-  //  return `${past.format('MMM D')} (${past.fromNow()})`;
 }
 
 export function pad(value: number): string {

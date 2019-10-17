@@ -18,7 +18,7 @@
 
 import { expect } from 'chai';
 
-import { formatTime } from './format';
+import formatTime from './format';
 
 describe('time/format.ts', () => {
   describe('formatTime', () => {
@@ -35,6 +35,10 @@ describe('time/format.ts', () => {
       {
         format: '%YYYY %MMM %DD %h:%mm%a',
         expected: '2017 Mar 30 8:30am'
+      },
+      {
+        format: '%dddd %M/%D',
+        expected: 'Thursday 3/30'
       }
     ];
 
