@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 
 import { RepetitionRuleData } from 'jslib/operations/types';
-import { secondsToDuration, secondsToHTMLTimeDuration } from 'web/helpers/time';
+import {
+  secondsToDuration,
+  secondsToHTMLTimeDuration,
+  timeAgo
+} from 'web/helpers/time';
+import formatTime from 'web/helpers/time/format';
 import Actions from './Actions';
 import Time from '../../Common/Time';
 import styles from './RepetitionItem.scss';
@@ -10,6 +15,10 @@ import styles from './RepetitionItem.scss';
 interface Props {
   item: RepetitionRuleData;
   setRuleUUIDToDelete: React.Dispatch<any>;
+}
+
+function formatLastActive(ms: number): string {
+  return timeAgo(ms);
 }
 
 const RepetitionItem: React.FunctionComponent<Props> = ({
@@ -49,16 +58,29 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
       <div className={styles['col-content']}>
         <ul className={classnames('list-unstyled', styles['detail-list'])}>
           <li>
-            Last active:
+            Last active:{' '}
+            {item.lastActive === 0 ? (
+              <span>Never</span>
+            ) : (
+              <Time
+                id={`${item.uuid}-lastactive-ts`}
+                text={formatLastActive(item.lastActive)}
+                ms={item.lastActive}
+                tooltipAlignment="center"
+                tooltipDirection="bottom"
+              />
+            )}
+          </li>
+          <li>
+            Created:{' '}
             <Time
-              id="foo"
-              text="foo"
-              ms={item.lastActive}
+              id={`${item.uuid}-created-ts`}
+              text={formatTime(new Date(item.createdAt), '%YYYY %MMM %Do')}
+              ms={new Date(item.createdAt).getTime()}
               tooltipAlignment="center"
               tooltipDirection="bottom"
             />
           </li>
-          <li>Created: blah</li>
         </ul>
       </div>
 
