@@ -21,6 +21,7 @@ import classnames from 'classnames';
 
 import Overlay from './Overlay';
 import { Alignment, Direction } from '../Popover/types';
+import { isMobileWidth } from 'web/libs/dom';
 
 interface Props {
   id: string;
@@ -52,6 +53,10 @@ const Tooltip: React.FunctionComponent<Props> = ({
     setIsOpen(false);
   }
 
+  function toggle() {
+    setIsOpen(!isOpen);
+  }
+
   return (
     <Fragment>
       <span
@@ -63,6 +68,12 @@ const Tooltip: React.FunctionComponent<Props> = ({
         onMouseLeave={hide}
         onBlur={hide}
         ref={triggerRef}
+        onTouchStart={e => {
+          if (isMobileWidth()) {
+            e.preventDefault();
+            toggle();
+          }
+        }}
       >
         {children}
       </span>

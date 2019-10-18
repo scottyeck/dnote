@@ -31,9 +31,13 @@
   }
 }
 
-.col-meta {
+.content {
+  flex-grow: 1;
 }
-.col-content {
+
+.left {
+}
+.right {
   display: flex;
   justify-content: flex-end;
   flex-grow: 1;
@@ -81,5 +85,13 @@
 
   @include breakpoint(md) {
     min-width: rem(180px);
+  }
+}
+
+.book-meta {
+  display: none;
+
+  @include breakpoint(md) {
+    display: block;
   }
 }
