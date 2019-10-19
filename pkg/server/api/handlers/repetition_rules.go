@@ -45,7 +45,7 @@ func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := presenters.PresentRepetitionRules(repetitionRules)
-	respondJSON(w, resp)
+	respondJSON(w, http.StatusOK, resp)
 }
 
 type createRepetitionRuleParams struct {
@@ -131,8 +131,7 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 
 	resp := presenters.PresentRepetitionRule(record)
 
-	w.WriteHeader(http.StatusCreated)
-	respondJSON(w, resp)
+	respondJSON(w, http.StatusCreated, resp)
 }
 
 type updateRepetitionRuleParams struct {
@@ -240,8 +239,6 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-
 	resp := presenters.PresentRepetitionRule(repetitionRule)
-	respondJSON(w, resp)
+	respondJSON(w, http.StatusOK, resp)
 }

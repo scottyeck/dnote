@@ -32,22 +32,35 @@
 }
 
 .content {
+  display: flex;
   flex-grow: 1;
+  flex-direction: column;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+  }
 }
 
 .left {
 }
+
 .right {
   display: flex;
-  justify-content: flex-end;
   flex-grow: 1;
   padding-right: rem(24px);
+
+  @include breakpoint(md) {
+    justify-content: flex-end;
+  }
 }
 
 .meta {
   @include font-size('small');
   margin-top: rem(4px);
-  color: $dark-gray;
+
+  @include breakpoint(md) {
+    color: $dark-gray;
+  }
 }
 
 .sep {
