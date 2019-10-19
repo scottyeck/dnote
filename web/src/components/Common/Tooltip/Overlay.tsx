@@ -24,6 +24,7 @@ import { Alignment, Direction } from '../Popover/types';
 import styles from './Tooltip.scss';
 
 interface Props {
+  id: string;
   isOpen: boolean;
   children: React.ReactElement;
   triggerEl: HTMLElement;
@@ -217,6 +218,7 @@ function calcArrowPosition(
 }
 
 const Overlay: React.FunctionComponent<Props> = ({
+  id,
   isOpen,
   children,
   triggerEl,
@@ -241,7 +243,7 @@ const Overlay: React.FunctionComponent<Props> = ({
   const arrowPos = calcArrowPosition(triggerEl, arrowEl, direction);
 
   return ReactDOM.createPortal(
-    <div>
+    <div role="tooltip" id={id}>
       <div
         className={classnames(styles.arrow, {
           [styles.top]: direction === 'top',

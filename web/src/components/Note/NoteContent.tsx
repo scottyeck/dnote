@@ -27,7 +27,6 @@ import { tokenize, TokenKind } from 'web/libs/fts/lexer';
 import BookIcon from '../Icons/Book';
 import { parseMarkdown } from '../../helpers/markdown';
 import { nanosecToMillisec, getMonthName } from '../../helpers/time';
-import { presentNoteTS } from '../../helpers/time/format';
 import formatTime from '../../helpers/time/format';
 import { useSelector } from '../../store';
 import Time from '../Common/Time';
@@ -37,7 +36,7 @@ function formatAddedOn(ts: number): string {
   const ms = nanosecToMillisec(ts);
   const d = new Date(ms);
 
-  return presentNoteTS(d);
+  return formatTime(d, '%MMMM %DD, %YYYY');
 }
 
 function formatFTSSelection(content: string): string {

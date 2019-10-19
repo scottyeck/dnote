@@ -232,9 +232,10 @@ export function timeAgo(ms: number, simple: boolean = false): string {
   };
 
   function getStr(interval: number, noun: string): string {
-    if (simple) {
-      // return `${interval} ${noun}`;
-    }
+    // if (simple) {
+    //   const n = shortNounMap[noun];
+    //   return `${interval}${n}`;
+    // }
 
     return `${interval} ${pluralize(noun, interval)} ago`;
   }

@@ -22,6 +22,11 @@ import classnames from 'classnames';
 import Overlay from './Overlay';
 import { Alignment, Direction } from '../Popover/types';
 import { isMobileWidth } from 'web/libs/dom';
+import {
+  KEYCODE_ESC,
+  KEYCODE_ENTER,
+  KEYCODE_SPACE
+} from 'jslib/helpers/keyboard';
 
 interface Props {
   id: string;
@@ -44,6 +49,7 @@ const Tooltip: React.FunctionComponent<Props> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef(null);
+  const touchingRef = useRef(false);
 
   function show() {
     setIsOpen(true);
@@ -53,32 +59,18 @@ const Tooltip: React.FunctionComponent<Props> = ({
     setIsOpen(false);
   }
 
-  function toggle() {
-    setIsOpen(!isOpen);
-  }
-
   return (
-    <Fragment>
+    <span onMouseEnter={show} onMouseLeave={hide}>
       <span
         className={wrapperClassName}
-        aria-describedby={id}
-        tabIndex={-1}
-        onFocus={show}
-        onMouseEnter={show}
-        onMouseLeave={hide}
-        onBlur={hide}
+        aria-describedby={isOpen ? id : undefined}
         ref={triggerRef}
-        onTouchStart={e => {
-          if (isMobileWidth()) {
-            e.preventDefault();
-            toggle();
-          }
-        }}
       >
         {children}
       </span>
 
       <Overlay
+        id={id}
         isOpen={isOpen}
         triggerEl={triggerRef.current}
         alignment={alignment}
@@ -86,7 +78,7 @@ const Tooltip: React.FunctionComponent<Props> = ({
       >
         {overlay}
       </Overlay>
-    </Fragment>
+    </span>
   );
 };
 

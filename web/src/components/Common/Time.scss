@@ -22,11 +22,11 @@
 @import '../App/font';
 
 .time {
-  border-bottom: 1px dotted $gray;
-
-  @include breakpoint(lg) {
-    border-bottom-color: transparent;
-  }
+  //  border-bottom: 1px dotted $gray;
+  //
+  //  @include breakpoint(lg) {
+  //    border-bottom-color: transparent;
+  //  }
 }
 
 .mobile-text {

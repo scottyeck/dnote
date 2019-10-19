@@ -137,24 +137,3 @@ export default function formatTime(date: Date, format: string): string {
 
   return ret;
 }
-
-// presentNoteTS presents a note's added_on timestamp which is in unix nano
-export function presentNoteTS(d: Date): string {
-  const past = d.getTime();
-  const now = new Date().getTime();
-  const diff = now - past;
-
-  if (diff < DAY) {
-    return `today ${formatTime(d, '%h:%mm %a')}`;
-  }
-
-  if (diff < 2 * DAY) {
-    return `yesterday ${formatTime(d, '%h:%mm %a')}`;
-  }
-
-  if (diff < 7 * DAY) {
-    return formatTime(d, '%dddd %h:%mm %a');
-  }
-
-  return `${formatTime(d, '%MMM %D')} (${timeAgo(past)})`;
-}
