@@ -50,10 +50,6 @@ function request<T>(path: string, options: RequestInit) {
     .then(checkStatus)
     .then(res => {
       return parseJSON<T>(res);
-    })
-    .then(a => {
-      console.log('a', a);
-      return a;
     });
 }
 

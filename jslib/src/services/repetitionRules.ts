@@ -91,7 +91,6 @@ export default function init(config: HttpClientConfig) {
       return client
         .post<RepetitionRuleRespData>(endpoint, params)
         .then(resp => {
-          console.log(resp);
           return mapData(resp);
         });
     },
