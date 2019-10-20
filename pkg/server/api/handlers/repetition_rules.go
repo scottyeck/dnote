@@ -30,6 +30,24 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (a *App) getRepetitionRule(w http.ResponseWriter, r *http.Request) {
+	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
+	if !ok {
+		handleError(w, "No authenticated user found", nil, http.StatusInternalServerError)
+		return
+	}
+
+	db := database.DBConn
+	var repetitionRule database.RepetitionRule
+	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&repetitionRule).Error; err != nil {
+		handleError(w, "getting repetition rules", err, http.StatusInternalServerError)
+		return
+	}
+
+	resp := presenters.PresentRepetitionRule(repetitionRule)
+	respondJSON(w, http.StatusOK, resp)
+}
+
 func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value(helpers.KeyUser).(database.User)
 	if !ok {

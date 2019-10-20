@@ -18,10 +18,12 @@
 
 import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import ItemActions from '../../Common/ItemActions';
 import DotsIcon from '../../Icons/Dots';
 import ItemActionsStyles from '../../Common/ItemActions/ItemActions.scss';
+import { getEditRepetitionPath } from '../../../libs/paths';
 
 interface Props {
   isActive: boolean;
@@ -36,19 +38,17 @@ const Actions: React.FunctionComponent<Props> = ({ isActive, onDelete }) => {
     {
       name: 'edit',
       value: (
-        <button
+        <Link
           ref={optRefs[0]}
           type="button"
           className={classnames(
             'button-no-ui button-stretch',
             ItemActionsStyles.action
           )}
-          onClick={() => {
-            setIsOpen(false);
-          }}
+          to={getEditRepetitionPath()}
         >
           Edit
-        </button>
+        </Link>
       )
     },
     {

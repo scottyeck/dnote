@@ -53,6 +53,7 @@ export interface RepetitionRuleRespData {
   book_domain: BookDomain;
   frequency: number;
   books: BookData[];
+  note_count: number;
   last_active: number;
   created_at: string;
   updated_at: string;
@@ -68,6 +69,7 @@ function mapData(d: RepetitionRuleRespData): RepetitionRuleData {
     bookDomain: d.book_domain,
     frequency: d.frequency,
     books: d.books,
+    noteCount: d.note_count,
     lastActive: d.last_active,
     createdAt: d.created_at,
     updatedAt: d.updated_at
@@ -78,6 +80,13 @@ export default function init(config: HttpClientConfig) {
   const client = getHttpClient(config);
 
   return {
+    fetch: (uuid: string): Promise<RepetitionRuleData> => {
+      const endpoint = `/repetition_rules/${uuid}`;
+
+      return client.get<RepetitionRuleRespData>(endpoint).then(resp => {
+        return mapData(resp);
+      });
+    },
     fetchAll: (): Promise<RepetitionRuleData[]> => {
       const endpoint = '/repetition_rules';
 
