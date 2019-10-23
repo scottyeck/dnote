@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dnote/dnote/pkg/clock"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/log"
 	"github.com/dnote/dnote/pkg/server/mailer"
@@ -29,8 +30,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// BuildRepetitionEmail builds an email for the spaced repetition
-func BuildRepetitionEmail(now time.Time, user database.User, emailAddr string, digest database.Digest, rule database.RepetitionRule) (*mailer.Email, error) {
+// BuildEmail builds an email for the spaced repetition
+func BuildEmail(now time.Time, user database.User, emailAddr string, digest database.Digest, rule database.RepetitionRule) (*mailer.Email, error) {
 	date := now.Format("Jan 02 2006")
 	subject := fmt.Sprintf("%s %s", rule.Title, date)
 	tok, err := mailer.GetEmailPreferenceToken(user)
@@ -150,7 +151,7 @@ func notify(now time.Time, user database.User, digest database.Digest, rule data
 		return nil
 	}
 
-	email, err := BuildRepetitionEmail(now, user, account.Email.String, digest, rule)
+	email, err := BuildEmail(now, user, account.Email.String, digest, rule)
 	if err != nil {
 		return errors.Wrap(err, "making email")
 	}
@@ -239,8 +240,8 @@ func process(now time.Time, rule database.RepetitionRule) error {
 }
 
 // Do creates spaced repetitions and delivers the results based on the rules
-func Do() error {
-	now := time.Now().UTC()
+func Do(c clock.Clock) error {
+	now := c.Now().UTC()
 
 	rules, err := getEligibleRules(now)
 	if err != nil {
