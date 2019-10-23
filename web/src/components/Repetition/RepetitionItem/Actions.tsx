@@ -28,9 +28,14 @@ import { getEditRepetitionPath } from '../../../libs/paths';
 interface Props {
   isActive: boolean;
   onDelete: () => void;
+  repetitionUUID: string;
 }
 
-const Actions: React.FunctionComponent<Props> = ({ isActive, onDelete }) => {
+const Actions: React.FunctionComponent<Props> = ({
+  isActive,
+  onDelete,
+  repetitionUUID
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const optRefs = [useRef(null), useRef(null)];
@@ -45,7 +50,7 @@ const Actions: React.FunctionComponent<Props> = ({ isActive, onDelete }) => {
             'button-no-ui button-stretch',
             ItemActionsStyles.action
           )}
-          to={getEditRepetitionPath()}
+          to={getEditRepetitionPath(repetitionUUID)}
         >
           Edit
         </Link>

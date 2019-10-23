@@ -14,7 +14,7 @@ import Content from './Content';
 import repetitionStyles from '../Repetition.scss';
 
 interface Match {
-  repetitionRuleUUID: string;
+  repetitionUUID: string;
 }
 
 interface Props extends RouteComponentProps<Match> {}
@@ -25,16 +25,17 @@ const EditRepetition: React.FunctionComponent<Props> = ({ history, match }) => {
   const [data, setData] = useState<RepetitionRuleData | null>(null);
 
   useEffect(() => {
-    const { repetitionRuleUUID } = match.params;
+    const { repetitionUUID } = match.params;
     services.repetitionRules
-      .fetch(repetitionRuleUUID)
+      .fetch(repetitionUUID)
       .then(rule => {
+        console.log(rule);
         setData(rule);
       })
       .catch(err => {
         setErrMsg(err.message);
       });
-  }, [dispatch]);
+  }, [dispatch, match]);
 
   return (
     <div className="page page-mobile-full">
@@ -56,7 +57,7 @@ const EditRepetition: React.FunctionComponent<Props> = ({ history, match }) => {
             setErrMsg('');
           }}
         >
-          Error creating a rule: {errMsg}
+          Error: {errMsg}
         </Flash>
 
         {data === null ? (

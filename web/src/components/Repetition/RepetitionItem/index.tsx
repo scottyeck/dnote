@@ -96,6 +96,7 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
         onDelete={() => {
           setRuleUUIDToDelete(item.uuid);
         }}
+        repetitionUUID={item.uuid}
       />
     </li>
   );

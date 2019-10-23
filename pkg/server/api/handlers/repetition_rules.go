@@ -37,9 +37,17 @@ func (a *App) getRepetitionRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	vars := mux.Vars(r)
+	repetitionRuleUUID := vars["repetitionRuleUUID"]
+
+	if ok := helpers.ValidateUUID(repetitionRuleUUID); !ok {
+		http.Error(w, "invalid uuid", http.StatusBadRequest)
+		return
+	}
+
 	db := database.DBConn
 	var repetitionRule database.RepetitionRule
-	if err := db.Where("user_id = ?", user.ID).Preload("Books").Find(&repetitionRule).Error; err != nil {
+	if err := db.Where("user_id = ? AND uuid = ?", user.ID, repetitionRuleUUID).Preload("Books").Find(&repetitionRule).Error; err != nil {
 		handleError(w, "getting repetition rules", err, http.StatusInternalServerError)
 		return
 	}

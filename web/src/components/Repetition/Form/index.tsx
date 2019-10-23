@@ -25,7 +25,6 @@ import { Option, booksToOptions } from 'jslib/helpers/select';
 import { BookDomain } from 'jslib/operations/types';
 import Modal, { Header, Body } from '../../Common/Modal';
 import { useSelector } from '../../../store';
-import Flash from '../../Common/Flash';
 import { daysToSec } from '../../../helpers/time';
 import Button from '../../Common/Button';
 import MultiSelect from '../../Common/MultiSelect';
