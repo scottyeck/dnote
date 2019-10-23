@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom';
 import { getRepetitionsPath } from 'web/libs/paths';
 import { Option, booksToOptions } from 'jslib/helpers/select';
 import { BookDomain } from 'jslib/operations/types';
+import { CreateParams } from 'jslib/services/repetitionRules';
 import Modal, { Header, Body } from '../../Common/Modal';
 import { useSelector } from '../../../store';
 import { daysToSec } from '../../../helpers/time';
@@ -42,11 +43,35 @@ export interface FormState {
   books: Option[];
 }
 
+// serializeFormState serializes the given form state into a payload
+export function serializeFormState(s: FormState): CreateParams {
+  let bookUUIDs = [];
+  if (s.bookDomain === BookDomain.All) {
+    bookUUIDs = [];
+  } else {
+    bookUUIDs = s.books.map(b => {
+      return b.value;
+    });
+  }
+
+  return {
+    title: s.title,
+    hour: s.hour,
+    minute: s.minute,
+    frequency: s.frequency,
+    book_domain: s.bookDomain,
+    book_uuids: bookUUIDs,
+    note_count: s.noteCount,
+    enabled: s.enabled
+  };
+}
+
 interface Props {
   onSubmit: (formState) => void;
   setErrMsg: (string) => void;
   cancelPath?: string;
   initialState?: FormState;
+  isEditing?: boolean;
 }
 
 enum Action {
@@ -136,7 +161,8 @@ const Form: React.FunctionComponent<Props> = ({
   onSubmit,
   setErrMsg,
   cancelPath = getRepetitionsPath(),
-  initialState = formInitialState
+  initialState = formInitialState,
+  isEditing = false
 }) => {
   const [inProgress, setInProgress] = useState(false);
   const bookSelectorInputRef = useRef(null);
@@ -166,6 +192,10 @@ const Form: React.FunctionComponent<Props> = ({
   }
 
   useEffect(() => {
+    if (isEditing) {
+      return;
+    }
+
     if (formState.bookDomain === BookDomain.All) {
       if (bookSelectorInputRef.current) {
         bookSelectorInputRef.current.blur();
@@ -175,7 +205,7 @@ const Form: React.FunctionComponent<Props> = ({
         bookSelectorInputRef.current.focus();
       }
     }
-  }, [formState.bookDomain]);
+  }, [formState.bookDomain, isEditing]);
 
   return (
     <form

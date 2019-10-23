@@ -29,7 +29,6 @@ const EditRepetition: React.FunctionComponent<Props> = ({ history, match }) => {
     services.repetitionRules
       .fetch(repetitionUUID)
       .then(rule => {
-        console.log(rule);
         setData(rule);
       })
       .catch(err => {

@@ -76,13 +76,13 @@ func (a *App) getRepetitionRules(w http.ResponseWriter, r *http.Request) {
 
 type createRepetitionRuleParams struct {
 	Title      string   `json:"title"`
+	Enabled    bool     `json:"enabled"`
 	Hour       int      `json:"hour"`
 	Minute     int      `json:"minute"`
 	Frequency  int      `json:"frequency"`
 	BookDomain string   `json:"book_domain"`
 	BookUUIDs  []string `json:"book_uuids"`
 	NoteCount  int      `json:"note_count"`
-	Enabled    bool     `json:"enabled"`
 }
 
 func validateBookDomain(val string) error {
@@ -170,7 +170,7 @@ type updateRepetitionRuleParams struct {
 	Hour       *int      `json:"hour"`
 	Minute     *int      `json:"minute"`
 	Frequency  *int      `json:"frequency"`
-	BookDomain bool      `json:"book_domain"`
+	BookDomain *string   `json:"book_domain"`
 	BookUUIDs  *[]string `json:"book_uuids"`
 	NoteCount  *int      `json:"note_count"`
 }
@@ -230,8 +230,10 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := database.DBConn
+	tx := db.Begin()
+
 	var repetitionRule database.RepetitionRule
-	if err := db.Where("user_id = ? AND uuid = ?", user.ID, repetitionRuleUUID).Preload("Books").First(&repetitionRule).Error; err != nil {
+	if err := tx.Where("user_id = ? AND uuid = ?", user.ID, repetitionRuleUUID).Preload("Books").First(&repetitionRule).Error; err != nil {
 		handleError(w, "finding record", nil, http.StatusInternalServerError)
 		return
 	}
@@ -256,17 +258,27 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	}
 	if params.BookUUIDs != nil {
 		var books []database.Book
-		if err := db.Where("user_id = ? AND uuid IN (?)", user.ID, params.BookUUIDs).Find(&books).Error; err != nil {
+		if err := tx.Where("user_id = ? AND uuid IN (?)", user.ID, *params.BookUUIDs).Find(&books).Error; err != nil {
 			handleError(w, "finding books", err, http.StatusInternalServerError)
 			return
 		}
 
-		repetitionRule.Books = books
+		if err := tx.Model(&repetitionRule).Association("Books").Replace(books).Error; err != nil {
+			tx.Rollback()
+			handleError(w, "updating books association for a repetitionRule", err, http.StatusInternalServerError)
+			return
+		}
 	}
 
-	if err := db.Save(&repetitionRule).Error; err != nil {
+	if err := tx.Save(&repetitionRule).Error; err != nil {
+		tx.Rollback()
 		handleError(w, "creating a repetition rule", err, http.StatusInternalServerError)
 		return
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		handleError(w, "committing a transaction", err, http.StatusInternalServerError)
 	}
 
 	resp := presenters.PresentRepetitionRule(repetitionRule)
