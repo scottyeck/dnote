@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 
 import { RepetitionRuleData } from 'jslib/operations/types';
-import {
-  secondsToDuration,
-  secondsToHTMLTimeDuration,
-  timeAgo
-} from 'web/helpers/time';
+import { msToDuration, msToHTMLTimeDuration, timeAgo } from 'web/helpers/time';
 import formatTime from 'web/helpers/time/format';
 import Actions from './Actions';
 import BookMeta from './BookMeta';
@@ -46,8 +42,8 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
             <div>
               <span className={styles.frequency}>
                 Every{' '}
-                <time dateTime={secondsToHTMLTimeDuration(item.frequency)}>
-                  {secondsToDuration(item.frequency)}
+                <time dateTime={msToHTMLTimeDuration(item.frequency)}>
+                  {msToDuration(item.frequency)}
                 </time>
               </span>
               <span className={styles.sep}>&middot;</span>
