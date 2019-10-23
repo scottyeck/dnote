@@ -18,19 +18,19 @@
 
 import { expect } from 'chai';
 
-import { daysToSec } from './index';
+import { daysToMs } from './index';
 
 describe('time.ts', () => {
-  describe('daysToSec', () => {
+  describe('daysToMs', () => {
     const testCases = [
       {
         input: 1,
-        expected: 86400
+        expected: 86400000
       },
 
       {
         input: 14,
-        expected: 1209600
+        expected: 1209600000
       }
     ];
 
@@ -38,7 +38,7 @@ describe('time.ts', () => {
       const tc = testCases[i];
 
       it(`converts the input ${tc.input}`, () => {
-        const result = daysToSec(tc.input);
+        const result = daysToMs(tc.input);
         expect(result).to.equal(tc.expected);
       });
     }

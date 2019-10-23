@@ -189,6 +189,9 @@ func touchLastActive(tx *gorm.DB, rule database.RepetitionRule) error {
 }
 
 func process(now time.Time, rule database.RepetitionRule) error {
+	log.WithFields(log.Fields{
+		"uuid": rule.UUID,
+	}).Info("processing repetition")
 
 	db := database.DBConn
 	tx := db.Begin()
@@ -227,6 +230,10 @@ func process(now time.Time, rule database.RepetitionRule) error {
 	if err := notify(now, user, digest, rule); err != nil {
 		return errors.Wrap(err, "notifying user")
 	}
+
+	log.WithFields(log.Fields{
+		"uuid": rule.UUID,
+	}).Info("finished processing repetition")
 
 	return nil
 }

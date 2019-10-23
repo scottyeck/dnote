@@ -141,9 +141,9 @@ export function getUTCOffset(): string {
   return `${sign}${hours}:${minutes}`;
 }
 
-// daysToSec translates the given number of days to seconds
-export function daysToSec(numDays: number) {
-  const dayInSeconds = DAY / 1000;
+// daysToMs translates the given number of days to seconds
+export function daysToMs(numDays: number) {
+  const dayInSeconds = DAY;
 
   return dayInSeconds * numDays;
 }

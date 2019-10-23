@@ -26,7 +26,7 @@ import { BookDomain } from 'jslib/operations/types';
 import { CreateParams } from 'jslib/services/repetitionRules';
 import Modal, { Header, Body } from '../../Common/Modal';
 import { useSelector } from '../../../store';
-import { daysToSec } from '../../../helpers/time';
+import { daysToMs } from '../../../helpers/time';
 import Button from '../../Common/Button';
 import MultiSelect from '../../Common/MultiSelect';
 import styles from './Form.scss';
@@ -137,7 +137,7 @@ const formInitialState: FormState = {
   enabled: true,
   hour: 8,
   minute: 0,
-  frequency: daysToSec(7),
+  frequency: daysToMs(7),
   noteCount: 20,
   bookDomain: BookDomain.All,
   books: []
@@ -360,16 +360,16 @@ const Form: React.FunctionComponent<Props> = ({
                 });
               }}
             >
-              <option value={daysToSec(1)}>Every day</option>
-              <option value={daysToSec(2)}>Every 2 days</option>
-              <option value={daysToSec(3)}>Every 3 days</option>
-              <option value={daysToSec(4)}>Every 4 days</option>
-              <option value={daysToSec(5)}>Every 5 days</option>
-              <option value={daysToSec(6)}>Every 6 days</option>
-              <option value={daysToSec(7)}>Every week</option>
-              <option value={daysToSec(14)}>Every 2 weeks</option>
-              <option value={daysToSec(21)}>Every 3 weeks</option>
-              <option value={daysToSec(28)}>Every 4 weeks</option>
+              <option value={daysToMs(1)}>Every day</option>
+              <option value={daysToMs(2)}>Every 2 days</option>
+              <option value={daysToMs(3)}>Every 3 days</option>
+              <option value={daysToMs(4)}>Every 4 days</option>
+              <option value={daysToMs(5)}>Every 5 days</option>
+              <option value={daysToMs(6)}>Every 6 days</option>
+              <option value={daysToMs(7)}>Every week</option>
+              <option value={daysToMs(14)}>Every 2 weeks</option>
+              <option value={daysToMs(21)}>Every 3 weeks</option>
+              <option value={daysToMs(28)}>Every 4 weeks</option>
             </select>
           </div>
 

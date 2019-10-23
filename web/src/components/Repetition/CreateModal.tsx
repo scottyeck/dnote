@@ -21,7 +21,6 @@ import classnames from 'classnames';
 
 import Modal, { Header, Body } from '../Common/Modal';
 import Flash from '../Common/Flash';
-import { daysToSec } from '../../helpers/time';
 import Button from '../Common/Button';
 import GlobeIcon from '../Icons/Globe';
 import styles from './CreateModal.scss';
