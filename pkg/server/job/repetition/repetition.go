@@ -189,6 +189,7 @@ func touchLastActive(tx *gorm.DB, rule database.RepetitionRule) error {
 }
 
 func process(now time.Time, rule database.RepetitionRule) error {
+
 	db := database.DBConn
 	tx := db.Begin()
 
@@ -232,12 +233,16 @@ func process(now time.Time, rule database.RepetitionRule) error {
 
 // Do creates spaced repetitions and delivers the results based on the rules
 func Do() error {
-	now := time.Now()
+	now := time.Now().UTC()
 
 	rules, err := getEligibleRules(now)
 	if err != nil {
 		return errors.Wrap(err, "getting eligible repetition rules")
 	}
+
+	log.WithFields(log.Fields{
+		"num_rules": len(rules),
+	}).Info("processing rules")
 
 	for _, rule := range rules {
 		if err := process(now, rule); err != nil {
