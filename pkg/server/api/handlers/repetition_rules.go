@@ -148,7 +148,7 @@ func (a *App) createRepetitionRule(w http.ResponseWriter, r *http.Request) {
 		Title:      params.Title,
 		Hour:       params.Hour,
 		Minute:     params.Minute,
-		Frequency:  params.Frequency,
+		Frequency:  int64(params.Frequency),
 		BookDomain: params.BookDomain,
 		Books:      books,
 		NoteCount:  params.NoteCount,
@@ -251,7 +251,7 @@ func (a *App) updateRepetitionRule(w http.ResponseWriter, r *http.Request) {
 		repetitionRule.Minute = *params.Minute
 	}
 	if params.Frequency != nil {
-		repetitionRule.Frequency = *params.Frequency
+		repetitionRule.Frequency = int64(*params.Frequency)
 	}
 	if params.NoteCount != nil {
 		repetitionRule.NoteCount = *params.NoteCount

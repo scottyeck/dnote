@@ -21,6 +21,7 @@ package job
 import (
 	"log"
 
+	"github.com/dnote/dnote/pkg/server/job/repetition"
 	"github.com/pkg/errors"
 	"github.com/robfig/cron"
 )
@@ -40,7 +41,7 @@ func Run() {
 
 	// Schedule jobs
 	c := cron.New()
-	scheduleJob(c, "0 20 * * 5", func() { sendDigest() })
+	scheduleJob(c, "* * * * *", func() { repetition.Do() })
 	c.Start()
 
 	// Block forever

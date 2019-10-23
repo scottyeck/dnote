@@ -137,14 +137,16 @@ type Digest struct {
 // RepetitionRule is the rules for sending digest emails
 type RepetitionRule struct {
 	Model
-	UUID       string `json:"uuid" gorm:"type:uuid;index;default:uuid_generate_v4()"`
-	UserID     int    `json:"user_id" gorm:"index"`
-	Title      string `json:"title"`
-	Enabled    bool   `json:"enabled"`
-	Hour       int    `json:"hour" gorm:"index"`
-	Minute     int    `json:"minute" gorm:"index"`
-	Frequency  int    `json:"frequency"`
-	LastActive int    `json:"last_active"`
+	UUID    string `json:"uuid" gorm:"type:uuid;index;default:uuid_generate_v4()"`
+	UserID  int    `json:"user_id" gorm:"index"`
+	Title   string `json:"title"`
+	Enabled bool   `json:"enabled"`
+	Hour    int    `json:"hour" gorm:"index"`
+	Minute  int    `json:"minute" gorm:"index"`
+	// in milliseconds
+	Frequency int64 `json:"frequency"`
+	// in milliseconds
+	LastActive int64  `json:"last_active"`
 	BookDomain string `json:"book_domain"`
 	Books      []Book `gorm:"many2many:repetition_rule_books;"`
 	NoteCount  int    `json:"note_count"`
