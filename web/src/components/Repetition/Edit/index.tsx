@@ -37,7 +37,7 @@ const EditRepetition: React.FunctionComponent<Props> = ({ history, match }) => {
   }, [dispatch, match]);
 
   return (
-    <div className="page page-mobile-full">
+    <div id="page-edit-repetition" className="page page-mobile-full">
       <Helmet>
         <title>Edit Repetition</title>
       </Helmet>

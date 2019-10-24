@@ -47,7 +47,7 @@ const Actions: React.FunctionComponent<Props> = ({
           ref={optRefs[0]}
           type="button"
           className={classnames(
-            'button-no-ui button-stretch',
+            'button-no-ui button-stretch T-edit-repetition-rule-btn',
             ItemActionsStyles.action
           )}
           to={getEditRepetitionPath(repetitionUUID)}
@@ -63,7 +63,7 @@ const Actions: React.FunctionComponent<Props> = ({
           ref={optRefs[1]}
           type="button"
           className={classnames(
-            'button-no-ui button-stretch',
+            'button-no-ui button-stretch T-delete-repetition-rule-btn',
             ItemActionsStyles.action
           )}
           onClick={() => {
@@ -79,8 +79,8 @@ const Actions: React.FunctionComponent<Props> = ({
 
   return (
     <ItemActions
-      id="mobile-book-actions"
-      triggerId="mobile-book-actions-trigger"
+      id={`repetition-rule-${repetitionUUID}-actions`}
+      triggerId={`repetition-rule-actions-trigger-${repetitionUUID}`}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       isActive={isActive}

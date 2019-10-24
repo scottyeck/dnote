@@ -48,7 +48,7 @@ const NewRepetition: React.FunctionComponent<Props> = ({ history }) => {
   }
 
   return (
-    <div className="page page-mobile-full">
+    <div id="page-new-repetition" className="page page-mobile-full">
       <Helmet>
         <title>New Repetition</title>
       </Helmet>

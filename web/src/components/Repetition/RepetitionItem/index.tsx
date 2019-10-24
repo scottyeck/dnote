@@ -26,7 +26,11 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
 
   return (
     <li
-      className={styles.wrapper}
+      className={classnames(
+        styles.wrapper,
+        'T-repetition-item',
+        `T-repetition-item-${item.uuid}`
+      )}
       onMouseEnter={() => {
         setIsHovered(true);
       }}
@@ -36,7 +40,9 @@ const RepetitionItem: React.FunctionComponent<Props> = ({
     >
       <div className={styles.content}>
         <div className={styles.left}>
-          <h2 className={styles.title}>{item.title}</h2>
+          <h2 className={classnames(styles.title, 'T-repetition-rule-title')}>
+            {item.title}
+          </h2>
 
           <div className={styles.meta}>
             <div>
