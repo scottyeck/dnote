@@ -57,7 +57,7 @@ func applyBookDomain(noteQuery *gorm.DB, rule database.RepetitionRule) (*gorm.DB
 
 // getRandomNotes returns a random set of notes
 func getRandomNotes(db *gorm.DB, rule database.RepetitionRule) ([]database.Note, error) {
-	conn := db.Where("user_id = ?", rule.UserID)
+	conn := db.Table("notes").Where("notes.user_id = ?", rule.UserID)
 	conn, err := applyBookDomain(conn, rule)
 	if err != nil {
 		return nil, errors.Wrap(err, "applying book domain")
