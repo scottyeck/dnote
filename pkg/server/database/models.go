@@ -128,6 +128,7 @@ type Session struct {
 // Digest is a digest of notes
 type Digest struct {
 	UUID      string    `json:"uuid" gorm:"primary_key:true;type:uuid;index;default:uuid_generate_v4()"`
+	RuleID    int       `gorm:"index"`
 	UserID    int       `gorm:"index"`
 	Notes     []Note    `gorm:"many2many:digest_notes;association_foreignKey:uuid;association_jointable_foreignkey:note_uuid;jointable_foreignkey:digest_uuid;"`
 	CreatedAt time.Time `json:"created_at"`

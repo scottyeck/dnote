@@ -103,6 +103,7 @@ func build(tx *gorm.DB, rule database.RepetitionRule) (database.Digest, error) {
 	}
 
 	digest := database.Digest{
+		RuleID: rule.ID,
 		UserID: rule.UserID,
 		Notes:  notes,
 	}
