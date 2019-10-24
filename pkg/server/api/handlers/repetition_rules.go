@@ -109,6 +109,12 @@ func parseCreateRepetitionRuleParams(r *http.Request) (createRepetitionRuleParam
 	if len(ret.Title) > 50 {
 		return ret, errors.New("Title is too long")
 	}
+	if len(ret.Title) == 0 {
+		return ret, errors.New("Title is required")
+	}
+	if ret.NoteCount == 0 {
+		return ret, errors.New("note count has to be greater than 0")
+	}
 
 	if err := validateBookDomain(ret.BookDomain); err != nil {
 		return ret, err

@@ -215,3 +215,210 @@ func TestGetRepetitionRules(t *testing.T) {
 
 	assert.DeepEqual(t, payload, expected, "payload mismatch")
 }
+
+func TestCreateRepetitionRules(t *testing.T) {
+	t.Run("all books", func(t *testing.T) {
+		defer testutils.ClearData()
+		db := database.DBConn
+
+		// Setup
+		server := httptest.NewServer(NewRouter(&App{
+			Clock: clock.NewMock(),
+		}))
+		defer server.Close()
+
+		user := testutils.SetupUserData()
+
+		// Execute
+		dat := `{
+	"title": "Rule 1",
+	"enabled": true,
+	"hour": 8,
+	"minute": 30,
+	"frequency": 6048000000,
+	"book_domain": "all",
+	"book_uuids": [],
+	"note_count": 20
+}`
+		req := testutils.MakeReq(server, "POST", "/repetition_rules", dat)
+		res := testutils.HTTPAuthDo(t, req, user)
+
+		// Test
+		assert.StatusCodeEquals(t, res, http.StatusCreated, "")
+
+		var ruleCount int
+		testutils.MustExec(t, db.Model(&database.RepetitionRule{}).Count(&ruleCount), "counting rules")
+		assert.Equalf(t, ruleCount, 1, "reperition rule count mismatch")
+
+		var rule database.RepetitionRule
+		testutils.MustExec(t, db.Preload("Books").First(&rule), "finding b1Record")
+
+		assert.NotEqual(t, rule.UUID, "", "rule UUID mismatch")
+		assert.Equal(t, rule.Title, "Rule 1", "rule Title mismatch")
+		assert.Equal(t, rule.Enabled, true, "rule Enabled mismatch")
+		assert.Equal(t, rule.Hour, 8, "rule HourTitle mismatch")
+		assert.Equal(t, rule.Minute, 30, "rule Minute mismatch")
+		assert.Equal(t, rule.Frequency, int64(6048000000), "rule Frequency mismatch")
+		assert.Equal(t, rule.BookDomain, "all", "rule BookDomain mismatch")
+		assert.DeepEqual(t, rule.Books, []database.Book{}, "rule Books mismatch")
+		assert.Equal(t, rule.NoteCount, 20, "rule NoteCount mismatch")
+	})
+
+	bookDomainTestCases := []string{
+		"including",
+		"excluding",
+	}
+	for _, tc := range bookDomainTestCases {
+		t.Run(tc, func(t *testing.T) {
+			defer testutils.ClearData()
+			db := database.DBConn
+
+			// Setup
+			server := httptest.NewServer(NewRouter(&App{
+				Clock: clock.NewMock(),
+			}))
+			defer server.Close()
+
+			user := testutils.SetupUserData()
+
+			b1 := database.Book{
+				UserID: user.ID,
+				Label:  "css",
+			}
+			testutils.MustExec(t, db.Save(&b1), "preparing b1")
+
+			// Execute
+			dat := fmt.Sprintf(`{
+	"title": "Rule 1",
+	"enabled": true,
+	"hour": 8,
+	"minute": 30,
+	"frequency": 6048000000,
+	"book_domain": "%s",
+	"book_uuids": ["%s"],
+	"note_count": 20
+}`, tc, b1.UUID)
+			req := testutils.MakeReq(server, "POST", "/repetition_rules", dat)
+			res := testutils.HTTPAuthDo(t, req, user)
+
+			// Test
+			assert.StatusCodeEquals(t, res, http.StatusCreated, "")
+
+			var ruleCount int
+			testutils.MustExec(t, db.Model(&database.RepetitionRule{}).Count(&ruleCount), "counting rules")
+			assert.Equalf(t, ruleCount, 1, "reperition rule count mismatch")
+
+			var rule database.RepetitionRule
+			testutils.MustExec(t, db.Preload("Books").First(&rule), "finding b1Record")
+
+			var b1Record database.Book
+			testutils.MustExec(t, db.Where("id = ?", b1.ID).First(&b1Record), "finding b1Record")
+
+			assert.NotEqual(t, rule.UUID, "", "rule UUID mismatch")
+			assert.Equal(t, rule.Title, "Rule 1", "rule Title mismatch")
+			assert.Equal(t, rule.Enabled, true, "rule Enabled mismatch")
+			assert.Equal(t, rule.Hour, 8, "rule HourTitle mismatch")
+			assert.Equal(t, rule.Minute, 30, "rule Minute mismatch")
+			assert.Equal(t, rule.Frequency, int64(6048000000), "rule Frequency mismatch")
+			assert.Equal(t, rule.BookDomain, tc, "rule BookDomain mismatch")
+			assert.DeepEqual(t, rule.Books, []database.Book{b1Record}, "rule Books mismatch")
+			assert.Equal(t, rule.NoteCount, 20, "rule NoteCount mismatch")
+		})
+	}
+}
+
+func TestCreateRepetitionRules_BadRequest(t *testing.T) {
+	testCases := []string{
+		// empty title
+		`{
+			"title": "",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 6048000000,
+			"book_domain": "all",
+			"book_uuids": [],
+			"note_count": 20
+		}`,
+		// empty frequency
+		`{
+			"title": "Rule 1",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 0,
+			"book_domain": "some_invalid_book_domain",
+			"book_uuids": [],
+			"note_count": 20
+		}`,
+		// empty note count
+		`{
+			"title": "Rule 1",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 6048000000,
+			"book_domain": "all",
+			"book_uuids": [],
+			"note_count": 0
+		}`,
+		// invalid book doamin
+		`{
+			"title": "Rule 1",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 6048000000,
+			"book_domain": "some_invalid_book_domain",
+			"book_uuids": [],
+			"note_count": 20
+		}`,
+		// invalid combination of book domain and book_uuids
+		`{
+			"title": "Rule 1",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 6048000000,
+			"book_domain": "excluding",
+			"book_uuids": [],
+			"note_count": 20
+		}`,
+		`{
+			"title": "Rule 1",
+			"enabled": true,
+			"hour": 8,
+			"minute": 30,
+			"frequency": 6048000000,
+			"book_domain": "including",
+			"book_uuids": [],
+			"note_count": 20
+		}`,
+	}
+
+	for idx, tc := range testCases {
+		t.Run(fmt.Sprintf("test case %d", idx), func(t *testing.T) {
+			defer testutils.ClearData()
+			db := database.DBConn
+
+			// Setup
+			server := httptest.NewServer(NewRouter(&App{
+				Clock: clock.NewMock(),
+			}))
+			defer server.Close()
+
+			user := testutils.SetupUserData()
+
+			// Execute
+			req := testutils.MakeReq(server, "POST", "/repetition_rules", tc)
+			res := testutils.HTTPAuthDo(t, req, user)
+
+			// Test
+			assert.StatusCodeEquals(t, res, http.StatusBadRequest, "")
+
+			var ruleCount int
+			testutils.MustExec(t, db.Model(&database.RepetitionRule{}).Count(&ruleCount), "counting rules")
+			assert.Equalf(t, ruleCount, 0, "reperition rule count mismatch")
+		})
+	}
+}
