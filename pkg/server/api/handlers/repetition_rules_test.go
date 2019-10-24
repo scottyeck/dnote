@@ -111,3 +111,107 @@ func TestGetRepetitionRule(t *testing.T) {
 
 	assert.DeepEqual(t, payload, expected, "payload mismatch")
 }
+
+func TestGetRepetitionRules(t *testing.T) {
+	defer testutils.ClearData()
+	db := database.DBConn
+
+	// Setup
+	server := httptest.NewServer(NewRouter(&App{
+		Clock: clock.NewMock(),
+	}))
+	defer server.Close()
+
+	user := testutils.SetupUserData()
+
+	b1 := database.Book{
+		USN:   11,
+		Label: "js",
+	}
+	testutils.MustExec(t, db.Save(&b1), "preparing book1")
+
+	r1 := database.RepetitionRule{
+		Title:      "Rule 1",
+		Frequency:  (time.Hour * 24 * 7).Milliseconds(),
+		Hour:       21,
+		Minute:     0,
+		LastActive: 0,
+		UserID:     user.ID,
+		BookDomain: database.BookDomainExluding,
+		Books:      []database.Book{b1},
+		NoteCount:  5,
+	}
+	testutils.MustExec(t, db.Save(&r1), "preparing rule1")
+
+	r2 := database.RepetitionRule{
+		Title:      "Rule 2",
+		Frequency:  (time.Hour * 24 * 7 * 2).Milliseconds(),
+		Hour:       2,
+		Minute:     0,
+		LastActive: 0,
+		UserID:     user.ID,
+		BookDomain: database.BookDomainExluding,
+		Books:      []database.Book{},
+		NoteCount:  5,
+	}
+	testutils.MustExec(t, db.Save(&r2), "preparing rule2")
+
+	// Execute
+	req := testutils.MakeReq(server, "GET", "/repetition_rules", "")
+	res := testutils.HTTPAuthDo(t, req, user)
+
+	// Test
+	assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+	var payload []presenters.RepetitionRule
+	if err := json.NewDecoder(res.Body).Decode(&payload); err != nil {
+		t.Fatal(errors.Wrap(err, "decoding payload"))
+	}
+
+	var r1Record, r2Record database.RepetitionRule
+	testutils.MustExec(t, db.Where("uuid = ?", r1.UUID).First(&r1Record), "finding r1Record")
+	testutils.MustExec(t, db.Where("uuid = ?", r2.UUID).First(&r2Record), "finding r2Record")
+	var b1Record database.Book
+	testutils.MustExec(t, db.Where("uuid = ?", b1.UUID).First(&b1Record), "finding b1Record")
+
+	expected := []presenters.RepetitionRule{
+		{
+			UUID:       r1Record.UUID,
+			Title:      r1Record.Title,
+			Enabled:    r1Record.Enabled,
+			Hour:       r1Record.Hour,
+			Minute:     r1Record.Minute,
+			Frequency:  r1Record.Frequency,
+			BookDomain: r1Record.BookDomain,
+			NoteCount:  r1Record.NoteCount,
+			LastActive: r1Record.LastActive,
+			Books: []presenters.Book{
+				{
+					UUID:      b1Record.UUID,
+					USN:       b1Record.USN,
+					Label:     b1Record.Label,
+					CreatedAt: presenters.FormatTS(b1Record.CreatedAt),
+					UpdatedAt: presenters.FormatTS(b1Record.UpdatedAt),
+				},
+			},
+			CreatedAt: presenters.FormatTS(r1Record.CreatedAt),
+			UpdatedAt: presenters.FormatTS(r1Record.UpdatedAt),
+		},
+		{
+			UUID:       r2Record.UUID,
+			Title:      r2Record.Title,
+			Enabled:    r2Record.Enabled,
+			Hour:       r2Record.Hour,
+			Minute:     r2Record.Minute,
+			Frequency:  r2Record.Frequency,
+			BookDomain: r2Record.BookDomain,
+			NoteCount:  r2Record.NoteCount,
+			LastActive: r2Record.LastActive,
+			Books:      []presenters.Book{},
+			CreatedAt:  presenters.FormatTS(r2Record.CreatedAt),
+			UpdatedAt:  presenters.FormatTS(r2Record.UpdatedAt),
+		},
+	}
+
+	assert.DeepEqual(t, payload, expected, "payload mismatch")
+}
