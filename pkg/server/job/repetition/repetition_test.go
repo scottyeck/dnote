@@ -103,7 +103,6 @@ func TestDo(t *testing.T) {
 }
 
 func TestDo_RandomStrategy(t *testing.T) {
-
 	type testData struct {
 		User  database.User
 		Book1 database.Book
