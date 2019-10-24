@@ -96,32 +96,9 @@ func getEligibleRules(now time.Time) ([]database.RepetitionRule, error) {
 	return ret, nil
 }
 
-func applyBookDomain(noteQuery *gorm.DB, rule database.RepetitionRule) *gorm.DB {
-	ret := noteQuery
-
-	if rule.BookDomain != database.BookDomainAll {
-		ret = ret.Joins("INNER JOIN books ON notes.book_uuid = books.uuid").
-			Joins("LEFT JOIN repetition_rule_books ON repetition_rule_books.book_uuid = books.uuid").
-			Where("repetition_rule_books.repetition_rule_id = ?", rule.ID)
-
-		if rule.BookDomain == database.BookDomainExluding {
-			ret = ret.Where("repetition_rule_books.book_id IS NULL")
-		} else if rule.BookDomain == database.BookDomainIncluding {
-			ret = ret.Where("repetition_rule_books.book_id IS NOT NULL")
-		}
-	}
-
-	return ret
-}
-
 func build(tx *gorm.DB, rule database.RepetitionRule) (database.Digest, error) {
-	// TODO: ordering by random() does not scale if table grows large
-	conn := tx.Where("user_id = ?", rule.UserID).Order("random()").Limit(rule.NoteCount)
-	conn = applyBookDomain(conn, rule)
-	conn = conn.Limit(rule.NoteCount)
-
-	var notes []database.Note
-	if err := conn.Preload("Book").Find(&notes).Error; err != nil {
+	notes, err := getRandomNotes(tx, rule)
+	if err != nil {
 		return database.Digest{}, errors.Wrap(err, "getting notes")
 	}
 

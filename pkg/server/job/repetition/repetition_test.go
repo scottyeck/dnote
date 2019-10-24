@@ -1,7 +1,6 @@
 package repetition
 
 import (
-	//	"fmt"
 	"testing"
 	"time"
 
@@ -9,7 +8,6 @@ import (
 	"github.com/dnote/dnote/pkg/clock"
 	"github.com/dnote/dnote/pkg/server/database"
 	"github.com/dnote/dnote/pkg/server/testutils"
-	//	"github.com/pkg/errors"
 )
 
 func init() {
