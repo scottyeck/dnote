@@ -422,3 +422,58 @@ func TestCreateRepetitionRules_BadRequest(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteRepetitionRules(t *testing.T) {
+	defer testutils.ClearData()
+	db := database.DBConn
+
+	// Setup
+	server := httptest.NewServer(NewRouter(&App{
+		Clock: clock.NewMock(),
+	}))
+	defer server.Close()
+
+	user := testutils.SetupUserData()
+
+	// Execute
+	r1 := database.RepetitionRule{
+		Title:      "Rule 1",
+		UserID:     user.ID,
+		Enabled:    true,
+		Hour:       8,
+		Minute:     30,
+		Frequency:  6048000000,
+		BookDomain: "all",
+		Books:      []database.Book{},
+		NoteCount:  20,
+	}
+	testutils.MustExec(t, db.Save(&r1), "preparing r1")
+
+	r2 := database.RepetitionRule{
+		Title:      "Rule 1",
+		UserID:     user.ID,
+		Enabled:    true,
+		Hour:       8,
+		Minute:     30,
+		Frequency:  6048000000,
+		BookDomain: "all",
+		Books:      []database.Book{},
+		NoteCount:  20,
+	}
+	testutils.MustExec(t, db.Save(&r2), "preparing r2")
+
+	endpoint := fmt.Sprintf("/repetition_rules/%s", r1.UUID)
+	req := testutils.MakeReq(server, "DELETE", endpoint, "")
+	res := testutils.HTTPAuthDo(t, req, user)
+
+	// Test
+	assert.StatusCodeEquals(t, res, http.StatusOK, "")
+
+	var totalRuleCount int
+	testutils.MustExec(t, db.Model(&database.RepetitionRule{}).Count(&totalRuleCount), "counting rules")
+	assert.Equalf(t, totalRuleCount, 1, "reperition rule count mismatch")
+
+	var r2Count int
+	testutils.MustExec(t, db.Model(&database.RepetitionRule{}).Where("id = ?", r2.ID).Count(&r2Count), "counting r2")
+	assert.Equalf(t, r2Count, 1, "r2 count mismatch")
+}

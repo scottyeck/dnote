@@ -19,7 +19,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -204,12 +203,14 @@ func (a *App) deleteRepetitionRule(w http.ResponseWriter, r *http.Request) {
 	db := database.DBConn
 
 	var rule database.RepetitionRule
-	err := db.Where("uuid = ? AND user_id = ?", repetitionRuleUUID, user.ID).First(&rule).Error
+	conn := db.Where("uuid = ? AND user_id = ?", repetitionRuleUUID, user.ID).First(&rule)
 
-	if err == sql.ErrNoRows {
+	if conn.RecordNotFound() {
 		http.Error(w, "Not found", http.StatusNotFound)
-	} else if err != nil {
+		return
+	} else if err := conn.Error; err != nil {
 		handleError(w, "finding the repetition rule", err, http.StatusInternalServerError)
+		return
 	}
 
 	if err := db.Exec("DELETE from repetition_rules WHERE uuid = ?", rule.UUID).Error; err != nil {
