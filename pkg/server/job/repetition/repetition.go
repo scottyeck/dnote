@@ -179,8 +179,9 @@ func checkCooldown(now time.Time, rule database.RepetitionRule) bool {
 	return present >= int64(rule.LastActive+rule.Frequency)
 }
 
-func touchLastActive(tx *gorm.DB, rule database.RepetitionRule) error {
-	rule.LastActive = rule.CreatedAt.UnixNano()/int64(time.Millisecond) + rule.Frequency
+func touchLastActive(tx *gorm.DB, rule database.RepetitionRule, now time.Time) error {
+	lastActive := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), 0, 0, now.Location())
+	rule.LastActive = lastActive.UnixNano() / int64(time.Millisecond)
 
 	if err := tx.Save(&rule).Error; err != nil {
 		return errors.Wrap(err, "updating repetition rule")
@@ -218,7 +219,7 @@ func process(now time.Time, rule database.RepetitionRule) error {
 		return errors.Wrap(err, "building repetition")
 	}
 
-	if err := touchLastActive(tx, rule); err != nil {
+	if err := touchLastActive(tx, rule, now); err != nil {
 		tx.Rollback()
 		return errors.Wrap(err, "touching last_active")
 	}
@@ -249,6 +250,8 @@ func Do(c clock.Clock) error {
 	}
 
 	log.WithFields(log.Fields{
+		"hour":      now.Hour(),
+		"minute":    now.Minute(),
 		"num_rules": len(rules),
 	}).Info("processing rules")
 
