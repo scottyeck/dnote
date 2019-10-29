@@ -89,14 +89,17 @@ func getSWHandler() http.HandlerFunc {
 	}
 }
 
-func initServer() *mux.Router {
+func initServer() (*mux.Router, error) {
 	srv := mux.NewRouter()
 
-	apiRouter := handlers.NewRouter(&handlers.App{
+	apiRouter, err := handlers.NewRouter(&handlers.App{
 		Clock:            clock.New(),
 		StripeAPIBackend: nil,
 		WebURL:           os.Getenv("WebURL"),
 	})
+	if err != nil {
+		return nil, errors.Wrap(err, "initializing router")
+	}
 
 	srv.PathPrefix("/api").Handler(http.StripPrefix("/api", apiRouter))
 	srv.PathPrefix("/static").Handler(getStaticHandler())
@@ -106,7 +109,7 @@ func initServer() *mux.Router {
 	// For all other requests, serve the index.html file
 	srv.PathPrefix("/").Handler(getRootHandler())
 
-	return srv
+	return srv, nil
 }
 
 func startCmd() {
@@ -131,7 +134,10 @@ func startCmd() {
 	// Run job in the background
 	go job.Run()
 
-	srv := initServer()
+	srv, err := initServer()
+	if err != nil {
+		panic(errors.Wrap(err, "initializing server"))
+	}
 
 	log.Printf("Dnote version %s is running on port %s", versionTag, *port)
 	addr := fmt.Sprintf(":%s", *port)
