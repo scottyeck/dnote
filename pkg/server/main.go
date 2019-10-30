@@ -38,7 +38,6 @@ import (
 
 var versionTag = "master"
 var port = flag.String("port", "3000", "port to connect to")
-
 var rootBox *packr.Box
 
 func init() {
@@ -113,26 +112,24 @@ func initServer() (*mux.Router, error) {
 }
 
 func startCmd() {
-	c := database.Config{
+	mailer.InitTemplates(nil)
+
+	database.Open(database.Config{
 		Host:     os.Getenv("DBHost"),
 		Port:     os.Getenv("DBPort"),
 		Name:     os.Getenv("DBName"),
 		User:     os.Getenv("DBUser"),
 		Password: os.Getenv("DBPassword"),
-	}
-	database.Open(c)
+	})
 	database.InitSchema()
 	defer database.Close()
 
-	mailer.InitTemplates(nil)
-
-	// Perform database migration
 	if err := database.Migrate(); err != nil {
 		panic(errors.Wrap(err, "running migrations"))
 	}
-
-	// Run job in the background
-	go job.Run()
+	if err := job.Run(); err != nil {
+		panic(errors.Wrap(err, "running job"))
+	}
 
 	srv, err := initServer()
 	if err != nil {
@@ -141,20 +138,15 @@ func startCmd() {
 
 	log.Printf("Dnote version %s is running on port %s", versionTag, *port)
 	addr := fmt.Sprintf(":%s", *port)
-	log.Println(http.ListenAndServe(addr, srv))
+	http.ListenAndServe(addr, srv)
 }
 
 func versionCmd() {
 	fmt.Printf("dnote-server-%s\n", versionTag)
 }
 
-func main() {
-	flag.Parse()
-	cmd := flag.Arg(0)
-
-	switch cmd {
-	case "":
-		fmt.Printf(`Dnote Server - A simple notebook for developers
+func rootCmd() {
+	fmt.Printf(`Dnote Server - A simple notebook for developers
 
 Usage:
   dnote-server [command]
@@ -163,6 +155,15 @@ Available commands:
   start: Start the server
   version: Print the version
 `)
+}
+
+func main() {
+	flag.Parse()
+	cmd := flag.Arg(0)
+
+	switch cmd {
+	case "":
+		rootCmd()
 	case "start":
 		startCmd()
 	case "version":
